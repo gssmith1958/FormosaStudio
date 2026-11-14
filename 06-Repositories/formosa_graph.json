@@ -1,0 +1,1452 @@
+{
+  "object_count": 64,
+  "edge_count": 87,
+  "objects": {
+    "FORM-PLAN-001": {
+      "id": "FORM-PLAN-001",
+      "type": "EngineeringPlan",
+      "title": "FormosaStudio R2 Consolidated Engineering, CM, Documentation and AI Collaboration Plan",
+      "status": "Approved",
+      "version": "1.0.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-13",
+      "updated_date": "2026-11-13",
+      "framework_reference": "Volume 4 §6.4, Volume 6 §6.4, Volume 8, Guide 007 §3",
+      "traces_to": [
+        "FORM-TAILOR-001"
+      ],
+      "_file": "00-Governance/FORM-PLAN-001_Engineering_and_AI_Collaboration_Plan.md"
+    },
+    "FORM-ROAD-001": {
+      "id": "FORM-ROAD-001",
+      "type": "DevelopmentRoadmap",
+      "title": "FormosaStudio R2 Five-Phase Development Roadmap",
+      "status": "Approved",
+      "version": "1.0.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-13",
+      "updated_date": "2026-11-13",
+      "framework_reference": "Volume 4 §6.4, Guide 006 Pattern 14",
+      "traces_to": [
+        "FORM-PLAN-001"
+      ],
+      "_file": "00-Governance/FORM-ROAD-001_Development_Roadmap.md"
+    },
+    "FORM-TAILOR-001": {
+      "id": "FORM-TAILOR-001",
+      "type": "TailoringDecision",
+      "title": "FormosaStudio Pure-R2 Tailoring Decision (n=3 Prototype-to-R2 Graduation)",
+      "status": "Approved",
+      "version": "1.0.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-13",
+      "updated_date": "2026-11-13",
+      "framework_reference": "ASEF Guide 002 v0.9.6, Volume 4 §4.3, Volume 6 §14.3, Guide 007 v0.9.11, Guide 008 v0.9.1, PEW v0.9.5",
+      "traces_to": [
+        "FORM-PROJ-001"
+      ],
+      "_file": "00-Governance/FORM-TAILOR-001_Tailoring_Decision.md"
+    },
+    "FORM-PROJ-001": {
+      "id": "FORM-PROJ-001",
+      "type": "Project",
+      "title": "FormosaStudio — Taiwan-Based Traditional Chinese (zh-TW) Language Training System",
+      "status": "Approved",
+      "version": "1.0.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-13",
+      "updated_date": "2026-11-13",
+      "rigor_level": "R2",
+      "domain": "Computational Linguistics (zh-TW), Acoustic Pitch Signal Processing, Wacom Stylus Calligraphy & Second-Language Acquisition",
+      "_file": "01-Engineering/FORM-CTX-001_Project_Context_Stakeholders_Personas_ConOps.md"
+    },
+    "FORM-STK-001": {
+      "id": "FORM-STK-001",
+      "type": "Stakeholder",
+      "title": "Principal Engineer & Primary Learner (Native English Speaker Mastering Taiwanese Mandarin)",
+      "status": "Approved",
+      "version": "1.0.0",
+      "role": "Accountable Decision Maker & Daily End User",
+      "traces_to": [
+        "FORM-PROJ-001"
+      ],
+      "_file": "01-Engineering/FORM-CTX-001_Project_Context_Stakeholders_Personas_ConOps.md"
+    },
+    "FORM-PER-001": {
+      "id": "FORM-PER-001",
+      "type": "Persona",
+      "title": "Adult Native English Speaker Training for Real-World Taiwan Fluency & Literacy",
+      "status": "Approved",
+      "version": "1.0.0",
+      "description": "Uses a Linux desktop workstation with an attached Wacom pen tablet and microphone. Wants authentic Taiwanese Mandarin (臺灣國語, vertical Zhuyin ㄅㄆㄇㄈ, Traditional characters 正體字, DaQian touch-typing, Wacom stroke-order writing, offline acoustic pitch feedback, and '10 Minutes a Day' Taiwan survival skills) without Mainland Beijingisms or >1,000-LOC unmaintainable prototype code.",
+      "traces_to": [
+        "FORM-STK-001"
+      ],
+      "_file": "01-Engineering/FORM-CTX-001_Project_Context_Stakeholders_Personas_ConOps.md"
+    },
+    "FORM-CONOPS-001": {
+      "id": "FORM-CONOPS-001",
+      "type": "OperationalConcept",
+      "title": "FormosaStudio Integrated Daily Taiwanese Mandarin Workstation ConOps",
+      "status": "Approved",
+      "version": "1.0.0",
+      "description": "FormosaStudio operates locally in the browser on Linux with zero cloud account dependencies. The learner follows a guided 10-to-20 minute daily loop across 4 integrated modalities: (1) 'Taiwan in 10 Minutes a Day' practical survival & functional listening (sticky labels, paper tick-menus 點菜單, NT$ prices, 民國 dates, MRT/clinic survival), (2) Adaptive i+1 Graded Reading with word-segmented polyphone (破音字) and Taiwan MOE (兩岸異讀字) Zhuyin fading, (3) Wacom Stylus Calligraphy & MOE Stroke-Order tracing/dictation on 九宮格 grids, and (4) Offline WebAudio F0 Pitch-Contour & Tone Sandhi speaking practice.",
+      "traces_to": [
+        "FORM-PROJ-001",
+        "FORM-PER-001"
+      ],
+      "_file": "01-Engineering/FORM-CTX-001_Project_Context_Stakeholders_Personas_ConOps.md"
+    },
+    "FORM-CAP-001": {
+      "id": "FORM-CAP-001",
+      "type": "Capability",
+      "title": "Context-Aware Taiwan MOE Linguistic & Polyphone (破音字) Engine",
+      "status": "Approved",
+      "version": "1.0.0",
+      "description": "Forward maximum-matching (FMM) word segmentation resolving polyphones (長大 vs 很長, 還錢 vs 還有, 銀行 vs 不行, 覺得 vs 得去), Taiwan MOE cross-strait pronunciations (和=ㄏㄢˋ, 垃圾=ㄌㄜˋ ㄙㄜˋ, 星期=ㄒㄧㄥ ㄑㄧˊ, 研究=ㄧㄢˊ ㄐㄧㄡˋ), and 3rd-tone/不/一 tone sandhi.",
+      "traces_to": [
+        "FORM-CONOPS-001"
+      ],
+      "_file": "01-Engineering/FORM-CTX-001_Project_Context_Stakeholders_Personas_ConOps.md"
+    },
+    "FORM-CAP-002": {
+      "id": "FORM-CAP-002",
+      "type": "Capability",
+      "title": "Complete Contemporary Chinese (Vols. 1–6) & Pimsleur (Units 1–19) Curriculum + FSRS-Lite Store",
+      "status": "Approved",
+      "version": "1.0.0",
+      "description": "Full lesson, grammar, and TOCFL Band A1–C1 vocabulary progression with stability/difficulty FSRS-lite spaced repetition and 1-click JSON backup/restore.",
+      "traces_to": [
+        "FORM-CONOPS-001"
+      ],
+      "_file": "01-Engineering/FORM-CTX-001_Project_Context_Stakeholders_Personas_ConOps.md"
+    },
+    "FORM-CAP-003": {
+      "id": "FORM-CAP-003",
+      "type": "Capability",
+      "title": "Adaptive i+1 Graded Reader, Custom Text Studio & 口語/書面語 Register Bridge",
+      "status": "Approved",
+      "version": "1.0.0",
+      "description": "Multi-level Taiwan graded stories plus paste-any-text studio computing live Known/Familiar/Target (i+1) percentages against the learner's mastery store, paired with spoken-to-written register mapping.",
+      "traces_to": [
+        "FORM-CONOPS-001"
+      ],
+      "_file": "01-Engineering/FORM-CTX-001_Project_Context_Stakeholders_Personas_ConOps.md"
+    },
+    "FORM-CAP-004": {
+      "id": "FORM-CAP-004",
+      "type": "Capability",
+      "title": "Taiwan in 10 Minutes a Day Practical English-Speaker Survival & Functional Listening Gym",
+      "status": "Approved",
+      "version": "1.0.0",
+      "description": "Bite-sized 10-minute survival modules covering visual household sticky labels, interactive Taiwanese paper tick-menus (點菜單), 12 Swiss-Army-Knife survival sentence frames, 打折 discount math, 民國 dates, 段/巷/弄/號 addresses, 語助詞 particles, everyday Hokkien (臺語) loanwords, and rapid listening drills.",
+      "traces_to": [
+        "FORM-CONOPS-001"
+      ],
+      "_file": "01-Engineering/FORM-CTX-001_Project_Context_Stakeholders_Personas_ConOps.md"
+    },
+    "FORM-CAP-005": {
+      "id": "FORM-CAP-005",
+      "type": "Capability",
+      "title": "Wacom Stylus (PointerEvent) Calligraphy & Taiwan MOE Stroke-Order Studio",
+      "status": "Approved",
+      "version": "1.0.0",
+      "description": "Hardware-accelerated HTML5 Canvas utilizing W3C PointerEvent pen pressure (e.pressure), coalesced high-rate sampling (getCoalescedEvents()), pen-only palm rejection, Wacom eraser/barrel button shortcuts, Taiwan MOE vector stroke-order grading, and 形聲字 radical-phonetic compounding.",
+      "traces_to": [
+        "FORM-CONOPS-001"
+      ],
+      "_file": "01-Engineering/FORM-CTX-001_Project_Context_Stakeholders_Personas_ConOps.md"
+    },
+    "FORM-CAP-006": {
+      "id": "FORM-CAP-006",
+      "type": "Capability",
+      "title": "Offline WebAudio F0 Pitch-Contour Visualizer & Pronunciation Coach",
+      "status": "Approved",
+      "version": "1.0.0",
+      "description": "Real-time microphone autocorrelation/YIN fundamental frequency (F0) pitch extraction plotted in Hz and Chao 1–5 tone levels directly over native reference contours, scoring Tone 1–5 and sandhi contour correlation 100% offline.",
+      "traces_to": [
+        "FORM-CONOPS-001"
+      ],
+      "_file": "01-Engineering/FORM-CTX-001_Project_Context_Stakeholders_Personas_ConOps.md"
+    },
+    "FORM-WF-001": {
+      "id": "FORM-WF-001",
+      "type": "Workflow",
+      "title": "10-Minute Daily Taiwan Survival & Paper Menu (點菜單) Workflow",
+      "status": "Approved",
+      "version": "1.0.0",
+      "description": "Learner opens Today's Hub -> launches the daily 'Taiwan in 10 Minutes a Day' survival module -> reviews 6 visual sticky labels & 2 power frames -> completes an interactive Wacom/click Taiwanese breakfast or beef-noodle paper tick-menu (點菜單) and rapid NT$/民國 listening check.",
+      "traces_to": [
+        "FORM-CAP-004"
+      ],
+      "_file": "01-Engineering/FORM-CTX-001_Project_Context_Stakeholders_Personas_ConOps.md"
+    },
+    "FORM-WF-002": {
+      "id": "FORM-WF-002",
+      "type": "Workflow",
+      "title": "Adaptive i+1 Reading & Polyphone Inspection Workflow",
+      "status": "Approved",
+      "version": "1.0.0",
+      "description": "Learner selects a graded story or pastes a Taiwanese article -> engine segments words via FMM, applies contextual polyphone (破音字) and Taiwan MOE Zhuyin, computes the i+1 comprehensibility badge (e.g., 92% Known), fades mastered character Zhuyin, and queues clicked unknown words into FSRS.",
+      "traces_to": [
+        "FORM-CAP-001",
+        "FORM-CAP-003"
+      ],
+      "_file": "01-Engineering/FORM-CTX-001_Project_Context_Stakeholders_Personas_ConOps.md"
+    },
+    "FORM-WF-003": {
+      "id": "FORM-WF-003",
+      "type": "Workflow",
+      "title": "Wacom Stylus MOE Stroke-Order & Dictation Workflow",
+      "status": "Approved",
+      "version": "1.0.0",
+      "description": "Learner selects a character or vocabulary word -> writes strokes with the Wacom pen on the 九宮格 grid using live pressure sensitivity -> engine validates stroke count, start point, and direction vector against Taiwan MOE standard stroke order -> flipping to the Wacom eraser undoes mistakes.",
+      "traces_to": [
+        "FORM-CAP-005"
+      ],
+      "_file": "01-Engineering/FORM-CTX-001_Project_Context_Stakeholders_Personas_ConOps.md"
+    },
+    "FORM-WF-004": {
+      "id": "FORM-WF-004",
+      "type": "Workflow",
+      "title": "Offline WebAudio F0 Pitch-Contour Shadowing Workflow",
+      "status": "Approved",
+      "version": "1.0.0",
+      "description": "Learner plays a Taiwanese sentence -> speaks into the microphone -> WebAudio pitch tracker extracts the live F0 contour, normalizes it to the speaker's vocal range (Chao 1–5 scale), overlays it on the target tone/sandhi curve, and scores tone-contour accuracy offline.",
+      "traces_to": [
+        "FORM-CAP-006"
+      ],
+      "_file": "01-Engineering/FORM-CTX-001_Project_Context_Stakeholders_Personas_ConOps.md"
+    },
+    "FORM-REQ-0001": {
+      "id": "FORM-REQ-0001",
+      "type": "Requirement",
+      "title": "Forward Maximum-Matching (FMM) Word Tokenizer & Polyphone (破音字) Disambiguation Engine",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 1",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The system shall segment Traditional Chinese text using a Forward Maximum-Matching (FMM) word tokenizer (up to 6-character compounds) prior to character fallback so multi-character polyphones (破音字) receive their contextually correct Zhuyin reading.",
+      "acceptance_criteria": [
+        "Correctly disambiguates at least 25 core Taiwanese Mandarin polyphone pairs in automated tests, including 長 (長大 ㄓㄤˇ vs 很長 ㄔㄤˊ), 還 (還錢 ㄏㄨㄢˊ vs 還有 ㄏㄞˊ), 行 (銀行 ㄏㄤˊ vs 不行 ㄒㄧㄥˊ), 得 (覺得 ㄉㄜˊ vs 得去 ㄉㄟˇ vs 跑得快 ㄉㄜ˙), 樂 (音樂 ㄩㄝˋ vs 快樂 ㄌㄜˋ), 會 (會計 ㄎㄨㄞˋ vs 開會 ㄏㄨㄟˋ), 數 (數學 ㄕㄨˋ vs 數一數 ㄕㄨˇ), 著 (看著 ㄓㄜ˙ vs 睡著 ㄓㄠˊ), 重 (重要 ㄓㄨㄥˋ vs 重新 ㄔㄨㄥˊ), and 便 (便宜 ㄆㄧㄢˊ vs 方便 ㄅㄧㄢˋ)."
+      ],
+      "traces_to": [
+        "FORM-CAP-001"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0002": {
+      "id": "FORM-REQ-0002",
+      "type": "Requirement",
+      "title": "Taiwan Ministry of Education (教育部) Standard Pronunciation & Tone Sandhi Engine",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 1",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The linguistic engine shall enforce Taiwan Ministry of Education (MOE) standard pronunciations (兩岸異讀字) and automatically detect and display spoken vs. written Zhuyin for 3rd-tone chains, 不 (ㄅㄨˋ), and 一 (ㄧ) tone sandhi.",
+      "acceptance_criteria": [
+        "Annotates Taiwan MOE pronunciations accurately for 垃圾 (ㄌㄜˋ ㄙㄜˋ), 星期 (ㄒㄧㄥ ㄑㄧˊ), 研究 (ㄧㄢˊ ㄐㄧㄡˋ), 企業 (ㄑㄧˋ ㄧㄝˋ), 法國 (ㄈㄚˋ ㄍㄨㄛˊ), 液體 (ㄧㄝˋ ㄊㄧˇ), 微糖 (ㄨㄟˊ ㄊㄤˊ), and conjunctive 和 (ㄏㄢˋ in 我和你 / 我和家人).",
+        "Detects 2-syllable and 3-syllable 3rd-tone sandhi (e.g., 我很好 -> ㄨㄛˇ ㄏㄣˊ ㄏㄠˇ), 不 before 4th tone (ㄅㄨˊ), and 一 before 4th tone (ㄧˊ) vs. 1st/2nd/3rd tones (ㄧˋ)."
+      ],
+      "traces_to": [
+        "FORM-CAP-001"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0003": {
+      "id": "FORM-REQ-0003",
+      "type": "Requirement",
+      "title": "Complete Contemporary Chinese (Volumes 1–6) & Pimsleur (Units 1–19) Curriculum Database",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 1",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The curriculum database shall include comprehensive lesson progressions, grammar patterns, cultural notes, and TOCFL Band Novice 1 through Band C1 vocabulary across all 6 volumes of NTNU's A Course in Contemporary Chinese and Pimsleur Mandarin I Units 1–19.",
+      "acceptance_criteria": [
+        "Every volume (Volumes 1–6) in contemporaryChineseData contains at least 8–15 structured lessons (remediating the 1-lesson stubs in Volumes 4–6 of Chinese2).",
+        "Vocabulary catalog covers TOCFL Bands Novice 1, Novice 2, Band A1, Band A2, Band B1, and Band B2."
+      ],
+      "traces_to": [
+        "FORM-CAP-002"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0004": {
+      "id": "FORM-REQ-0004",
+      "type": "Requirement",
+      "title": "FSRS-Lite Stability/Difficulty Scheduler & Portable JSON Backup/Restore",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 1",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The progress store shall schedule character, word, and stroke-writing reviews using an adaptive stability/difficulty interval multiplier and provide 1-click JSON export and validated JSON import.",
+      "acceptance_criteria": [
+        "Tracks separate mastery records for reading/recognition, vocabulary recall, and Wacom character writing.",
+        "Exports complete UserProgressState to a timestamped JSON file and restores state losslessly with schema validation."
+      ],
+      "traces_to": [
+        "FORM-CAP-002"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0005": {
+      "id": "FORM-REQ-0005",
+      "type": "Requirement",
+      "title": "Modular Core & Data Decomposition Under 800 LOC Ceiling",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 1",
+      "category": "Maintainability",
+      "priority": "Mandatory",
+      "description": "All linguistic engines, curriculum datasets, and UI components ported or refactored from the Chinese2 prototype shall be decomposed into modular TypeScript files strictly under the 800 LOC hard ceiling.",
+      "acceptance_criteria": [
+        "08-Automation/check_structural_scaffolding.py reports 0 files > 800 LOC across 07-Configuration/Source/src/."
+      ],
+      "traces_to": [
+        "FORM-CAP-001",
+        "FORM-CAP-002"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0006": {
+      "id": "FORM-REQ-0006",
+      "type": "Requirement",
+      "title": "Adaptive i+1 Graded Reader Across TOCFL Bands A1–B2",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 2",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The Reading Studio shall provide at least 8 multi-paragraph Taiwan-set graded stories spanning TOCFL Novice through Band B2, computing live Known (Lv.2+), Familiar (Lv.1), and Target i+1 (Unseen) word percentages against the learner's progress store.",
+      "acceptance_criteria": [
+        "Displays a live Comprehensibility Badge (e.g., 92% Known — Optimal i+1 Zone) for every story.",
+        "Clicking any segmented word opens its contextual Zhuyin, Taiwan MOE note, tone sandhi breakdown, and 1-click 'Add to Study Queue / Practice on Wacom' action."
+      ],
+      "traces_to": [
+        "FORM-CAP-003"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0007": {
+      "id": "FORM-REQ-0007",
+      "type": "Requirement",
+      "title": "Custom Traditional Chinese Text Importer & Instant Cloze Generator",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 2",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The Reading Studio shall allow the user to paste or load any custom Traditional Chinese text (Taiwanese news, messages, menus, textbook passages), automatically segment and annotate it with contextual Zhuyin, compute its i+1 score, and generate interactive sentence cloze drills from its sentences.",
+      "acceptance_criteria": [
+        "Segments custom pasted text using the FMM polyphone tokenizer in < 50 ms for passages up to 2,000 characters.",
+        "Generates playable multiple-choice clozes from target i+1 words in the pasted passage."
+      ],
+      "traces_to": [
+        "FORM-CAP-003"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0008": {
+      "id": "FORM-REQ-0008",
+      "type": "Requirement",
+      "title": "Spoken vs. Written Taiwan Register Bridge (口語 vs. 書面語)",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 2",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The Grammar & Reading Studio shall include a dedicated Spoken (口語) vs. Formal Written (書面語) Register Bridge mapping everyday Taiwanese spoken connectors and verbs to their formal newspaper/signage equivalents with interactive register-conversion drills.",
+      "acceptance_criteria": [
+        "Covers at least 15 core 口語 <-> 書面語 pairs (e.g., 可是/然而, 還有/此外, 因為…所以…/由於…因此…, 不但/不僅, 這時候/此時, 常常/往往, 覺得/認為, 差不多/大致)."
+      ],
+      "traces_to": [
+        "FORM-CAP-003"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0009": {
+      "id": "FORM-REQ-0009",
+      "type": "Requirement",
+      "title": "Taiwan in 10 Minutes a Day — Bite-Sized Visual Survival Modules & Sticky Labels",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 2",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The system shall provide a structured 'Taiwan in 10 Minutes a Day' practical survival track tailored for native English speakers, featuring interactive visual Household/Environment Sticky Labels, the 12 'Swiss-Army-Knife' survival sentence frames, and Taiwan street/shop sign decoders.",
+      "acceptance_criteria": [
+        "Includes at least 6 themed 10-minute modules: (1) Home, AC Remote & Trash/Recycling Sticky Labels, (2) Taiwanese Breakfast (早餐店) & Bento (便當) Ordering, (3) 7-Eleven/FamilyMart Checkout & Discount Math (八折 = 20% off), (4) MRT, HSR, YouBike & Taxi Addresses, (5) Clinic (診所), Pharmacy (藥局) & Food Allergy Cards, and (6) Everyday Street & Door Signs (推/拉, 內用/外帶, 營業中, 博愛座).",
+        "Provides a printable/viewable Sticky-Label Card sheet mode with large Traditional characters, vertical Zhuyin, and English cues."
+      ],
+      "traces_to": [
+        "FORM-CAP-004"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0010": {
+      "id": "FORM-REQ-0010",
+      "type": "Requirement",
+      "title": "Interactive Taiwanese Paper Tick-Menu (點菜單) Simulator & Taiwanese Pragmatics (語助詞 & 臺語)",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 2",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The survival studio shall include an interactive Taiwanese laminated paper tick-menu (點菜單) simulator (mountable with mouse or Wacom pen) and a Taiwanese Spoken Pragmatics lab covering sentence-final particles (語助詞) and everyday Hokkien (臺語) loanwords.",
+      "acceptance_criteria": [
+        "Allows fulfilling real-world dining orders (e.g., 'Dine-in table 5: 1 large beef noodle mild spicy, 1 cucumber side dish, 2 soy milks') by marking quantities on an authentic Taiwanese 點菜單 and verifying the NT$ bill total.",
+        "Covers at least 8 Taiwanese sentence-final particles (啦, 喔, 耶, 欸, 齁, 囉, 嘛, 吧) and 10 everyday Hokkien-in-Mandarin expressions (歹勢, 阿公/阿嬤, 頭家, 龜毛, 麻吉, 落漆, 鬱卒, 凍蒜, 買單, 黑輪)."
+      ],
+      "traces_to": [
+        "FORM-CAP-004"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0011": {
+      "id": "FORM-REQ-0011",
+      "type": "Requirement",
+      "title": "Taiwan Functional Listening Gym (NT$ Prices, 民國 Dates, Addresses & Receipts)",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 2",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The system shall provide a Functional Listening Reflex Gym training rapid auditory comprehension of spoken Taiwanese NT$ prices,打折 discounts, ROC 民國 calendar dates (Year - 1911), Taiwan mobile phone numbers (09XX-XXX-XXX), Uniform Invoice (統一發票) 3-digit endings, and 段/巷/弄/號/樓 addresses.",
+      "acceptance_criteria": [
+        "Generates randomized audio-first drills across all 5 categories and validates numeric/structured user input with instant explanation of萬 (10,000), 折 (discount folds), and 民國 year conversion."
+      ],
+      "traces_to": [
+        "FORM-CAP-004"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0012": {
+      "id": "FORM-REQ-0012",
+      "type": "Requirement",
+      "title": "Wacom Stylus (PointerEvent) Calligraphy Canvas with Pressure, Coalesced Sampling & Eraser Support",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 3",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The Wacom Calligraphy Studio shall capture W3C PointerEvent input ('pen', 'mouse', 'touch') with live stylus pressure mapping (e.pressure -> dynamic stroke width), high-frequency coalesced event sampling (getCoalescedEvents()), pen-only palm-rejection toggle, and hardware Wacom eraser nib / barrel button shortcuts.",
+      "acceptance_criteria": [
+        "Renders variable-width tapered ink strokes driven by PointerEvent.pressure (0.0..1.0) on traditional Taiwanese 九宮格 (9-square) and 田字格 grids.",
+        "Detects Wacom eraser nib (buttons === 32 or button === 5) to automatically undo/erase strokes, and supports a Left-Handed / Right-Handed toolbar layout toggle."
+      ],
+      "traces_to": [
+        "FORM-CAP-005"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0013": {
+      "id": "FORM-REQ-0013",
+      "type": "Requirement",
+      "title": "Taiwan MOE Standard Vector Stroke-Order Grading Engine (國字標準字體筆順)",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 3",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The stroke-order engine shall evaluate user-drawn Wacom strokes against Taiwan Ministry of Education (MOE) standard stroke sequences across Guided Trace (描紅), Audio/Zhuyin Dictation Recall (聽寫默寫), and Freehand Overlay Comparison (臨摹) modes.",
+      "acceptance_criteria": [
+        "Grades each stroke on start-point proximity, direction vector angle (cosine similarity / delta trajectory), and sequential stroke order across a curated bank of core Traditional characters (including Taiwan MOE standard forms such as 裡, 為, 骨, 黃, 國, 臺, 灣, 麵, 捷, 運, 請, 謝).",
+        "Provides immediate visual feedback on out-of-order or reversed-direction strokes and updates character writing mastery in FSRS."
+      ],
+      "traces_to": [
+        "FORM-CAP-005"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0014": {
+      "id": "FORM-REQ-0014",
+      "type": "Requirement",
+      "title": "Semantic-Phonetic (形聲字) Radical & Sound-Component Workbench",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 3",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The Character Studio shall include a Semantic-Phonetic (形聲字) Workbench linking semantic radicals (部首: 氵, 言, 食, 扌, 心, 辵) with phonetic sound components (聲符: 青, 馬, 巴, 包, 方, 交, 寺) so learners can write and compare whole character families on the Wacom canvas.",
+      "acceptance_criteria": [
+        "Covers at least 10 high-yield phonetic series (40+ Traditional characters), displaying how the radical shifts meaning while the phonetic component preserves or systematically relates the Zhuyin rhyme/initial."
+      ],
+      "traces_to": [
+        "FORM-CAP-005"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0015": {
+      "id": "FORM-REQ-0015",
+      "type": "Requirement",
+      "title": "Offline WebAudio Autocorrelation / YIN Pitch-Contour (F0) Extractor",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 3",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The Speaking Studio shall include a 100% offline Web Audio API time-domain pitch-contour (F0) extractor using normalized autocorrelation / YIN within the human vocal range (75–450 Hz), converting spoken pitch into Speaker-Normalized Chao 5-Level Tone values (1.0–5.0).",
+      "acceptance_criteria": [
+        "Extracts F0 pitch frames from Float32Array audio buffers with < 3 Hz error on synthetic/reference test waveforms (Tone 1 flat 55, Tone 2 rising 35, Tone 3 dipping 214, Tone 4 falling 51, Tone 5 neutral).",
+        "Operates 100% offline in Linux browsers without requiring cloud webkitSpeechRecognition."
+      ],
+      "traces_to": [
+        "FORM-CAP-006"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0016": {
+      "id": "FORM-REQ-0016",
+      "type": "Requirement",
+      "title": "Live Dual-Curve Pitch-Contour Visualizer, Tone Sandhi & Retroflex/Sibilant Coach",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 3",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The Speaking Studio shall overlay the learner's captured F0 pitch contour directly onto the native target tone/sandhi curve, compute a quantitative Tone Contour Match Score (0–100%), provide instant self-recording playback comparison, and include targeted Taiwanese retroflex (ㄓㄔㄕㄖ) vs. flat sibilant (ㄗㄘㄙ) minimal-pair drills.",
+      "acceptance_criteria": [
+        "Renders target Chao pitch curves alongside the learner's recorded pitch trajectory and computes a deterministic contour correlation score.",
+        "Provides 1-click 'Replay My Voice vs. Native Speaker' audio playback."
+      ],
+      "traces_to": [
+        "FORM-CAP-006"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0017": {
+      "id": "FORM-REQ-0017",
+      "type": "Requirement",
+      "title": "Preserved & Modularized DaQian 8-Stage Typing Dojo, Skill Tree & Match Arena",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 3",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The system shall preserve the 8-stage Taiwan DaQian (大千式) touch-typing dojo, 5-World Skill Tree, and 3-Stage Match Arena from the Chinese2 prototype while decomposing their >1,100-LOC source files below the 800-LOC structural budget.",
+      "acceptance_criteria": [
+        "All 8 DaQian typing stages, per-key error heatmaps, blind keycap modes, and Match Arena stages operate with zero regressions and <= 800 LOC per file."
+      ],
+      "traces_to": [
+        "FORM-CAP-002"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0018": {
+      "id": "FORM-REQ-0018",
+      "type": "Requirement",
+      "title": "Ergonomic Wacom & Keyboard Usability Thresholds (ASEF Guide 008)",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 4",
+      "category": "Usability",
+      "priority": "Mandatory",
+      "description": "Per ASEF Guide 008 Part 1, the interface shall satisfy measurable Learnability, Efficiency, Error Recovery, and WCAG 2.1 Level AA Accessibility thresholds across keyboard and Wacom stylus interaction.",
+      "acceptance_criteria": [
+        "Efficiency: Global Omnibar (Ctrl+K), Side Reference Dock, and all primary workspaces are reachable in <= 2 clicks or 1 keyboard shortcut, with <= 8 top-level workspace tabs.",
+        "Wacom Ergonomics: All interactive canvas toolbar buttons have hit targets >= 44x44 px, support a 1-click Left/Right-Handed layout swap, and require zero hover-only interactions.",
+        "Accessibility: All text/badge color tokens meet WCAG 2.1 Level AA contrast (>= 4.5:1 normal text, >= 3.0:1 UI components)."
+      ],
+      "traces_to": [
+        "FORM-CONOPS-001"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0019": {
+      "id": "FORM-REQ-0019",
+      "type": "Requirement",
+      "title": "Automated Verification Suite & Mechanical Structural Governance",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 4",
+      "category": "Verification",
+      "priority": "Mandatory",
+      "description": "Every requirement (FORM-REQ-0001..0020) shall be verified by automated tests executed via the Node.js/TypeScript test runner and mechanical governance checks in 08-Automation/.",
+      "acceptance_criteria": [
+        "100% of requirements (20/20) trace to passing automated verification tests and 08-Automation/check_structural_scaffolding.py + sync_traceability_graph.py pass with 0 errors."
+      ],
+      "traces_to": [
+        "FORM-CONOPS-001"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0020": {
+      "id": "FORM-REQ-0020",
+      "type": "Requirement",
+      "title": "Cross-Module State Synchronization Between Reader, Wacom Studio, Survival & SRS Store",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase": "Phase 4",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "Practicing a character or word in the Adaptive i+1 Reader, 'Taiwan in 10 Minutes a Day' Survival Track, Wacom Calligraphy Studio, or Speaking Studio shall immediately update the unified FSRS progressStore and reflect in Today's Study Hub and Adaptive Zhuyin Fading across all open tabs.",
+      "acceptance_criteria": [
+        "Verified by end-to-end Golden Scenarios (FORM-VAL-001..005) and Pattern 21 consumer propagation checks."
+      ],
+      "traces_to": [
+        "FORM-CAP-002",
+        "FORM-CAP-003",
+        "FORM-CAP-004",
+        "FORM-CAP-005",
+        "FORM-CAP-006"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-RISK-001": {
+      "id": "FORM-RISK-001",
+      "type": "Risk",
+      "title": "Monolithic Source File Accretion Inherited from Chinese2 Prototype",
+      "status": "Approved",
+      "version": "1.0.0",
+      "probability": "High",
+      "impact": "Medium",
+      "description": "In the un-governed Chinese2 prototype, 8 source files grew past 1,000 LOC (up to 1,689 LOC in curriculum.ts and 1,480 LOC in ZhuyinMatchGame.tsx), making maintenance and testing difficult.",
+      "mitigated_by": [
+        "FORM-REQ-0005",
+        "FORM-REQ-0019"
+      ],
+      "_file": "01-Engineering/FORM-RISK-001_Risk_and_Assumption_Register.md"
+    },
+    "FORM-RISK-002": {
+      "id": "FORM-RISK-002",
+      "type": "Risk",
+      "title": "Character-by-Character Zhuyin Lookup Mis-Annotates Taiwanese Polyphones (破音字) and Cross-Strait Pronunciations (兩岸異讀字)",
+      "status": "Approved",
+      "version": "1.0.0",
+      "probability": "High",
+      "impact": "High",
+      "description": "Chinese2's annotateTraditionalText() maps single characters to a single static reading, mis-annotating common words like 長大 (ㄓㄤˇ vs ㄔㄤˊ), 還錢 (ㄏㄨㄢˊ vs ㄏㄞˊ), 銀行 (ㄏㄤˊ vs ㄒㄧㄥˊ), and conjunctive 和 (Taiwan ㄏㄢˋ vs Mainland ㄏㄜˊ).",
+      "mitigated_by": [
+        "FORM-REQ-0001",
+        "FORM-REQ-0002"
+      ],
+      "_file": "01-Engineering/FORM-RISK-001_Risk_and_Assumption_Register.md"
+    },
+    "FORM-RISK-003": {
+      "id": "FORM-RISK-003",
+      "type": "Risk",
+      "title": "Browser Web Speech Recognition API Failure on Linux Desktops Leaves Pronunciation Studio Unusable",
+      "status": "Approved",
+      "version": "1.0.0",
+      "probability": "High",
+      "impact": "High",
+      "description": "window.webkitSpeechRecognition requires cloud connectivity, is absent in Firefox/WebKit on Linux, and only returns text transcripts without measuring actual Mandarin pitch contours (F0).",
+      "mitigated_by": [
+        "FORM-REQ-0015",
+        "FORM-REQ-0016"
+      ],
+      "_file": "01-Engineering/FORM-RISK-001_Risk_and_Assumption_Register.md"
+    },
+    "FORM-RISK-004": {
+      "id": "FORM-RISK-004",
+      "type": "Risk",
+      "title": "Wacom Stylus Input Treated as Low-Frequency Mouse Drag Without Pressure, Eraser, or Palm Rejection",
+      "status": "Approved",
+      "version": "1.0.0",
+      "probability": "Medium",
+      "impact": "High",
+      "description": "Using standard mouse events instead of W3C PointerEvent loses Wacom pen pressure (e.pressure), coalesced 200Hz sampling (getCoalescedEvents()), eraser nib detection, and pen-only palm rejection.",
+      "mitigated_by": [
+        "FORM-REQ-0012",
+        "FORM-REQ-0013"
+      ],
+      "_file": "01-Engineering/FORM-RISK-001_Risk_and_Assumption_Register.md"
+    },
+    "FORM-RISK-005": {
+      "id": "FORM-RISK-005",
+      "type": "Risk",
+      "title": "English-Speaker Confusion Over Taiwanese Discount Math (八折 = 20% Off) and ROC Calendar Years (民國)",
+      "status": "Approved",
+      "version": "1.0.0",
+      "probability": "Medium",
+      "impact": "Medium",
+      "description": "Native English speakers routinely misread Taiwanese discounts (interpreting 八折 as 80% off instead of 20% off), 萬 (10,000) number groupings, and 民國 calendar dates on Taiwanese receipts and signage.",
+      "mitigated_by": [
+        "FORM-REQ-0009",
+        "FORM-REQ-0011"
+      ],
+      "_file": "01-Engineering/FORM-RISK-001_Risk_and_Assumption_Register.md"
+    },
+    "FORM-ASM-001": {
+      "id": "FORM-ASM-001",
+      "type": "Assumption",
+      "title": "Linux Desktop Browser Exposes W3C PointerEvent for Attached Wacom Tablet",
+      "status": "Approved",
+      "version": "1.0.0",
+      "description": "Chromium and Firefox on Linux with libinput/xf86-input-wacom expose PointerEvent with pointerType='pen', pressure (0.0..1.0), tiltX/tiltY, and buttons=32 (eraser) to HTML5 Canvas elements.",
+      "traces_to": [
+        "FORM-PROJ-001"
+      ],
+      "_file": "01-Engineering/FORM-RISK-001_Risk_and_Assumption_Register.md"
+    },
+    "FORM-ASM-002": {
+      "id": "FORM-ASM-002",
+      "type": "Assumption",
+      "title": "Web Audio API AnalyserNode Supports Offline Time-Domain Pitch Extraction",
+      "status": "Approved",
+      "version": "1.0.0",
+      "description": "Standard navigator.mediaDevices.getUserMedia({ audio: true }) + AudioContext AnalyserNode provides float32 time-domain buffers at 44.1/48 kHz sufficient for 80–450 Hz human voice F0 autocorrelation without external cloud APIs.",
+      "traces_to": [
+        "FORM-PROJ-001"
+      ],
+      "_file": "01-Engineering/FORM-RISK-001_Risk_and_Assumption_Register.md"
+    },
+    "FORM-ARCH-001": {
+      "id": "FORM-ARCH-001",
+      "type": "ArchitectureDescription",
+      "title": "FormosaStudio Modular TypeScript/React/DSP/Wacom Architecture & Live Environment Register",
+      "status": "Approved",
+      "version": "1.0.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-13",
+      "updated_date": "2026-11-13",
+      "framework_reference": "Volume 4 §8, Volume 4 §10, Guide 007 §2, Guide 007 §3.5, Guide 007 §6",
+      "traces_to": [
+        "FORM-TAILOR-001",
+        "FORM-REQ-0001",
+        "FORM-REQ-0005",
+        "FORM-REQ-0012",
+        "FORM-REQ-0015"
+      ],
+      "_file": "02-Architecture/FORM-ARCH-001_Architecture_and_Decisions.md"
+    },
+    "FORM-DEC-001": {
+      "id": "FORM-DEC-001",
+      "type": "ArchitectureDecision",
+      "title": "Forward Maximum-Matching (FMM) Word Tokenizer Before Character Fallback for Polyphone Disambiguation",
+      "status": "Approved",
+      "version": "1.0.0",
+      "problem_statement": "Character-by-character lookup in Chinese2 mis-annotates polyphones (破音字) like 長大 (ㄓㄤˇ), 還錢 (ㄏㄨㄢˊ), 銀行 (ㄏㄤˊ), and conjunctive 和 (Taiwan ㄏㄢˋ).",
+      "alternatives_considered": [
+        "Option A: Character-by-character lookup (status quo in Chinese2 — fails on all polyphones).",
+        "Option B: External cloud NLP segmentation API (breaks offline local-first architecture).",
+        "Option C (Selected): Deterministic client-side Forward Maximum-Matching (FMM, max word length 6) backed by a curated Taiwan MOE word/polyphone lexicon + context rules for 和/得/著/了."
+      ],
+      "rationale": "Option C executes in < 5 ms for 2,000-character passages, requires zero external dependencies, and is 100% deterministic for automated testing.",
+      "traces_to": [
+        "FORM-REQ-0001",
+        "FORM-REQ-0002"
+      ],
+      "_file": "02-Architecture/FORM-ARCH-001_Architecture_and_Decisions.md"
+    },
+    "FORM-DEC-002": {
+      "id": "FORM-DEC-002",
+      "type": "ArchitectureDecision",
+      "title": "Offline Time-Domain Autocorrelation / YIN Pitch Tracking Over Cloud SpeechRecognition",
+      "status": "Approved",
+      "version": "1.0.0",
+      "problem_statement": "window.webkitSpeechRecognition fails offline and on Linux browsers and ignores Mandarin pitch contours.",
+      "alternatives_considered": [
+        "Option A: Rely on webkitSpeechRecognition with manual self-grade fallback (Chinese2 status quo).",
+        "Option B (Selected): Implement a pure TypeScript time-domain normalized autocorrelation / YIN fundamental frequency (F0) pitch detector operating on Float32Array PCM buffers, converting Hz to speaker-normalized log-semitone Chao 1–5 tone curves."
+      ],
+      "rationale": "Option B works 100% offline in every browser with microphone access, can be deterministically unit-tested against synthetic sine/harmonic tone waves, and teaches genuine Mandarin pitch contour control.",
+      "traces_to": [
+        "FORM-REQ-0015",
+        "FORM-REQ-0016"
+      ],
+      "_file": "02-Architecture/FORM-ARCH-001_Architecture_and_Decisions.md"
+    },
+    "FORM-DEC-003": {
+      "id": "FORM-DEC-003",
+      "type": "ArchitectureDecision",
+      "title": "Native W3C PointerEvent Engine with Coalesced Sampling and Vector Stroke Grading for Wacom Stylus",
+      "status": "Approved",
+      "version": "1.0.0",
+      "problem_statement": "The user has a Wacom tablet attached to the Linux workstation; mouse-event canvases lose stylus pressure, eraser nib events, and high-frequency sampling.",
+      "alternatives_considered": [
+        "Option A: Standard mouse/touch events with uniform line width.",
+        "Option B (Selected): W3C PointerEvent listener reading e.pointerType, e.pressure, e.tiltX/Y, e.buttons===32 (eraser), and e.getCoalescedEvents(), paired with a normalized 0..100 bounding-box vector stroke grader against Taiwan MOE stroke median paths."
+      ],
+      "rationale": "Option B delivers native Wacom calligraphy responsiveness, hardware eraser support, and objective stroke-order verification.",
+      "traces_to": [
+        "FORM-REQ-0012",
+        "FORM-REQ-0013"
+      ],
+      "_file": "02-Architecture/FORM-ARCH-001_Architecture_and_Decisions.md"
+    },
+    "FORM-DESCHAR-001": {
+      "id": "FORM-DESCHAR-001",
+      "type": "DesignCharacterDocument",
+      "title": "FormosaStudio Design Character Document — Taipei Night-Slate & Wacom Calligraphy Ergonomics",
+      "status": "Approved",
+      "version": "1.0.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-13",
+      "updated_date": "2026-11-13",
+      "framework_reference": "ASEF Guide 008 v0.9.1 Part 2, Guide 007 §1",
+      "traces_to": [
+        "FORM-TAILOR-001",
+        "FORM-REQ-0018"
+      ],
+      "_file": "02-Architecture/FORM-DESCHAR-001_Design_Character_Document.md"
+    },
+    "FORM-VER-001": {
+      "id": "FORM-VER-001",
+      "type": "VerificationPlan",
+      "title": "FormosaStudio R2 Verification & Golden Scenario Validation Plan",
+      "status": "Approved",
+      "version": "1.0.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-13",
+      "updated_date": "2026-11-13",
+      "framework_reference": "Volume 4 §12, Volume 4 §13, Guide 007 §9, Guide 007 §10, Guide 008 Part 1",
+      "traces_to": [
+        "FORM-PLAN-001",
+        "FORM-REQ-0019"
+      ],
+      "_file": "03-Verification/FORM-VER-001_Verification_and_Validation_Plan.md"
+    },
+    "FORM-BSL-REG-001": {
+      "id": "FORM-BSL-REG-001",
+      "type": "BaselineRegister",
+      "title": "FormosaStudio R2 Engineering Baseline Register",
+      "status": "Active",
+      "version": "1.0.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-13",
+      "updated_date": "2026-11-13",
+      "framework_reference": "Volume 8 §5, Guide 001 §40, Guide 002 §6",
+      "traces_to": [
+        "FORM-TAILOR-001"
+      ],
+      "_file": "04-Implementation/FORM-BSL-001_Baseline_Register.md"
+    },
+    "FORM-BSL-001": {
+      "id": "FORM-BSL-001",
+      "type": "Baseline",
+      "title": "Gate 1: Project Approval & Chinese2 Prototype Retrospective Baseline",
+      "status": "Approved",
+      "version": "1.0.0",
+      "gate_date": "2026-11-13",
+      "traces_to": [
+        "FORM-TAILOR-001",
+        "FORM-PLAN-001",
+        "FORM-PROJ-001",
+        "FORM-CONOPS-001",
+        "FORM-DESCHAR-001"
+      ],
+      "_file": "04-Implementation/FORM-BSL-001_Baseline_Register.md"
+    },
+    "FORM-BSL-002": {
+      "id": "FORM-BSL-002",
+      "type": "Baseline",
+      "title": "Gate 2/3/4/5: Requirements, Architecture, Environment Audit & Implementation Readiness Baseline",
+      "status": "Approved",
+      "version": "1.0.0",
+      "gate_date": "2026-11-13",
+      "traces_to": [
+        "FORM-ROAD-001",
+        "FORM-RISK-001",
+        "FORM-ARCH-001",
+        "FORM-VER-001"
+      ],
+      "_file": "04-Implementation/FORM-BSL-001_Baseline_Register.md"
+    },
+    "FORM-BSL-003": {
+      "id": "FORM-BSL-003",
+      "type": "Baseline",
+      "title": "Gate 6/7: Verification Completion & Golden Scenario Validation Acceptance",
+      "status": "Proposed",
+      "version": "0.1.0",
+      "traces_to": [
+        "FORM-VER-001"
+      ],
+      "_file": "04-Implementation/FORM-BSL-001_Baseline_Register.md"
+    },
+    "FORM-BSL-004": {
+      "id": "FORM-BSL-004",
+      "type": "Baseline",
+      "title": "Gate 8/9: v1.0.0 Release Approval & R2 (n=3) Project Closure",
+      "status": "Proposed",
+      "version": "0.1.0",
+      "traces_to": [
+        "FORM-TAILOR-001"
+      ],
+      "_file": "04-Implementation/FORM-BSL-001_Baseline_Register.md"
+    },
+    "FORM-EVAL-001": {
+      "id": "FORM-EVAL-001",
+      "type": "KnowledgePackage",
+      "title": "Empirical Evaluation of ASEF on FormosaStudio (n=3 Pure-R2 Prototype Graduation & TypeScript/Wacom/DSP Execution)",
+      "status": "Active",
+      "version": "1.0.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-13",
+      "updated_date": "2026-11-13",
+      "traces_to": [
+        "FORM-TAILOR-001",
+        "FORM-LL-001",
+        "FORM-LL-006"
+      ],
+      "_file": "05-Knowledge/FORM-EVAL-001_ASEF_N3_R2_Empirical_Scorecard.md"
+    },
+    "FORM-LL-001-REG": {
+      "id": "FORM-LL-001-REG",
+      "type": "KnowledgeRegister",
+      "title": "FormosaStudio (n=3 Pure R2) Prototype Retrospective Lessons Learned and ASEF FIR Register",
+      "status": "Active",
+      "version": "1.0.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-13",
+      "updated_date": "2026-11-13",
+      "framework_reference": "Volume 4 §17, Volume 4 §18, Guide 001 §38 (§38.1 Project-Qualified FIRs) & §39A, Guide 006 Patterns 9 & 10",
+      "traces_to": [
+        "FORM-TAILOR-001"
+      ],
+      "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
+    },
+    "FORM-LL-001": {
+      "id": "FORM-LL-001",
+      "type": "LessonLearned",
+      "title": "Un-Governed Prototype Development Without Mechanical LOC Ceilings Produced 8 Files Between 1,003 and 1,689 LOC",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase_discovered": "Phase 0 (Chinese2 Prototype Retrospective)",
+      "category": "Structural Modularity (Guide 002 §2 & Guide 006 Pattern 12)",
+      "disposition": "Mitigated by FORM-REQ-0005 and 08-Automation/check_structural_scaffolding.py",
+      "created_date": "2026-11-13",
+      "description": "In the un-governed `/home/gssmith/Programming/Chinese2` prototype (17,228 LOC across 26 files), the absence of a mechanical per-file LOC ceiling allowed 8 files to exceed 1,000 LOC (`curriculum.ts` 1,689 LOC, `ZhuyinMatchGame.tsx` 1,480 LOC, `VocabularyWorkbenchTab.tsx` 1,353 LOC, `LessonPlayer.tsx` 1,303 LOC, `zhuyinEngine.ts` 1,234 LOC, `DaqianTypingTeacher.tsx` 1,182 LOC, `pimsleurData.ts` 1,162 LOC, `App.tsx` 1,003 LOC), confirming that monolith accretion occurs in TypeScript/React projects just as it did in FDSS's Python codebase.",
+      "preventive_action": "Wired `08-Automation/check_structural_scaffolding.py` at Phase 0 initiation to enforce a 600-LOC soft warning and an 800-LOC hard block across all `.ts` and `.tsx` source files in `FormosaStudio`.",
+      "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
+    },
+    "FORM-LL-002": {
+      "id": "FORM-LL-002",
+      "type": "LessonLearned",
+      "title": "Character-by-Character Zhuyin Lookup Silently Mis-Annotates Taiwanese Polyphones (破音字) and Cross-Strait Pronunciations (兩岸異讀字)",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase_discovered": "Phase 0 (Chinese2 Prototype Retrospective)",
+      "category": "Domain Correctness (Guide 006 Pattern 13)",
+      "disposition": "Mitigated by FORM-REQ-0001, FORM-REQ-0002, and FORM-DEC-001",
+      "created_date": "2026-11-13",
+      "description": "Without a Computational Linguist (`DEP-01`) Touchpoint A review, `Chinese2`'s `zhuyinEngine.ts` implemented `annotateTraditionalText()` as a character-by-character lookup against a static ~220-character single-reading dictionary (`CHAR_ZHUYIN_DICT`), causing systematic mis-annotations on polyphones (`長大` annotated as `ㄔㄤˊ ㄉㄚˋ` instead of `ㄓㄤˇ ㄉㄚˋ`; `還錢` as `ㄏㄞˊ` instead of `ㄏㄨㄢˊ`; `銀行` as `ㄒㄧㄥˊ` instead of `ㄏㄤˊ`) and omitting Taiwan MOE standard pronunciations (`和` = `ㄏㄢˋ`, `垃圾` = `ㄌㄜˋ ㄙㄜˋ`).",
+      "preventive_action": "Specified Forward Maximum-Matching (FMM) word tokenization and Taiwan MOE standard pronunciation lexicons in `FORM-REQ-0001` and `FORM-REQ-0002`.",
+      "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
+    },
+    "FORM-LL-003": {
+      "id": "FORM-LL-003",
+      "type": "LessonLearned",
+      "title": "Relying on Browser Cloud SpeechRecognition Breaks Offline Linux Usage and Ignores Mandarin Pitch Contours (F0)",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase_discovered": "Phase 0 (Chinese2 Prototype Retrospective)",
+      "category": "Architecture & Hardware Integration",
+      "disposition": "Mitigated by FORM-REQ-0015, FORM-REQ-0016, and FORM-DEC-002",
+      "created_date": "2026-11-13",
+      "description": "`Chinese2`'s `SpeakingStudioTab.tsx` relied solely on `window.webkitSpeechRecognition`, which is unavailable offline or on Firefox/WebKit Linux desktops and only checks character transcript overlap without measuring vocal pitch ($F_0$) or tone contours.",
+      "preventive_action": "Designed a 100% offline WebAudio time-domain autocorrelation/YIN pitch-contour ($F_0$) extractor (`pitchTracker.ts`) mapped to speaker-normalized Chao 1–5 tone curves (`FORM-DEC-002`).",
+      "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
+    },
+    "FORM-LL-004": {
+      "id": "FORM-LL-004",
+      "type": "LessonLearned",
+      "title": "Un-Governed Curriculum Data Left Volumes 2–6 of Contemporary Chinese as Partial 1-to-4 Lesson Stubs Despite Full Source PDFs in Assets",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase_discovered": "Phase 0 (Chinese2 Prototype Retrospective)",
+      "category": "Epistemic Honesty & Scope Completeness (Standing Rule 1)",
+      "disposition": "Mitigated by FORM-REQ-0003 and FORM-REQ-0006..0011",
+      "created_date": "2026-11-13",
+      "description": "Although `Chinese2/assets/` contained all 6 Volumes and 6 Workbooks of *A Course in Contemporary Chinese*, `contemporaryChineseData.ts` silently populated all 15 lessons only for Volume 1, dropping to 4 lessons in Volume 2, 2 in Volume 3, and 1 stub lesson each in Volumes 4–6, and only 2 hardcoded stories in `GrammarAndReadingTab.tsx`.",
+      "preventive_action": "Mandated full Volumes 1–6 lesson coverage (`FORM-REQ-0003`), TOCFL A1–B2 adaptive `i+1` stories + custom text import (`FORM-REQ-0006`..`0008`), and the 'Taiwan in 10 Minutes a Day' practical survival track (`FORM-REQ-0009`..`0011`).",
+      "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
+    },
+    "FORM-LL-005": {
+      "id": "FORM-LL-005",
+      "type": "LessonLearned",
+      "title": "Omitting Hardware Stylus (PointerEvent) and Stroke-Order Practice Leaves Orthographic Memory Underserved",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase_discovered": "Phase 0 (Chinese2 Prototype Retrospective)",
+      "category": "Capability & Hardware Ergonomics",
+      "disposition": "Mitigated by FORM-REQ-0012, FORM-REQ-0013, FORM-REQ-0014, and FORM-DEC-003",
+      "created_date": "2026-11-13",
+      "description": "`Chinese2` trained recognition and DaQian keyboard typing, but had zero support for the user's attached Wacom pen tablet or Taiwan MOE standard stroke order (`國字標準字體筆順`) and semantic-phonetic (`形聲字`) character composition.",
+      "preventive_action": "Added the Wacom Stylus (`PointerEvent` pressure + coalesced sampling + eraser nib) Calligraphy & Taiwan MOE Vector Stroke-Order Studio (`FORM-REQ-0012`..`0014`).",
+      "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
+    },
+    "FORM-LL-006": {
+      "id": "FORM-LL-006",
+      "type": "LessonLearned",
+      "title": "ASEF Guide 002 §3 Lists R3 Artifacts Under 'Included (Mandatory)' Without Defining a Canonical R1/R2 Consolidated Artifact Profile",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase_discovered": "Phase 0.1 (Pure-R2 Tailoring Initiation)",
+      "category": "Framework Tailoring Ergonomics (Guide 002)",
+      "disposition": "Mitigated in FORM-TAILOR-001 §3/§6 and promoted to FORM-FIR-001",
+      "created_date": "2026-11-13",
+      "description": "When initiating `FormosaStudio` as a Pure-`R2` project (`n = 3`), `ASEF Guide 002 Tailoring.md` (§Engineering Rigor Levels) defines `R2` as 'Light documentation, Informal reviews, Git + Markdown', but §3 ('Included / Excluded Artifacts') lists 'Full traceability, AI Session Records, Knowledge Packages, Lessons Learned' under 'Included (Mandatory)' without specifying how an `R2` project consolidates governance documents (e.g., folding the 9 Engineering Gates into 4 milestone baselines and consolidating Planning/Context/Architecture into 6–8 compact Markdown registers).",
+      "preventive_action": "Defined the explicit 4-gate folded `R2` disposition and consolidated document set in `FORM-TAILOR-001`, and drafted `FORM FIR-001` (`FORM-FIR-001`) to codify the `R1`/`R2` Starter Profile in `ASEF Guide 002`.",
+      "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
+    },
+    "FORM-FIR-001": {
+      "id": "FORM-FIR-001",
+      "type": "FrameworkImprovementRequest",
+      "project_qualified_citation": "FORM FIR-001",
+      "title": "Add Explicit R1 (Prototype-to-Baseline Graduation) and R2 (Consolidated 4-Gate Personal Tool) Starter Profiles to ASEF Guide 002",
+      "status": "Proposed",
+      "version": "1.0.0",
+      "originating_lesson": "FORM-LL-006",
+      "target_documents": [
+        "ASEF Guide 002 Tailoring.md"
+      ],
+      "created_date": "2026-11-13",
+      "updated_date": "2026-11-13",
+      "problem_statement": "`ASEF Guide 002` defines `R1` and `R2` in the summary table, but its template (§3–§6) only illustrates `R3` mandatory artifacts, leaving a developer starting an `R1` or `R2` project without a concrete low-ceremony consolidation pattern or an `R1 -> R2` prototype graduation checklist.",
+      "proposed_change": "Add a 'Canonical R1 & R2 Tailoring Profiles (Consolidated Artifacts & 4-Gate Folding)' subsection and an 'R1 Prototype-to-R2 Graduation Pattern' to `ASEF Guide 002`, grounded in `FormosaStudio` (`n = 3`).",
+      "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
+    }
+  },
+  "edges": [
+    {
+      "source": "FORM-PLAN-001",
+      "relation": "traces_to",
+      "target": "FORM-TAILOR-001"
+    },
+    {
+      "source": "FORM-ROAD-001",
+      "relation": "traces_to",
+      "target": "FORM-PLAN-001"
+    },
+    {
+      "source": "FORM-TAILOR-001",
+      "relation": "traces_to",
+      "target": "FORM-PROJ-001"
+    },
+    {
+      "source": "FORM-STK-001",
+      "relation": "traces_to",
+      "target": "FORM-PROJ-001"
+    },
+    {
+      "source": "FORM-PER-001",
+      "relation": "traces_to",
+      "target": "FORM-STK-001"
+    },
+    {
+      "source": "FORM-CONOPS-001",
+      "relation": "traces_to",
+      "target": "FORM-PROJ-001"
+    },
+    {
+      "source": "FORM-CONOPS-001",
+      "relation": "traces_to",
+      "target": "FORM-PER-001"
+    },
+    {
+      "source": "FORM-CAP-001",
+      "relation": "traces_to",
+      "target": "FORM-CONOPS-001"
+    },
+    {
+      "source": "FORM-CAP-002",
+      "relation": "traces_to",
+      "target": "FORM-CONOPS-001"
+    },
+    {
+      "source": "FORM-CAP-003",
+      "relation": "traces_to",
+      "target": "FORM-CONOPS-001"
+    },
+    {
+      "source": "FORM-CAP-004",
+      "relation": "traces_to",
+      "target": "FORM-CONOPS-001"
+    },
+    {
+      "source": "FORM-CAP-005",
+      "relation": "traces_to",
+      "target": "FORM-CONOPS-001"
+    },
+    {
+      "source": "FORM-CAP-006",
+      "relation": "traces_to",
+      "target": "FORM-CONOPS-001"
+    },
+    {
+      "source": "FORM-WF-001",
+      "relation": "traces_to",
+      "target": "FORM-CAP-004"
+    },
+    {
+      "source": "FORM-WF-002",
+      "relation": "traces_to",
+      "target": "FORM-CAP-001"
+    },
+    {
+      "source": "FORM-WF-002",
+      "relation": "traces_to",
+      "target": "FORM-CAP-003"
+    },
+    {
+      "source": "FORM-WF-003",
+      "relation": "traces_to",
+      "target": "FORM-CAP-005"
+    },
+    {
+      "source": "FORM-WF-004",
+      "relation": "traces_to",
+      "target": "FORM-CAP-006"
+    },
+    {
+      "source": "FORM-REQ-0001",
+      "relation": "traces_to",
+      "target": "FORM-CAP-001"
+    },
+    {
+      "source": "FORM-REQ-0002",
+      "relation": "traces_to",
+      "target": "FORM-CAP-001"
+    },
+    {
+      "source": "FORM-REQ-0003",
+      "relation": "traces_to",
+      "target": "FORM-CAP-002"
+    },
+    {
+      "source": "FORM-REQ-0004",
+      "relation": "traces_to",
+      "target": "FORM-CAP-002"
+    },
+    {
+      "source": "FORM-REQ-0005",
+      "relation": "traces_to",
+      "target": "FORM-CAP-001"
+    },
+    {
+      "source": "FORM-REQ-0005",
+      "relation": "traces_to",
+      "target": "FORM-CAP-002"
+    },
+    {
+      "source": "FORM-REQ-0006",
+      "relation": "traces_to",
+      "target": "FORM-CAP-003"
+    },
+    {
+      "source": "FORM-REQ-0007",
+      "relation": "traces_to",
+      "target": "FORM-CAP-003"
+    },
+    {
+      "source": "FORM-REQ-0008",
+      "relation": "traces_to",
+      "target": "FORM-CAP-003"
+    },
+    {
+      "source": "FORM-REQ-0009",
+      "relation": "traces_to",
+      "target": "FORM-CAP-004"
+    },
+    {
+      "source": "FORM-REQ-0010",
+      "relation": "traces_to",
+      "target": "FORM-CAP-004"
+    },
+    {
+      "source": "FORM-REQ-0011",
+      "relation": "traces_to",
+      "target": "FORM-CAP-004"
+    },
+    {
+      "source": "FORM-REQ-0012",
+      "relation": "traces_to",
+      "target": "FORM-CAP-005"
+    },
+    {
+      "source": "FORM-REQ-0013",
+      "relation": "traces_to",
+      "target": "FORM-CAP-005"
+    },
+    {
+      "source": "FORM-REQ-0014",
+      "relation": "traces_to",
+      "target": "FORM-CAP-005"
+    },
+    {
+      "source": "FORM-REQ-0015",
+      "relation": "traces_to",
+      "target": "FORM-CAP-006"
+    },
+    {
+      "source": "FORM-REQ-0016",
+      "relation": "traces_to",
+      "target": "FORM-CAP-006"
+    },
+    {
+      "source": "FORM-REQ-0017",
+      "relation": "traces_to",
+      "target": "FORM-CAP-002"
+    },
+    {
+      "source": "FORM-REQ-0018",
+      "relation": "traces_to",
+      "target": "FORM-CONOPS-001"
+    },
+    {
+      "source": "FORM-REQ-0019",
+      "relation": "traces_to",
+      "target": "FORM-CONOPS-001"
+    },
+    {
+      "source": "FORM-REQ-0020",
+      "relation": "traces_to",
+      "target": "FORM-CAP-002"
+    },
+    {
+      "source": "FORM-REQ-0020",
+      "relation": "traces_to",
+      "target": "FORM-CAP-003"
+    },
+    {
+      "source": "FORM-REQ-0020",
+      "relation": "traces_to",
+      "target": "FORM-CAP-004"
+    },
+    {
+      "source": "FORM-REQ-0020",
+      "relation": "traces_to",
+      "target": "FORM-CAP-005"
+    },
+    {
+      "source": "FORM-REQ-0020",
+      "relation": "traces_to",
+      "target": "FORM-CAP-006"
+    },
+    {
+      "source": "FORM-RISK-001",
+      "relation": "mitigated_by",
+      "target": "FORM-REQ-0005"
+    },
+    {
+      "source": "FORM-RISK-001",
+      "relation": "mitigated_by",
+      "target": "FORM-REQ-0019"
+    },
+    {
+      "source": "FORM-RISK-002",
+      "relation": "mitigated_by",
+      "target": "FORM-REQ-0001"
+    },
+    {
+      "source": "FORM-RISK-002",
+      "relation": "mitigated_by",
+      "target": "FORM-REQ-0002"
+    },
+    {
+      "source": "FORM-RISK-003",
+      "relation": "mitigated_by",
+      "target": "FORM-REQ-0015"
+    },
+    {
+      "source": "FORM-RISK-003",
+      "relation": "mitigated_by",
+      "target": "FORM-REQ-0016"
+    },
+    {
+      "source": "FORM-RISK-004",
+      "relation": "mitigated_by",
+      "target": "FORM-REQ-0012"
+    },
+    {
+      "source": "FORM-RISK-004",
+      "relation": "mitigated_by",
+      "target": "FORM-REQ-0013"
+    },
+    {
+      "source": "FORM-RISK-005",
+      "relation": "mitigated_by",
+      "target": "FORM-REQ-0009"
+    },
+    {
+      "source": "FORM-RISK-005",
+      "relation": "mitigated_by",
+      "target": "FORM-REQ-0011"
+    },
+    {
+      "source": "FORM-ASM-001",
+      "relation": "traces_to",
+      "target": "FORM-PROJ-001"
+    },
+    {
+      "source": "FORM-ASM-002",
+      "relation": "traces_to",
+      "target": "FORM-PROJ-001"
+    },
+    {
+      "source": "FORM-ARCH-001",
+      "relation": "traces_to",
+      "target": "FORM-TAILOR-001"
+    },
+    {
+      "source": "FORM-ARCH-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0001"
+    },
+    {
+      "source": "FORM-ARCH-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0005"
+    },
+    {
+      "source": "FORM-ARCH-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0012"
+    },
+    {
+      "source": "FORM-ARCH-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0015"
+    },
+    {
+      "source": "FORM-DEC-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0001"
+    },
+    {
+      "source": "FORM-DEC-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0002"
+    },
+    {
+      "source": "FORM-DEC-002",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0015"
+    },
+    {
+      "source": "FORM-DEC-002",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0016"
+    },
+    {
+      "source": "FORM-DEC-003",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0012"
+    },
+    {
+      "source": "FORM-DEC-003",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0013"
+    },
+    {
+      "source": "FORM-DESCHAR-001",
+      "relation": "traces_to",
+      "target": "FORM-TAILOR-001"
+    },
+    {
+      "source": "FORM-DESCHAR-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0018"
+    },
+    {
+      "source": "FORM-VER-001",
+      "relation": "traces_to",
+      "target": "FORM-PLAN-001"
+    },
+    {
+      "source": "FORM-VER-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0019"
+    },
+    {
+      "source": "FORM-BSL-REG-001",
+      "relation": "traces_to",
+      "target": "FORM-TAILOR-001"
+    },
+    {
+      "source": "FORM-BSL-001",
+      "relation": "traces_to",
+      "target": "FORM-TAILOR-001"
+    },
+    {
+      "source": "FORM-BSL-001",
+      "relation": "traces_to",
+      "target": "FORM-PLAN-001"
+    },
+    {
+      "source": "FORM-BSL-001",
+      "relation": "traces_to",
+      "target": "FORM-PROJ-001"
+    },
+    {
+      "source": "FORM-BSL-001",
+      "relation": "traces_to",
+      "target": "FORM-CONOPS-001"
+    },
+    {
+      "source": "FORM-BSL-001",
+      "relation": "traces_to",
+      "target": "FORM-DESCHAR-001"
+    },
+    {
+      "source": "FORM-BSL-002",
+      "relation": "traces_to",
+      "target": "FORM-ROAD-001"
+    },
+    {
+      "source": "FORM-BSL-002",
+      "relation": "traces_to",
+      "target": "FORM-RISK-001"
+    },
+    {
+      "source": "FORM-BSL-002",
+      "relation": "traces_to",
+      "target": "FORM-ARCH-001"
+    },
+    {
+      "source": "FORM-BSL-002",
+      "relation": "traces_to",
+      "target": "FORM-VER-001"
+    },
+    {
+      "source": "FORM-BSL-003",
+      "relation": "traces_to",
+      "target": "FORM-VER-001"
+    },
+    {
+      "source": "FORM-BSL-004",
+      "relation": "traces_to",
+      "target": "FORM-TAILOR-001"
+    },
+    {
+      "source": "FORM-EVAL-001",
+      "relation": "traces_to",
+      "target": "FORM-TAILOR-001"
+    },
+    {
+      "source": "FORM-EVAL-001",
+      "relation": "traces_to",
+      "target": "FORM-LL-001"
+    },
+    {
+      "source": "FORM-EVAL-001",
+      "relation": "traces_to",
+      "target": "FORM-LL-006"
+    },
+    {
+      "source": "FORM-LL-001-REG",
+      "relation": "traces_to",
+      "target": "FORM-TAILOR-001"
+    },
+    {
+      "source": "FORM-FIR-001",
+      "relation": "originating_lesson",
+      "target": "FORM-LL-006"
+    }
+  ]
+}
