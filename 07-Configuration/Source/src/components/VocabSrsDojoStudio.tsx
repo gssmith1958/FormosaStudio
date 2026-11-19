@@ -6,9 +6,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   DAQIAN_DOJO_STAGES,
   DAQIAN_KEYBOARD_ROWS,
-  FIVE_WORLD_SKILL_TREE,
-  MATCH_ARENA_PAIRS,
 } from '../data/daqianAndDojoData.ts';
+import { SkillTreeAndArenaPanel } from './SkillTreeAndArenaPanel.tsx';
 import {
   VocabularyEntry,
   getFullVocabularyCatalog,
@@ -69,10 +68,7 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedBand, setSelectedBand] = useState<string>('ALL');
   const [selectedVocab, setSelectedVocab] = useState<VocabularyEntry | null>(null);
-  // Match Arena state
-  const [arenaStage, setArenaStage] = useState<1 | 2 | 3>(1);
-  const [selectedLeftId, setSelectedLeftId] = useState<string | null>(null);
-  const [matchedPairIds, setMatchedPairIds] = useState<string[]>([]);
+  const [assistedCurrentWord, setAssistedCurrentWord] = useState<boolean>(false);
   const catalog = useMemo(() => getFullVocabularyCatalog(), [adminRevision, progress.xp]);
   const dueWords = useMemo(() => getDueSrsWords(progress), [progress]);
   const activeStage = DAQIAN_DOJO_STAGES[stageIdx] || DAQIAN_DOJO_STAGES[0];
@@ -103,25 +99,30 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
       sourceLabel: '8-Stage DaQian Dojo',
     });
   }, [stageIdx, promptIdx]);
-  const handleDaqianKeyPress = (rawKey: string) => {
+  const handleDaqianKeyPress = (rawKey: string, isGuidedAssist: boolean = false) => {
     const key = rawKey === 'Space' ? ' ' : rawKey.toLowerCase();
+    if (isGuidedAssist) setAssistedCurrentWord(true);
+    const wasAssisted = assistedCurrentWord || isGuidedAssist;
     if (key === expectedNextKey) {
       const nextTyped = typedProgress + key;
       const nextHits = dojoSessionStats.hits + 1;
       setDojoSessionStats((s) => ({ ...s, hits: nextHits }));
       if (nextTyped.length >= activePrompt.expectedKeys.length) {
-        // Completed the phrase!
-        const elapsedMin = Math.max(0.08, (Date.now() - dojoSessionStats.startedAt) / 60000);
-        const wpm = Math.min(95, Math.round(nextHits / 3.5 / elapsedMin));
-        const nextState = recordWordPractice(
-          { ...progress, xp: progress.xp + 12, daqianBestWpm: Math.max(progress.daqianBestWpm, wpm), },
-          { word: activePrompt.hanzi, zhuyin: activePrompt.zhuyin, english: activePrompt.english },
-          true,
-          4
-        );
-        onUpdateProgress(nextState);
+        // Completed the phrase — only grant WPM/FSRS mastery if typed unassisted
+        if (!wasAssisted) {
+          const elapsedMin = Math.max(0.08, (Date.now() - dojoSessionStats.startedAt) / 60000);
+          const wpm = Math.min(95, Math.round(nextHits / 3.5 / elapsedMin));
+          const nextState = recordWordPractice(
+            { ...progress, xp: progress.xp + 12, daqianBestWpm: Math.max(progress.daqianBestWpm, wpm) },
+            { word: activePrompt.hanzi, zhuyin: activePrompt.zhuyin, english: activePrompt.english },
+            true,
+            4
+          );
+          onUpdateProgress(nextState);
+        }
         onSpeak?.(activePrompt.hanzi);
         setTypedProgress('');
+        setAssistedCurrentWord(false);
         setPromptIdx((i) => (i + 1) % activeStage.prompts.length);
       } else {
         setTypedProgress(nextTyped);
@@ -181,10 +182,6 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
       return bandOk && qOk;
     });
   }, [catalog, selectedBand, searchQuery]);
-  const stageArenaPairs = useMemo(
-    () => MATCH_ARENA_PAIRS.filter((p) => p.stage === arenaStage),
-    [arenaStage]
-  );
   return (
     <div className="space-y-5">
       <StudioHeaderBanner
@@ -255,13 +252,14 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <StylusButton variant="amber" onClick={() => handleDaqianKeyPress(expectedNextKey)} >
-                  <span>⚡ Type Next Key ({expectedNextKey === ' ' ? 'Space' : expectedNextKey.toUpperCase()})</span>
+                <StylusButton variant="amber" onClick={() => handleDaqianKeyPress(expectedNextKey, true)} >
+                  <span>⚡ Hint Key ({expectedNextKey === ' ' ? 'Space' : expectedNextKey.toUpperCase()})</span>
                 </StylusButton>
                 <StylusButton
                   variant="secondary"
                   onClick={() => {
                     setTypedProgress('');
+                    setAssistedCurrentWord(false);
                     setPromptIdx((i) => (i + 1) % activeStage.prompts.length);
                   }}
                 >
@@ -335,20 +333,27 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
                 <RubyText
                   text={activeDueCard.word}
                   zhuyin={srsRevealed ? activeDueCard.zhuyin : undefined}
+                  showPinyinHint={srsRevealed && progress.showPinyinHint}
                   size="xl"
                   zhuyinDisplayMode={srsRevealed ? 'always' : 'hover_only'}
                 />
               </div>
-              {srsRevealed ? (
-                <div className="space-y-3 pt-2">
+              <div className="flex justify-center gap-2">
+                {onSpeak && (
+                  <StylusButton variant="secondary" onClick={() => onSpeak(activeDueCard.word)}>
+                    <span>🔊 Listen</span>
+                  </StylusButton>
+                )}
+                {!srsRevealed && (
+                  <StylusButton variant="primary" onClick={() => setSrsRevealed(true)}>
+                    <span>👁️ Reveal Answer &amp; Zhuyin</span>
+                  </StylusButton>
+                )}
+              </div>
+              {srsRevealed && (
+                <div className="space-y-2 pt-1">
                   <div className="text-xl font-extrabold text-emerald-300">{activeDueCard.english}</div>
                   <div className="text-sm text-slate-300">Taiwan MOE Zhuyin: {activeDueCard.zhuyin}</div>
-                </div>
-              ) : (
-                <div className="pt-2">
-                  <StylusButton variant="primary" onClick={() => setSrsRevealed(true)}>
-                    <span>👁️ Reveal Answer & Zhuyin</span>
-                  </StylusButton>
                 </div>
               )}
             </div>
@@ -480,114 +485,12 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
         </div>
       )}
       {subTab === 'skilltree_arena' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          {/* 5-World Progressive Skill Tree */}
-          <div className="lg:col-span-7 bg-slate-900/90 border border-slate-800 rounded-3xl p-5 space-y-4">
-            <h2 className="text-sm font-extrabold text-emerald-300 uppercase tracking-wider">
-              5-World Progressive Taiwan Skill Tree (20 Nodes)
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {FIVE_WORLD_SKILL_TREE.map((node) => {
-                const done = Boolean(progress.completedNodes[node.id]);
-                return (
-                  <div
-                    key={node.id}
-                    className={`rounded-2xl p-3.5 border flex items-center justify-between gap-2 ${
-                      done
-                        ? 'bg-emerald-950/50 border-emerald-500/50'
-                        : 'bg-slate-950/80 border-slate-800'
-                    }`}
-                  >
-                    <div>
-                      <div className="text-[11px] font-bold text-amber-300">World {node.worldNumber}.{node.nodeOrder} · {node.tocflBand}</div>
-                      <div className="text-sm font-extrabold text-white">{node.titleZh} · {node.titleEn}</div>
-                    </div>
-                    <StylusButton
-                      variant={done ? 'primary' : 'secondary'}
-                      onClick={() => {
-                        onUpdateProgress({
-                          ...progress,
-                          xp: progress.xp + 15,
-                          completedNodes: {
-                            ...progress.completedNodes,
-                            [node.id]: {
-                              nodeId: node.id, crowns: (progress.completedNodes[node.id]?.crowns || 0) + 1,
-                              bestAccuracy: 100, lastCompletedAt: new Date().toISOString(),
-                            },
-                          },
-                        });
-                      }}
-                    >
-                      <span>{done ? '👑 Mastered' : 'Practice'}</span>
-                    </StylusButton>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          {/* 3-Stage Match Arena */}
-          <div className="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-3xl p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-extrabold text-amber-300 uppercase tracking-wider">3-Stage Match Arena (配對競技場)</h2>
-              <div className="flex gap-1.5">
-                {([1, 2, 3] as const).map((st) => (
-                  <StylusButton
-                    key={st}
-                    variant={arenaStage === st ? 'amber' : 'secondary'}
-                    onClick={() => {
-                      setArenaStage(st);
-                      setSelectedLeftId(null);
-                      setMatchedPairIds([]);
-                    }}
-                  >
-                    <span>S{st}</span>
-                  </StylusButton>
-                ))}
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2.5">
-              <div className="space-y-2">
-                {stageArenaPairs.map((p) => {
-                  const matched = matchedPairIds.includes(p.id);
-                  return (
-                    <StylusButton
-                      key={p.id}
-                      variant={matched ? 'primary' : selectedLeftId === p.id ? 'amber' : 'secondary'}
-                      onClick={() => !matched && setSelectedLeftId(p.id)}
-                      className="w-full justify-center"
-                    >
-                      <span>{p.leftPrompt}</span>
-                    </StylusButton>
-                  );
-                })}
-              </div>
-              <div className="space-y-2">
-                {stageArenaPairs.map((p) => {
-                  const matched = matchedPairIds.includes(p.id);
-                  return (
-                    <StylusButton
-                      key={p.id}
-                      variant={matched ? 'primary' : 'secondary'}
-                      onClick={() => {
-                        if (selectedLeftId === p.id && !matched) {
-                          setMatchedPairIds((prev) => [...prev, p.id]);
-                          setSelectedLeftId(null);
-                          onUpdateProgress({
-                            ...progress,
-                            xp: progress.xp + 8, matchHighScore: progress.matchHighScore + 100,
-                          });
-                        }
-                      }}
-                      className="w-full justify-center"
-                    >
-                      <span>{p.rightMatch}</span>
-                    </StylusButton>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
+        <SkillTreeAndArenaPanel
+          catalog={catalog}
+          progress={progress}
+          onUpdateProgress={onUpdateProgress}
+          onSpeak={onSpeak}
+        />
       )}
     </div>
   );

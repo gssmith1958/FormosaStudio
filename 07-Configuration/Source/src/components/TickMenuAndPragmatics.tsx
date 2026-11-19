@@ -34,23 +34,20 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
   progress,
   onSpeakText,
 }) => {
-  // Laminated Paper Tick-Menu (點菜單) State
+  // Laminated Paper Tick-Menu (點菜單) State — starts blank so learner genuinely fills the order
   const [selectedMissionId, setSelectedMissionId] = useState<string>(TICK_MENU_MISSIONS[0].id);
   const [diningMode, setDiningMode] = useState<'dine_in' | 'takeout'>('dine_in');
-  const [tableNumber, setTableNumber] = useState<string>('5');
-  const [quantities, setQuantities] = useState<Record<string, number>>({
-    'tm-beef-lg': 1,
-    'tm-cucumber': 1,
-    'tm-soymilk': 2,
-  });
-  const [spiceNotes, setSpiceNotes] = useState<Record<string, 'none' | 'mild' | 'medium'>>({
-    'tm-beef-lg': 'mild',
-  });
+  const [tableNumber, setTableNumber] = useState<string>('');
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [spiceNotes, setSpiceNotes] = useState<Record<string, 'none' | 'mild' | 'medium'>>({});
   const [showOrderVerification, setShowOrderVerification] = useState<boolean>(false);
 
-  // Pragmatics Lab State
+  // Pragmatics Lab State + 4-Question Taiwanese Particle Context Check
   const [selectedParticleId, setSelectedParticleId] = useState<string>(TAIWAN_PARTICLES[0].id);
   const [selectedHokkienId, setSelectedHokkienId] = useState<string>(HOKKIEN_EXPRESSIONS[0].id);
+  const [particleQuizIdx, setParticleQuizIdx] = useState<number>(0);
+  const [particleQuizPicked, setParticleQuizPicked] = useState<string | null>(null);
+  const [particleQuizScore, setParticleQuizScore] = useState<number>(0);
 
   const activeMission = useMemo(
     () => TICK_MENU_MISSIONS.find((m) => m.id === selectedMissionId) || TICK_MENU_MISSIONS[0],
@@ -102,8 +99,8 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
                   variant={m.id === activeMission.id ? 'amber' : 'secondary'}
                   onClick={() => {
                     setSelectedMissionId(m.id);
-                    setDiningMode(m.diningMode);
-                    setTableNumber(m.expectedTableNumber || '');
+                    setDiningMode('dine_in');
+                    setTableNumber('');
                     setQuantities({});
                     setSpiceNotes({});
                     setShowOrderVerification(false);
@@ -425,6 +422,50 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
           />
         </div>
       </div>
+
+      {/* 4-Question Taiwanese Particle Context Check */}
+      {(() => {
+        const quizList = [
+          { prompt: 'Soften a friendly reminder ("Remember to bring an umbrella!"): 記得帶傘___！', answer: '喔', options: ['喔', '嘛', '嗎', '吧'] },
+          { prompt: 'Warmly reassure someone ("No problem at all!"): 沒關係___！', answer: '啦', options: ['嗎', '啦', '耶', '呢'] },
+          { prompt: 'Make a polite suggestion ("Let’s go grab beef noodles!"): 我們去吃牛肉麵___！', answer: '吧', options: ['吧', '嘛', '啊', '喔'] },
+          { prompt: 'Express mild persuasion ("Come on, try one bite!"): 吃一口___！', answer: '嘛', options: ['喔', '呢', '嘛', '嗎'] },
+        ];
+        const q = quizList[particleQuizIdx % quizList.length];
+        return (
+          <div className="lg:col-span-2 rounded-2xl border border-slate-800 bg-slate-900/90 p-5 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="text-xs font-bold uppercase tracking-wider text-teal-400">
+                Taiwanese Particle (語助詞) Context Check · Question {(particleQuizIdx % quizList.length) + 1}/{quizList.length} (Score: {particleQuizScore})
+              </div>
+              <StylusButton variant="ghost" onClick={() => { setParticleQuizIdx((i) => (i + 1) % quizList.length); setParticleQuizPicked(null); }}>
+                <span>Next Scenario →</span>
+              </StylusButton>
+            </div>
+            <div className="text-sm font-bold text-white">{q.prompt}</div>
+            <div className="flex flex-wrap gap-2">
+              {q.options.map((opt) => (
+                <StylusButton
+                  key={opt}
+                  variant={particleQuizPicked === opt ? (opt === q.answer ? 'primary' : 'danger') : 'secondary'}
+                  onClick={() => {
+                    if (particleQuizPicked === null && opt === q.answer) setParticleQuizScore((s) => s + 1);
+                    setParticleQuizPicked(opt);
+                    onSpeakText?.(q.prompt.split('：')[1]?.replace('___', opt) || opt, 0.88);
+                  }}
+                >
+                  <span className="text-base font-bold">{opt}</span>
+                </StylusButton>
+              ))}
+            </div>
+            {particleQuizPicked && (
+              <div className={`text-xs font-semibold ${particleQuizPicked === q.answer ? 'text-teal-300' : 'text-amber-300'}`}>
+                {particleQuizPicked === q.answer ? `✓ Spot-on! 「${q.answer}」 matches natural Taiwanese tone here.` : `Not quite — natural Taiwanese phrasing uses 「${q.answer}」 here.`}
+              </div>
+            )}
+          </div>
+        );
+      })()}
     </div>
   );
 };

@@ -270,6 +270,7 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
     }
   };
   const handleSimulateMoeStroke = () => {
+    // Visual demonstration only — never writes FSRS mastery or XP credit
     const nextIdx = drawnStrokes.length;
     if (nextIdx >= charEntry.strokes.length) return;
     const ref = charEntry.strokes[nextIdx];
@@ -283,12 +284,7 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
     const nextStrokes = [...drawnStrokes, { points: pts, startedAt: now, endedAt: now + pts.length * 16 }];
     setDrawnStrokes(nextStrokes);
     if (nextStrokes.length >= charEntry.strokes.length) {
-      const report = gradeCharacterWriting(nextStrokes, charEntry, practiceMode);
-      setGradeReport(report);
-      onUpdateProgress( recordStrokePractice(
-          progress, { char: charEntry.char, zhuyin: charEntry.zhuyin, accuracy: report.overallAccuracy },
-          true, report.fsrsRating
-        ) );
+      setGradeReport(gradeCharacterWriting(nextStrokes, charEntry, practiceMode));
     }
   };
   const handleToggleHandedness = (next: StylusHandedness) => {
@@ -551,17 +547,21 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
                     <div className="text-amber-300">{d.phoneticRelationNote}</div>
                   </div>
                   <div className="flex items-center gap-2 pt-1">
-                    <StylusButton variant="secondary"
-                      onClick={() => {
-                        const inBank = MOE_STROKE_CHARACTER_BANK.find((c) => c.char === d.char);
-                        if (inBank) {
-                          setSelectedChar(inBank.char);
+                    {MOE_STROKE_CHARACTER_BANK.some((c) => c.char === d.char) ? (
+                      <StylusButton
+                        variant="secondary"
+                        onClick={() => {
+                          setSelectedChar(d.char);
                           setSubTab('calligraphy');
-                        }
-                      }}
-                    >
-                      <span>✒️ Practice on Canvas</span>
-                    </StylusButton>
+                        }}
+                      >
+                        <span>✒️ Practice on Canvas</span>
+                      </StylusButton>
+                    ) : (
+                      <span className="text-xs px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">
+                        Reference Only (Not in 20-char MOE stroke bank)
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}

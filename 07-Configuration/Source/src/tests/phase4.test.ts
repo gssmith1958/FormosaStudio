@@ -61,7 +61,15 @@ import {
   toggleNtnuLessonComplete,
   togglePimsleurUnitComplete,
 } from '../lib/progressStore.ts';
-import { STAGE0_MODULES, STAGE0_RADICAL_QUIZ, STAGE0_ZHUYIN_FAMILIES } from '../data/stage0BeginnerData.ts';
+import {
+  STAGE0_BLIND_TONE_POOL,
+  STAGE0_CAFE_ROLEPLAY,
+  STAGE0_MODULES,
+  STAGE0_RADICAL_LEGEND,
+  STAGE0_RADICAL_QUIZ,
+  STAGE0_ZHUYIN_FAMILIES,
+  STAGE0_ZHUYIN_QUIZ_POOL,
+} from '../data/stage0BeginnerData.ts';
 import { PIMSLEUR_UNITS } from '../data/pimsleurUnitsB.ts';
 import {
   STUDIO_DEFINITIONS,
@@ -345,6 +353,14 @@ describe('Phase 4 Suite 7: Unified Shell, In-App Manual (FORM-REQ-0023) & Cross-
     expect(STAGE0_ZHUYIN_FAMILIES.every((f) => f.blends.length >= 5)).toBe(true);
     expect(STAGE0_ZHUYIN_FAMILIES[0].blends.every((b) => ['ㄅ', 'ㄆ', 'ㄇ', 'ㄈ'].includes(b.zhuyin[0]))).toBe(true);
     expect(STAGE0_RADICAL_QUIZ.every((q) => Boolean(q.zhuyin && q.pinyin && q.meaningEn))).toBe(true);
+    // Anti-tautology checks (v1.3.0): blind tone pool covers all 4 tones + pairs, Zhuyin blind quiz >= 10, unseen radicals, non-fixed Café roleplay
+    expect(STAGE0_BLIND_TONE_POOL.length).toBeGreaterThanOrEqual(20);
+    expect(([1, 2, 3, 4] as const).every((t) => STAGE0_BLIND_TONE_POOL.some((q) => q.answerTone === t))).toBe(true);
+    expect(STAGE0_BLIND_TONE_POOL.some((q) => q.kind === 'pair_choice')).toBe(true);
+    expect(STAGE0_ZHUYIN_QUIZ_POOL.length).toBeGreaterThanOrEqual(12);
+    const legendExamplesJoined = STAGE0_RADICAL_LEGEND.map((l) => l.examples).join(' ');
+    expect(STAGE0_RADICAL_QUIZ.every((q) => !legendExamplesJoined.includes(q.char))).toBe(true);
+    expect(new Set(STAGE0_CAFE_ROLEPLAY.map((t) => t.correctIdx)).size).toBeGreaterThanOrEqual(2);
     expect(SURVIVAL_MODULES[0].labels.some((l) => l.traditional.includes('洗手間'))).toBe(true);
     expect(SURVIVAL_MODULES[1].labels.some((l) => l.traditional.includes('多少錢'))).toBe(true);
     expect(SURVIVAL_MODULES[2].labels.some((l) => l.traditional.includes('怎麼走'))).toBe(true);

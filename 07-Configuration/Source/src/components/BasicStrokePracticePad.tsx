@@ -53,7 +53,9 @@ function evaluateBasicStroke(drawn: Point2D[], ref: { x: number; y: number }[]):
   return { pass: true, score: Math.max(82, score), message: `✓ Clean stroke! (${Math.max(82, score)}% match)` };
 }
 
-export const BasicStrokePracticePad: React.FC = () => {
+export const BasicStrokePracticePad: React.FC<{ onPracticedCountChange?: (count: number) => void }> = ({
+  onPracticedCountChange,
+}) => {
   const [strokeIdx, setStrokeIdx] = useState<number>(0);
   const [practicedIds, setPracticedIds] = useState<string[]>([]);
   const [drawnPoints, setDrawnPoints] = useState<Point2D[]>([]);
@@ -61,6 +63,10 @@ export const BasicStrokePracticePad: React.FC = () => {
   const [demoProgress, setDemoProgress] = useState<number>(1);
   const drawingRef = useRef<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    onPracticedCountChange?.(practicedIds.length);
+  }, [practicedIds.length, onPracticedCountChange]);
 
   const activeStroke: BasicStrokeLesson = STAGE0_BASIC_STROKES[strokeIdx] || STAGE0_BASIC_STROKES[0];
 

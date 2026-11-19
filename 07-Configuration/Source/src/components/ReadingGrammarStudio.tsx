@@ -54,11 +54,12 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
   const [subMode, setSubMode] = useState<ReaderSubMode>('graded_reader');
   const [selectedStoryId, setSelectedStoryId] = useState<string>(GRADED_STORIES[0].id);
   const [selectedWord, setSelectedWord] = useState<AnalyzedWordSegment | null>(null);
-  const [showEnglishTranslation, setShowEnglishTranslation] = useState<boolean>(true);
+  const [showEnglishTranslation, setShowEnglishTranslation] = useState<boolean>(false);
   const [storyQuizAnswers, setStoryQuizAnswers] = useState<Record<string, number>>({});
 
   // Custom Text Importer & Cloze state (FORM-REQ-0007)
   const [customText, setCustomText] = useState<string>(DEFAULT_CUSTOM_SAMPLE);
+  const [hideCustomSource, setHideCustomSource] = useState<boolean>(true);
   const [clozeSelections, setClozeSelections] = useState<Record<string, number>>({});
 
   // Register Bridge state (FORM-REQ-0008)
@@ -434,14 +435,13 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
               placeholder="Paste any Taiwan news, LINE message, menu, or textbook passage here..."
               className="w-full rounded-xl bg-slate-950 border border-slate-700 p-3 text-sm text-white focus:border-teal-400 focus:outline-none"
             />
-            <div className="flex items-center justify-between text-xs">
-              <span className={`px-2.5 py-1 rounded-full border font-bold ${customReport.zoneBadgeClass}`}>
-                {customReport.zoneLabel}
-              </span>
-              <span className="text-slate-400">
-                {customReport.totalChineseWords} segmented words · {customReport.targetWords.length} target i+1 / polyphone items
-              </span>
+            <div className="flex items-center justify-between text-xs gap-2">
+              <span className={`px-2.5 py-1 rounded-full border font-bold ${customReport.zoneBadgeClass}`}>{customReport.zoneLabel}</span>
+              <StylusButton variant="ghost" onClick={() => setHideCustomSource((v) => !v)}>
+                <span>{hideCustomSource ? 'Show Segmented Passage' : 'Hide Passage During Cloze'}</span>
+              </StylusButton>
             </div>
+            {!hideCustomSource && (
             <div className="rounded-xl bg-slate-950/70 border border-slate-800 p-4 flex flex-wrap items-center gap-1.5">
               {customReport.segments.map((seg, idx) =>
                 seg.isChinese ? (
@@ -458,6 +458,7 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
                 )
               )}
             </div>
+            )}
           </div>
 
           <div className="lg:col-span-6 rounded-2xl border border-slate-800 bg-slate-900/90 p-5 space-y-4">
@@ -531,6 +532,7 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredRegisterPairs.map((pair) => {
               const chosenAns = registerDrillAnswers[pair.id];
+              const isRevealed = Boolean(chosenAns);
               return (
                 <div key={pair.id} className="rounded-2xl border border-slate-800 bg-slate-900/90 p-4 space-y-3">
                   <div className="flex items-center justify-between gap-2">
@@ -540,7 +542,7 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
                       </span>
                       <span className="text-slate-400 font-bold">→</span>
                       <span className="px-2.5 py-1 rounded-lg bg-teal-950/70 border border-teal-400/50 text-teal-200 font-bold text-sm">
-                        書面語: {pair.written} ({pair.writtenZhuyin})
+                        {isRevealed ? `書面語: ${pair.written} (${pair.writtenZhuyin})` : '書面語: ??? (Answer drill to reveal)'}
                       </span>
                     </div>
                     <span className="text-xs font-semibold text-slate-400">{pair.english}</span>
@@ -548,7 +550,7 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
 
                   <div className="text-xs space-y-1 bg-slate-950/70 rounded-xl p-3 border border-slate-800">
                     <div className="text-amber-200"><strong>口語例句:</strong> {pair.spokenSentence}</div>
-                    <div className="text-teal-200"><strong>書面例句:</strong> {pair.writtenSentence}</div>
+                    {isRevealed && <div className="text-teal-200"><strong>書面例句:</strong> {pair.writtenSentence}</div>}
                     <div className="text-slate-400">{pair.sentenceEnglish}</div>
                   </div>
 

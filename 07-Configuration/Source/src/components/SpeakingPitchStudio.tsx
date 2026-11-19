@@ -68,10 +68,8 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
   const [speakerRange, setSpeakerRange] = useState<{ floorHz: number; ceilingHz: number }>({
     floorHz: 100, ceilingHz: 260,
   });
-  const [userChaoCurve, setUserChaoCurve] = useState<number[]>(() =>
-    getReferenceChaoContour('3_taiwan_half').map((v, i) => Number((v + (i % 2 === 0 ? 0.12 : -0.1)).toFixed(2)))
-  );
-  const [liveHzReadout, setLiveHzReadout] = useState<number | null>(158.4);
+  const [userChaoCurve, setUserChaoCurve] = useState<number[] | null>(null);
+  const [liveHzReadout, setLiveHzReadout] = useState<number | null>(null);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [micStatus, setMicStatus] = useState<string>('Ready — click Record, speak the phrase, then click Stop.');
   const [micLevelPct, setMicLevelPct] = useState<number>(0);
@@ -79,6 +77,8 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
   const [recordedAudioUrl, setRecordedAudioUrl] = useState<string | null>(null);
   const [selectedPairIdx, setSelectedPairIdx] = useState<number>(0);
   const [listeningTargetIsRetroflex, setListeningTargetIsRetroflex] = useState<boolean>(true);
+  const [pairPromptActive, setPairPromptActive] = useState<boolean>(false);
+  const [pairScore, setPairScore] = useState<{ ok: number; total: number }>({ ok: 0, total: 0 });
   const [listeningQuizResult, setListeningQuizResult] = useState<string | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -99,7 +99,9 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
     subTab === 'sandhi_coach'
       ? activeSandhi.targetChaoCurve
       : getReferenceChaoContour(selectedTonePreset, 20);
-  const matchReport: ToneContourMatchReport = computeToneContourMatchScore(targetCurve, userChaoCurve);
+  const matchReport: ToneContourMatchReport | null = userChaoCurve
+    ? computeToneContourMatchScore(targetCurve, userChaoCurve)
+    : null;
   // Sync with Cross-Studio Handoff Bus
   useEffect(() => {
     const syncBus = () => {
@@ -110,7 +112,7 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
         if (sandhiMatch) {
           setSelectedSandhiId(sandhiMatch.id);
           setSubTab('sandhi_coach');
-          setUserChaoCurve(sandhiMatch.targetChaoCurve.map((v) => Number((v + 0.08).toFixed(2))));
+          setUserChaoCurve(null);
         }
       }
     };
@@ -169,8 +171,10 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
       }
     }
     if (lastValidHz !== null) setLiveHzReadout(lastValidHz);
-    const report = commitCapturedContour(extractedChao);
-    setMicStatus(`Simulated ${quality === 'excellent' ? 'native match' : 'monotone error'} (${report.matchScore}%).`);
+    // Preview only — simulated captures never write real FSRS mastery credit
+    setUserChaoCurve(extractedChao);
+    const previewReport = computeToneContourMatchScore(targetCurve, extractedChao);
+    setMicStatus(`Preview only (${quality === 'excellent' ? 'native match' : 'monotone error'} · ${previewReport.matchScore}%). Record your own voice for FSRS credit.`);
   };
   const stopLiveMicCapture = () => {
     if (intervalRef.current !== null) { window.clearInterval(intervalRef.current); intervalRef.current = null; }
@@ -253,7 +257,7 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
       setMicStatus('Playing your recorded voice → followed by native Taiwanese reference…');
       return;
     }
-    const userWave = lastRecordedBuffer || generateReferenceToneWaveform({ chaoContour: userChaoCurve, durationSec: 0.45, speakerFloorHz: speakerRange.floorHz, speakerCeilingHz: speakerRange.ceilingHz });
+    const userWave = lastRecordedBuffer || generateReferenceToneWaveform({ chaoContour: userChaoCurve || targetCurve, durationSec: 0.45, speakerFloorHz: speakerRange.floorHz, speakerCeilingHz: speakerRange.ceilingHz });
     void playFloat32Waveform(userWave, 44100, audioCtxRef.current).then((c) => { audioCtxRef.current = c; });
     window.setTimeout(playNative, 560);
   };
@@ -314,8 +318,8 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
                       variant={selectedTonePreset === p.id ? 'primary' : 'secondary'}
                       onClick={() => {
                         setSelectedTonePreset(p.id);
-                        const ref = getReferenceChaoContour(p.id, 20);
-                        setUserChaoCurve(ref.map((v, idx) => Number((v + (idx % 2 === 0 ? 0.1 : -0.08)).toFixed(2))));
+                        setUserChaoCurve(null);
+                        setLiveHzReadout(null);
                       }}
                       className="justify-between"
                     >
@@ -349,7 +353,8 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
                       variant={selectedSandhiId === s.id ? 'primary' : 'secondary'}
                       onClick={() => {
                         setSelectedSandhiId(s.id);
-                        setUserChaoCurve(s.targetChaoCurve.map((v) => Number((v + 0.1).toFixed(2))));
+                        setUserChaoCurve(null);
+                        setLiveHzReadout(null);
                       }}
                       className="justify-between"
                     >
@@ -387,8 +392,8 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
                 <p className="text-xs text-slate-400">Emerald = Native Reference Contour · Sky Blue = Your Normalized YIN F0 Trajectory</p>
               </div>
               <div className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-bold text-sky-300">
-                Detected F0: {liveHzReadout ? `${liveHzReadout} Hz` : 'Unvoiced'} · Match:{' '}
-                <strong className="text-emerald-300">{matchReport.matchScore}%</strong>
+                Detected F0: {liveHzReadout ? `${liveHzReadout} Hz` : 'Waiting for mic'} · Match:{' '}
+                <strong className="text-emerald-300">{matchReport ? `${matchReport.matchScore}%` : '—'}</strong>
               </div>
             </div>
             <div className="bg-slate-950 border border-slate-800 rounded-2xl p-3 overflow-x-auto">
@@ -397,48 +402,32 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
                   const y = padY + ((5 - lvl) / 4) * plotH;
                   return (
                     <g key={lvl}>
-                      <line
-                        x1={padX}
-                        y1={y}
-                        x2={svgW - padX}
-                        y2={y}
-                        stroke="rgba(148, 163, 184, 0.2)"
-                        strokeDasharray="4 4"
-                      />
+                      <line x1={padX} y1={y} x2={svgW - padX} y2={y} stroke="rgba(148, 163, 184, 0.2)" strokeDasharray="4 4" />
                       <text x={12} y={y + 4} fill="#94A3B8" fontSize="11" fontWeight="bold">Chao {lvl}</text>
                     </g>
                   );
                 })}
-                {/* Native Speaker Reference Curve */}
-                <polyline
-                  fill="none"
-                  stroke="#34D399"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  points={toSvgPoints(matchReport.resampledTarget)}
-                />
-                {/* Learner Recorded / Simulated Curve */}
-                <polyline
-                  fill="none"
-                  stroke="#38BDF8"
-                  strokeWidth="3.5"
-                  strokeDasharray="6 4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  points={toSvgPoints(matchReport.resampledUser)}
-                />
+                <polyline fill="none" stroke="#34D399" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" points={toSvgPoints(targetCurve)} />
+                {matchReport && (
+                  <polyline fill="none" stroke="#38BDF8" strokeWidth="3.5" strokeDasharray="6 4" strokeLinecap="round" strokeLinejoin="round" points={toSvgPoints(matchReport.resampledUser)} />
+                )}
               </svg>
             </div>
             <div
               className={`rounded-2xl p-3.5 text-xs sm:text-sm border space-y-2 ${
-                matchReport.passed
+                !matchReport
+                  ? 'bg-slate-950/70 border-slate-800 text-slate-200'
+                  : matchReport.passed
                   ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-100'
                   : 'bg-rose-950/60 border-rose-500/50 text-rose-100'
               }`}
             >
               <div>
-                <strong>Tone Match Score: {matchReport.matchScore}%</strong> — {matchReport.diagnosticFeedbackEn}
+                {matchReport ? (
+                  <><strong>Tone Match Score: {matchReport.matchScore}%</strong> — {matchReport.diagnosticFeedbackEn}</>
+                ) : (
+                  <strong>Press Record &amp; Speak to compare your live voice contour against the emerald target curve.</strong>
+                )}
               </div>
               <div className="flex items-center justify-between gap-3 text-xs opacity-90">
                 <span>{micStatus}</span>
@@ -537,40 +526,63 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
               <div className="text-amber-300 font-extrabold pt-1">🇹🇼 Taiwan Sociolinguistic Note:</div>
               <p className="text-slate-300">{activePair.taiwanSociolinguisticNote}</p>
             </div>
-            {/* A/B Auditory Discrimination Quiz */}
+            {/* Randomized A/B Auditory Discrimination Quiz + Mic Compare */}
             <div className="bg-slate-950/90 border border-slate-800 rounded-2xl p-4 space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-xs sm:text-sm font-extrabold text-white">🎧 Ear-Training Discrimination Check: Which word did you hear?</span>
-                <StylusButton
-                  variant="amber"
-                  onClick={() => {
-                    const nextTarget = !listeningTargetIsRetroflex;
-                    setListeningTargetIsRetroflex(nextTarget);
-                    setListeningQuizResult(null);
-                    onSpeak?.(nextTarget ? activePair.retroflexWord : activePair.flatWord);
-                  }}
-                >
-                  <span>🔊 Play Mystery Prompt</span>
-                </StylusButton>
+                <span className="text-xs sm:text-sm font-extrabold text-white">
+                  🎧 Blind Ear Check (Score: {pairScore.ok}/{pairScore.total}) — Which word did you hear?
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  <StylusButton
+                    variant="amber"
+                    onClick={() => {
+                      const nextTarget = Math.random() < 0.5;
+                      setListeningTargetIsRetroflex(nextTarget);
+                      setPairPromptActive(true);
+                      setListeningQuizResult(null);
+                      onSpeak?.(nextTarget ? activePair.retroflexWord : activePair.flatWord);
+                    }}
+                  >
+                    <span>🔊 Play Random Prompt</span>
+                  </StylusButton>
+                  <StylusButton variant={isRecording ? 'danger' : 'secondary'} onClick={handleToggleLiveMic}>
+                    <span>{isRecording ? '⏹ Stop Mic' : '🎤 Say & Hear Myself'}</span>
+                  </StylusButton>
+                  {recordedAudioUrl && (
+                    <StylusButton variant="ghost" onClick={() => { void new Audio(recordedAudioUrl).play(); }}>
+                      <span>▶ Replay My Voice</span>
+                    </StylusButton>
+                  )}
+                </div>
               </div>
               <div className="flex flex-wrap gap-3">
-                <StylusButton variant="secondary" onClick={() =>
+                <StylusButton
+                  variant="secondary"
+                  disabled={!pairPromptActive}
+                  onClick={() => {
+                    setPairPromptActive(false);
+                    setPairScore((s) => ({ ok: s.ok + (listeningTargetIsRetroflex ? 1 : 0), total: s.total + 1 }));
                     setListeningQuizResult(
                       listeningTargetIsRetroflex
                         ? `✅ Correct! That was retroflex 「${activePair.retroflexWord}」 (${activePair.retroflexZhuyin}).`
                         : `❌ Not quite — the prompt was flat sibilant 「${activePair.flatWord}」 (${activePair.flatZhuyin}).`
-                    )
-                  }
+                    );
+                  }}
                 >
                   <span>Option A: {activePair.retroflexWord} ({activePair.retroflexInitial})</span>
                 </StylusButton>
-                <StylusButton variant="secondary" onClick={() =>
+                <StylusButton
+                  variant="secondary"
+                  disabled={!pairPromptActive}
+                  onClick={() => {
+                    setPairPromptActive(false);
+                    setPairScore((s) => ({ ok: s.ok + (!listeningTargetIsRetroflex ? 1 : 0), total: s.total + 1 }));
                     setListeningQuizResult(
                       !listeningTargetIsRetroflex
                         ? `✅ Correct! That was flat sibilant 「${activePair.flatWord}」 (${activePair.flatZhuyin}).`
                         : `❌ Not quite — the prompt was retroflex 「${activePair.retroflexWord}」 (${activePair.retroflexZhuyin}).`
-                    )
-                  }
+                    );
+                  }}
                 >
                   <span>Option B: {activePair.flatWord} ({activePair.flatInitial})</span>
                 </StylusButton>

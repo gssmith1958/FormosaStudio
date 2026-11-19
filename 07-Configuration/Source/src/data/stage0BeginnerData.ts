@@ -49,24 +49,79 @@ export const STAGE0_TONE_CARDS: ToneAnalogyCard[] = [
 
 export interface ToneQuizItem {
   id: string;
+  kind: 'single' | 'pair_choice' | 'same_diff' | 'two_syllable';
   promptAudio: string;
-  displayMasked: string;
-  answerTone: 1 | 2 | 3 | 4;
+  secondAudio?: string;
+  answerTone?: 1 | 2 | 3 | 4;
+  options?: string[];
+  correctOptionIdx?: number;
+  targetTones: (1 | 2 | 3 | 4)[];
   revealChar: string;
   revealZhuyin: string;
   revealPinyin: string;
   revealEnglish: string;
 }
 
+// Legacy 8-item export retained for compatibility; Module 0.1 uses STAGE0_BLIND_TONE_POOL
 export const STAGE0_TONE_QUIZ: ToneQuizItem[] = [
-  { id: 'tq1', promptAudio: '媽', displayMasked: 'm_ (mom)', answerTone: 1, revealChar: '媽', revealZhuyin: 'ㄇㄚ', revealPinyin: 'mā', revealEnglish: 'mom (Tone 1 · High Steady)' },
-  { id: 'tq2', promptAudio: '麻', displayMasked: 'm_ (sesame)', answerTone: 2, revealChar: '麻', revealZhuyin: 'ㄇㄚˊ', revealPinyin: 'má', revealEnglish: 'sesame / numb (Tone 2 · Rising)' },
-  { id: 'tq3', promptAudio: '馬', displayMasked: 'm_ (horse)', answerTone: 3, revealChar: '馬', revealZhuyin: 'ㄇㄚˇ', revealPinyin: 'mǎ', revealEnglish: 'horse (Tone 3 · Low Dip)' },
-  { id: 'tq4', promptAudio: '罵', displayMasked: 'm_ (scold)', answerTone: 4, revealChar: '罵', revealZhuyin: 'ㄇㄚˋ', revealPinyin: 'mà', revealEnglish: 'to scold (Tone 4 · Sharp Drop)' },
-  { id: 'tq5', promptAudio: '買', displayMasked: 'm_i (to buy)', answerTone: 3, revealChar: '買', revealZhuyin: 'ㄇㄞˇ', revealPinyin: 'mǎi', revealEnglish: 'to buy (Tone 3 · Low)' },
-  { id: 'tq6', promptAudio: '賣', displayMasked: 'm_i (to sell)', answerTone: 4, revealChar: '賣', revealZhuyin: 'ㄇㄞˋ', revealPinyin: 'mài', revealEnglish: 'to sell (Tone 4 · Drop)' },
-  { id: 'tq7', promptAudio: '湯', displayMasked: 't_ng (soup)', answerTone: 1, revealChar: '湯', revealZhuyin: 'ㄊㄤ', revealPinyin: 'tāng', revealEnglish: 'soup (Tone 1 · High Steady)' },
-  { id: 'tq8', promptAudio: '糖', displayMasked: 't_ng (sugar)', answerTone: 2, revealChar: '糖', revealZhuyin: 'ㄊㄤˊ', revealPinyin: 'táng', revealEnglish: 'sugar (Tone 2 · Rising)' },
+  { id: 'tq1', kind: 'single', promptAudio: '媽', answerTone: 1, targetTones: [1], revealChar: '媽', revealZhuyin: 'ㄇㄚ', revealPinyin: 'mā', revealEnglish: 'mom (Tone 1 · High Steady)' },
+  { id: 'tq2', kind: 'single', promptAudio: '麻', answerTone: 2, targetTones: [2], revealChar: '麻', revealZhuyin: 'ㄇㄚˊ', revealPinyin: 'má', revealEnglish: 'sesame / numb (Tone 2 · Rising)' },
+  { id: 'tq3', kind: 'single', promptAudio: '馬', answerTone: 3, targetTones: [3], revealChar: '馬', revealZhuyin: 'ㄇㄚˇ', revealPinyin: 'mǎ', revealEnglish: 'horse (Tone 3 · Low Dip)' },
+  { id: 'tq4', kind: 'single', promptAudio: '罵', answerTone: 4, targetTones: [4], revealChar: '罵', revealZhuyin: 'ㄇㄚˋ', revealPinyin: 'mà', revealEnglish: 'to scold (Tone 4 · Sharp Drop)' },
+  { id: 'tq5', kind: 'single', promptAudio: '買', answerTone: 3, targetTones: [3], revealChar: '買', revealZhuyin: 'ㄇㄞˇ', revealPinyin: 'mǎi', revealEnglish: 'to buy (Tone 3 · Low)' },
+  { id: 'tq6', kind: 'single', promptAudio: '賣', answerTone: 4, targetTones: [4], revealChar: '賣', revealZhuyin: 'ㄇㄞˋ', revealPinyin: 'mài', revealEnglish: 'to sell (Tone 4 · Drop)' },
+  { id: 'tq7', kind: 'single', promptAudio: '湯', answerTone: 1, targetTones: [1], revealChar: '湯', revealZhuyin: 'ㄊㄤ', revealPinyin: 'tāng', revealEnglish: 'soup (Tone 1 · High Steady)' },
+  { id: 'tq8', kind: 'single', promptAudio: '糖', answerTone: 2, targetTones: [2], revealChar: '糖', revealZhuyin: 'ㄊㄤˊ', revealPinyin: 'táng', revealEnglish: 'sugar (Tone 2 · Rising)' },
+];
+
+/**
+ * Blind Tone Differentiation Pool (Zero Leaked Hints — DEP-01 / DEP-03):
+ * Diverse syllables (ma, ba, tang, shi) + confusable pairs (Tone 2 vs 3, Tone 1 vs 4) + 2-syllable Taiwan combos.
+ */
+export const STAGE0_BLIND_TONE_POOL: ToneQuizItem[] = [
+  ...STAGE0_TONE_QUIZ,
+  { id: 'bt1', kind: 'single', promptAudio: '八', answerTone: 1, targetTones: [1], revealChar: '八', revealZhuyin: 'ㄅㄚ', revealPinyin: 'bā', revealEnglish: 'eight (Tone 1 · High Steady)' },
+  { id: 'bt2', kind: 'single', promptAudio: '拔', answerTone: 2, targetTones: [2], revealChar: '拔', revealZhuyin: 'ㄅㄚˊ', revealPinyin: 'bá', revealEnglish: 'to pull (Tone 2 · Rising)' },
+  { id: 'bt3', kind: 'single', promptAudio: '把', answerTone: 3, targetTones: [3], revealChar: '把', revealZhuyin: 'ㄅㄚˇ', revealPinyin: 'bǎ', revealEnglish: 'to hold / grasp (Tone 3 · Low)' },
+  { id: 'bt4', kind: 'single', promptAudio: '爸', answerTone: 4, targetTones: [4], revealChar: '爸', revealZhuyin: 'ㄅㄚˋ', revealPinyin: 'bà', revealEnglish: 'dad (Tone 4 · Sharp Drop)' },
+  { id: 'bt5', kind: 'single', promptAudio: '詩', answerTone: 1, targetTones: [1], revealChar: '詩', revealZhuyin: 'ㄕ', revealPinyin: 'shī', revealEnglish: 'poem (Tone 1 · High Steady)' },
+  { id: 'bt6', kind: 'single', promptAudio: '十', answerTone: 2, targetTones: [2], revealChar: '十', revealZhuyin: 'ㄕˊ', revealPinyin: 'shí', revealEnglish: 'ten (Tone 2 · Rising)' },
+  { id: 'bt7', kind: 'single', promptAudio: '史', answerTone: 3, targetTones: [3], revealChar: '史', revealZhuyin: 'ㄕˇ', revealPinyin: 'shǐ', revealEnglish: 'history (Tone 3 · Low)' },
+  { id: 'bt8', kind: 'single', promptAudio: '是', answerTone: 4, targetTones: [4], revealChar: '是', revealZhuyin: 'ㄕˋ', revealPinyin: 'shì', revealEnglish: 'to be / yes (Tone 4 · Sharp Drop)' },
+  // Targeted Confusable Minimal Pairs (Tone 2 vs 3, Tone 1 vs 4, Tone 3 vs 4)
+  { id: 'mp1', kind: 'pair_choice', promptAudio: '糖', options: ['Tone 1 (High: tāng / soup)', 'Tone 2 (Rising: táng / sugar)'], correctOptionIdx: 1, targetTones: [2], revealChar: '糖', revealZhuyin: 'ㄊㄤˊ', revealPinyin: 'táng', revealEnglish: 'sugar (Tone 2 Rising vs. 湯 tāng Tone 1)' },
+  { id: 'mp2', kind: 'pair_choice', promptAudio: '買', options: ['Tone 3 (Low: mǎi / buy)', 'Tone 4 (Drop: mài / sell)'], correctOptionIdx: 0, targetTones: [3], revealChar: '買', revealZhuyin: 'ㄇㄞˇ', revealPinyin: 'mǎi', revealEnglish: 'to buy (Tone 3 Low vs. 賣 mài Tone 4)' },
+  { id: 'mp3', kind: 'pair_choice', promptAudio: '十', options: ['Tone 2 (Rising: shí / ten)', 'Tone 4 (Drop: shì / four/is)'], correctOptionIdx: 0, targetTones: [2], revealChar: '十', revealZhuyin: 'ㄕˊ', revealPinyin: 'shí', revealEnglish: 'ten (Tone 2 Rising vs. 四/是 Tone 4)' },
+  { id: 'mp4', kind: 'pair_choice', promptAudio: '馬', options: ['Tone 2 (Rising: má / sesame)', 'Tone 3 (Low: mǎ / horse)'], correctOptionIdx: 1, targetTones: [3], revealChar: '馬', revealZhuyin: 'ㄇㄚˇ', revealPinyin: 'mǎ', revealEnglish: 'horse (Tone 3 Low vs. 麻 má Tone 2 — classic English ear trap!)' },
+  { id: 'mp5', kind: 'pair_choice', promptAudio: '四', options: ['Tone 1 (High: sī)', 'Tone 4 (Drop: sì / four)'], correctOptionIdx: 1, targetTones: [4], revealChar: '四', revealZhuyin: 'ㄙˋ', revealPinyin: 'sì', revealEnglish: 'four (Tone 4 Sharp Drop)' },
+  // 2-Syllable Taiwan Word Combinations (for Extended / Quiet-Room verification)
+  { id: 'ts1', kind: 'two_syllable', promptAudio: '臺灣', options: ['Tone 2 + Tone 1 (Rising → High)', 'Tone 4 + Tone 3 (Drop → Low)'], correctOptionIdx: 0, targetTones: [2, 1], revealChar: '臺灣', revealZhuyin: 'ㄊㄞˊ ㄨㄢ', revealPinyin: 'Táiwān', revealEnglish: 'Taiwan (Rising ㄊㄞˊ + High Flat ㄨㄢ)' },
+  { id: 'ts2', kind: 'two_syllable', promptAudio: '咖啡', options: ['Tone 1 + Tone 1 (High → High)', 'Tone 2 + Tone 4 (Rising → Drop)'], correctOptionIdx: 0, targetTones: [1], revealChar: '咖啡', revealZhuyin: 'ㄎㄚ ㄈㄟ', revealPinyin: 'kāfēi', revealEnglish: 'coffee (Two steady High Tone 1 syllables)' },
+  { id: 'ts3', kind: 'two_syllable', promptAudio: '水餃', options: ['Tone 2 + Tone 3 (Rising → Low)', 'Tone 4 + Tone 4 (Drop → Drop)'], correctOptionIdx: 0, targetTones: [2, 3], revealChar: '水餃', revealZhuyin: 'ㄕㄨㄟˇ ㄐㄧㄠˇ', revealPinyin: 'shuǐjiǎo (spoken: shuíjiǎo)', revealEnglish: 'dumplings (3+3 sandhi → Rising + Low vs. 睡覺 shuìjiào 4+4!)' },
+];
+
+export interface ZhuyinBlindQuizItem {
+  id: string;
+  speakSample: string;
+  correctSymbol: string;
+  options: string[];
+  pinyin: string;
+  wordHint: string;
+}
+
+export const STAGE0_ZHUYIN_QUIZ_POOL: ZhuyinBlindQuizItem[] = [
+  { id: 'zq1', speakSample: '巴', correctSymbol: 'ㄅ', options: ['ㄅ', 'ㄆ', 'ㄇ', 'ㄈ'], pinyin: 'b', wordHint: '八 (bā)' },
+  { id: 'zq2', speakSample: '怕', correctSymbol: 'ㄆ', options: ['ㄅ', 'ㄆ', 'ㄉ', 'ㄊ'], pinyin: 'p', wordHint: '怕 (pà)' },
+  { id: 'zq3', speakSample: '大', correctSymbol: 'ㄉ', options: ['ㄉ', 'ㄊ', 'ㄋ', 'ㄌ'], pinyin: 'd', wordHint: '大 (dà)' },
+  { id: 'zq4', speakSample: '他', correctSymbol: 'ㄊ', options: ['ㄉ', 'ㄊ', 'ㄍ', 'ㄎ'], pinyin: 't', wordHint: '他 (tā)' },
+  { id: 'zq5', speakSample: '哥', correctSymbol: 'ㄍ', options: ['ㄍ', 'ㄎ', 'ㄏ', 'ㄐ'], pinyin: 'g', wordHint: '哥 (gē)' },
+  { id: 'zq6', speakSample: '可', correctSymbol: 'ㄎ', options: ['ㄍ', 'ㄎ', 'ㄏ', 'ㄑ'], pinyin: 'k', wordHint: '可 (kě)' },
+  { id: 'zq7', speakSample: '七', correctSymbol: 'ㄑ', options: ['ㄐ', 'ㄑ', 'ㄒ', 'ㄔ'], pinyin: 'q', wordHint: '七 (qī)' },
+  { id: 'zq8', speakSample: '西', correctSymbol: 'ㄒ', options: ['ㄐ', 'ㄑ', 'ㄒ', 'ㄙ'], pinyin: 'x', wordHint: '西 (xī)' },
+  { id: 'zq9', speakSample: '知', correctSymbol: 'ㄓ', options: ['ㄓ', 'ㄔ', 'ㄗ', 'ㄘ'], pinyin: 'zh', wordHint: '知 (zhī)' },
+  { id: 'zq10', speakSample: '次', correctSymbol: 'ㄘ', options: ['ㄓ', 'ㄔ', 'ㄗ', 'ㄘ'], pinyin: 'c', wordHint: '次 (cì)' },
+  { id: 'zq11', speakSample: '魚', correctSymbol: 'ㄩ', options: ['ㄧ', 'ㄨ', 'ㄩ', 'ㄜ'], pinyin: 'yu / ü', wordHint: '魚 (yú)' },
+  { id: 'zq12', speakSample: '湯', correctSymbol: 'ㄤ', options: ['ㄢ', 'ㄣ', 'ㄤ', 'ㄥ'], pinyin: 'ang', wordHint: '湯 (tāng)' },
 ];
 
 export interface ZhuyinSymbolLesson {
@@ -296,9 +351,9 @@ export const STAGE0_STROKE_RULES = [
 
 export const STAGE0_RADICAL_LEGEND = [
   { radical: '氵', meaning: 'Water / liquid', examples: '海 (ocean), 湯 (soup), 洗 (wash)' },
-  { radical: '口', meaning: 'Mouth / eating & talking', examples: '吃 (eat), 喝 (drink), 嗎 (?)' },
-  { radical: '言', meaning: 'Words / polite speech', examples: '請 (please), 謝 (thank), 說 (speak)' },
-  { radical: '木', meaning: 'Tree / wood', examples: '林 (forest), 桌 (table), 杯 (cup)' },
+  { radical: '口', meaning: 'Mouth / eating & talking', examples: '喝 (drink), 問 (ask), 嗎 (?)' },
+  { radical: '言', meaning: 'Words / polite speech', examples: '請 (please), 說 (speak), 話 (words)' },
+  { radical: '木', meaning: 'Tree / wood', examples: '林 (woods), 桌 (table), 杯 (cup)' },
   { radical: '日 / 月', meaning: 'Sun / moon / time', examples: '明 (bright/tomorrow), 早 (morning)' },
 ];
 
@@ -318,51 +373,51 @@ export interface RadicalQuizItem {
 export const STAGE0_RADICAL_QUIZ: RadicalQuizItem[] = [
   {
     id: 'rq1',
-    char: '海',
-    zhuyin: 'ㄏㄞˇ',
-    pinyin: 'hǎi',
-    meaningEn: 'ocean / sea',
+    char: '河',
+    zhuyin: 'ㄏㄜˊ',
+    pinyin: 'hé',
+    meaningEn: 'river',
     radical: '氵 (3 drops of water)',
-    breakdown: '氵 (water) + 每 (every)',
-    options: ['ocean / sea', 'wooden chair', 'loud speech'],
-    correctIdx: 0,
-    explain: 'The 3-drop water radical 氵 tells you it relates to water. Look for 氵 in 湯 (soup), 河 (river), and 洗 (wash)!',
+    breakdown: '氵 (water) + 可 (sound clue)',
+    options: ['wooden chair', 'river', 'loud speech'],
+    correctIdx: 1,
+    explain: 'The 3-drop water radical 氵 on the left signals water—just like 海 (ocean), 湯 (soup), and 洗 (wash)!',
   },
   {
     id: 'rq2',
-    char: '喝',
-    zhuyin: 'ㄏㄜ',
-    pinyin: 'hē',
-    meaningEn: 'to drink',
+    char: '吃',
+    zhuyin: 'ㄔ',
+    pinyin: 'chī',
+    meaningEn: 'to eat',
     radical: '口 (mouth)',
-    breakdown: '口 (mouth) + 曷 (sound clue)',
-    options: ['cold rain', 'to drink', 'fast train'],
-    correctIdx: 1,
-    explain: 'The mouth radical 口 on the left signals an action done with your mouth—just like 吃 (chī, eat) and 問 (wèn, ask)!',
+    breakdown: '口 (mouth) + 乞',
+    options: ['to eat', 'cold snow', 'fast train'],
+    correctIdx: 0,
+    explain: 'The mouth radical 口 on the left signals an action done with your mouth—just like 喝 (hē, drink) and 嗎 (question particle)!',
   },
   {
     id: 'rq3',
-    char: '請',
-    zhuyin: 'ㄑㄧㄥˇ',
-    pinyin: 'qǐng',
-    meaningEn: 'please / invite',
+    char: '謝',
+    zhuyin: 'ㄒㄧㄝˋ',
+    pinyin: 'xiè',
+    meaningEn: 'to thank (謝謝)',
     radical: '言 (words / speech)',
-    breakdown: '言 (speech) + 青 (qīng sound clue)',
-    options: ['hot fire', 'please / invite', 'mountain'],
-    correctIdx: 1,
-    explain: '言 (speech) gives the meaning (polite words), while 青 gives the pronunciation clue (qīng → qǐng)! Over 80% of Chinese characters work like this.',
+    breakdown: '言 (speech) + 射 (shè sound clue)',
+    options: ['hot fire', 'mountain', 'to thank (polite words)'],
+    correctIdx: 2,
+    explain: '言 (speech) tells you it involves polite words, while 射 hints at the sound! Over 80% of Chinese characters pair meaning + sound like this.',
   },
   {
     id: 'rq4',
-    char: '明',
-    zhuyin: 'ㄇㄧㄥˊ',
-    pinyin: 'míng',
-    meaningEn: 'bright / tomorrow',
-    radical: '日 + 月 (sun + moon)',
-    breakdown: '日 (sun) + 月 (moon)',
-    options: ['bright / tomorrow', 'heavy stone', 'green forest'],
-    correctIdx: 0,
-    explain: 'Sun (日) + Moon (月) side by side represent light and the next day: 明天 (míngtiān) = tomorrow!',
+    char: '森',
+    zhuyin: 'ㄙㄣ',
+    pinyin: 'sēn',
+    meaningEn: 'dense forest',
+    radical: '木 + 木 + 木 (three trees)',
+    breakdown: 'Three 木 (tree) blocks stacked together',
+    options: ['heavy stone', 'dense forest', 'bright morning'],
+    correctIdx: 1,
+    explain: 'One 木 is a tree, two 木 (林) are woods, and three 木 (森 sēn) mean a dense forest (森林 sēnlín)!',
   },
 ];
 
@@ -380,7 +435,7 @@ export const STAGE0_FIRST_10_PHRASES = [
 ];
 
 export const STAGE0_CAFE_ROLEPLAY = [
-  { clerkZh: '你好！請問要點什麼？', clerkPinyin: 'Nǐ hǎo! Qǐngwèn yào diǎn shénme?', clerkEn: 'Hello! What would you like to order?', options: [{ text: '我要一杯茶，謝謝。', pinyin: 'Wǒ yào yì bēi chá, xièxie.', en: 'I want a cup of tea, thanks.' }, { text: '再見！', pinyin: 'Zàijiàn!', en: 'Goodbye!' }], correctIdx: 0 },
-  { clerkZh: '好，一共五十塊。', clerkPinyin: 'Hǎo, yígòng wǔshí kuài.', clerkEn: 'Okay, that’s NT$50 total.', options: [{ text: '謝謝！', pinyin: 'Xièxie!', en: 'Thank you!' }, { text: '聽不懂。', pinyin: 'Tīng bù dǒng.', en: 'I don’t understand.' }], correctIdx: 0 },
-  { clerkZh: '需要袋子嗎？', clerkPinyin: 'Xūyào dàizi ma?', clerkEn: 'Do you need a bag?', options: [{ text: '不用，謝謝！', pinyin: 'Búyòng, xièxie!', en: 'No need, thanks!' }, { text: '請問？', pinyin: 'Qǐngwèn?', en: 'May I ask?' }], correctIdx: 0 },
+  { clerkZh: '你好！請問要點什麼？', clerkPinyin: 'Nǐ hǎo! Qǐngwèn yào diǎn shénme?', clerkEn: 'Hello! What would you like to order?', options: [{ text: '再見！', pinyin: 'Zàijiàn!', en: 'Goodbye!' }, { text: '我要一杯茶，謝謝。', pinyin: 'Wǒ yào yì bēi chá, xièxie.', en: 'I want a cup of tea, thanks.' }, { text: '聽不懂。', pinyin: 'Tīng bù dǒng.', en: 'I don’t understand.' }], correctIdx: 1 },
+  { clerkZh: '好，一共五十塊。', clerkPinyin: 'Hǎo, yígòng wǔshí kuài.', clerkEn: 'Okay, that’s NT$50 total.', options: [{ text: '謝謝！', pinyin: 'Xièxie!', en: 'Thank you!' }, { text: '請問洗手間在哪裡？', pinyin: 'Qǐngwèn xǐshǒujiān zài nǎlǐ?', en: 'Where is the bathroom?' }, { text: '不要辣。', pinyin: 'Búyào là.', en: 'Not spicy.' }], correctIdx: 0 },
+  { clerkZh: '需要袋子嗎？', clerkPinyin: 'Xūyào dàizi ma?', clerkEn: 'Do you need a bag?', options: [{ text: '請問？', pinyin: 'Qǐngwèn?', en: 'May I ask?' }, { text: '多少錢？', pinyin: 'Duōshǎo qián?', en: 'How much?' }, { text: '不用，謝謝！', pinyin: 'Búyòng, xièxie!', en: 'No need, thanks!' }], correctIdx: 2 },
 ];

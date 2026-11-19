@@ -33,6 +33,8 @@ export const PimsleurExplorerView: React.FC<{
   const [audioFirstHideText, setAudioFirstHideText] = useState<boolean>(false);
   const [recallMode, setRecallMode] = useState<boolean>(false);
   const [recallIdx, setRecallIdx] = useState<number>(0);
+  const [recallGotIt, setRecallGotIt] = useState<number>(0);
+  const [recallNotice, setRecallNotice] = useState<string | null>(null);
   const [countdown, setCountdown] = useState<number>(4);
   const [recallRevealed, setRecallRevealed] = useState<boolean>(false);
 
@@ -41,8 +43,10 @@ export const PimsleurExplorerView: React.FC<{
 
   useEffect(() => {
     setRecallIdx(0);
+    setRecallGotIt(0);
     setRecallRevealed(false);
     setCountdown(4);
+    if (recallMode) setRecallNotice(null);
   }, [activeUnit.unit, recallMode]);
 
   useEffect(() => {
@@ -52,22 +56,31 @@ export const PimsleurExplorerView: React.FC<{
   }, [recallMode, recallRevealed, countdown]);
 
   const handleRateRecall = (gotIt: boolean) => {
+    const nextGotIt = recallGotIt + (gotIt ? 1 : 0);
+    let updated = progress;
     if (activeRecall) {
-      onUpdateProgress(
-        recordWordPractice(
-          { ...progress, xp: progress.xp + (gotIt ? 10 : 4) },
-          { word: activeRecall.traditional.slice(0, 10), zhuyin: activeRecall.zhuyin, english: activeRecall.english },
-          gotIt,
-          gotIt ? 4 : 2
-        )
+      updated = recordWordPractice(
+        { ...progress, xp: progress.xp + (gotIt ? 10 : 4) },
+        { word: activeRecall.traditional.slice(0, 10), zhuyin: activeRecall.zhuyin, english: activeRecall.english },
+        gotIt,
+        gotIt ? 4 : 2
       );
     }
+    setRecallGotIt(nextGotIt);
     setRecallRevealed(false);
     setCountdown(4);
     if (recallIdx + 1 >= recallItems.length) {
-      if (!isDone) onUpdateProgress(togglePimsleurUnitComplete(progress, activeUnit.unit));
+      const pct = Math.round((nextGotIt / Math.max(1, recallItems.length)) * 100);
+      if (pct >= 75) {
+        if (!isDone) updated = togglePimsleurUnitComplete(updated, activeUnit.unit);
+        setRecallNotice(`✓ Recall Drill Passed (${nextGotIt}/${recallItems.length} · ${pct}%) — Unit ${activeUnit.unit} marked complete!`);
+      } else {
+        setRecallNotice(`Scored ${nextGotIt}/${recallItems.length} (${pct}%) — aim for ≥75% "Got It" to complete Unit ${activeUnit.unit}.`);
+      }
+      onUpdateProgress(updated);
       setRecallMode(false);
     } else {
+      onUpdateProgress(updated);
       setRecallIdx((i) => i + 1);
     }
   };
@@ -139,6 +152,12 @@ export const PimsleurExplorerView: React.FC<{
           </div>
         </div>
 
+        {recallNotice && (
+          <div className="fs-subtle-box p-3 text-sm font-semibold" style={{ color: recallNotice.startsWith('✓') ? 'var(--fs-accent-text)' : 'var(--fs-warm)' }}>
+            {recallNotice}
+          </div>
+        )}
+
         {/* Interactive 4-Second Pimsleur Anticipation Recall Mode */}
         {recallMode && activeRecall && (
           <div className="fs-subtle-box p-6 space-y-4">
@@ -151,37 +170,16 @@ export const PimsleurExplorerView: React.FC<{
             </div>
             {recallRevealed ? (
               <div className="fs-card p-5 space-y-4">
-                <RubyText
-                  text={activeRecall.traditional}
-                  zhuyin={activeRecall.zhuyin}
-                  pinyin={activeRecall.pinyin}
-                  showPinyinHint={progress.showPinyinHint}
-                  size="lg"
-                  zhuyinDisplayMode="always"
-                />
+                <RubyText text={activeRecall.traditional} zhuyin={activeRecall.zhuyin} pinyin={activeRecall.pinyin} showPinyinHint={progress.showPinyinHint} size="lg" zhuyinDisplayMode="always" />
                 <div className="flex flex-wrap gap-2">
-                  <StylusButton variant="secondary" onClick={() => onSpeak?.(activeRecall.traditional, 0.92)}>
-                    <span>Normal Audio</span>
-                  </StylusButton>
-                  <StylusButton variant="ghost" onClick={() => onSpeak?.(activeRecall.traditional, 0.65)}>
-                    <span>Slow (0.65x)</span>
-                  </StylusButton>
-                  <StylusButton variant="amber" onClick={() => handleRateRecall(false)}>
-                    <span>Needs Practice</span>
-                  </StylusButton>
-                  <StylusButton variant="primary" onClick={() => handleRateRecall(true)}>
-                    <span>Got It → Next</span>
-                  </StylusButton>
+                  <StylusButton variant="secondary" onClick={() => onSpeak?.(activeRecall.traditional, 0.92)}><span>Normal Audio</span></StylusButton>
+                  <StylusButton variant="ghost" onClick={() => onSpeak?.(activeRecall.traditional, 0.65)}><span>Slow (0.65x)</span></StylusButton>
+                  <StylusButton variant="amber" onClick={() => handleRateRecall(false)}><span>Needs Practice</span></StylusButton>
+                  <StylusButton variant="primary" onClick={() => handleRateRecall(true)}><span>Got It → Next</span></StylusButton>
                 </div>
               </div>
             ) : (
-              <StylusButton
-                variant="primary"
-                onClick={() => {
-                  setRecallRevealed(true);
-                  onSpeak?.(activeRecall.traditional, 0.9);
-                }}
-              >
+              <StylusButton variant="primary" onClick={() => { setRecallRevealed(true); onSpeak?.(activeRecall.traditional, 0.9); }}>
                 <span>Reveal Answer &amp; Hear Native Audio</span>
               </StylusButton>
             )}
@@ -205,27 +203,13 @@ export const PimsleurExplorerView: React.FC<{
                     (Text hidden for ear training — listen first, then toggle Show Text)
                   </div>
                 ) : (
-                  <RubyText
-                    text={d.traditional}
-                    zhuyin={d.zhuyin}
-                    pinyin={d.pinyin}
-                    showPinyinHint={progress.showPinyinHint}
-                    size="md"
-                    zhuyinDisplayMode={progress.zhuyinDisplayMode}
-                    charMastery={progress.charMastery}
-                  />
+                  <RubyText text={d.traditional} zhuyin={d.zhuyin} pinyin={d.pinyin} showPinyinHint={progress.showPinyinHint} size="md" zhuyinDisplayMode={progress.zhuyinDisplayMode} charMastery={progress.charMastery} />
                 )}
-                <div className="text-sm font-medium" style={{ color: 'var(--fs-text-secondary)' }}>
-                  {d.english}
-                </div>
+                <div className="text-sm font-medium" style={{ color: 'var(--fs-text-secondary)' }}>{d.english}</div>
               </div>
               <div className="flex gap-1.5 shrink-0">
-                <StylusButton variant="secondary" onClick={() => onSpeak?.(d.traditional, 0.92)}>
-                  <span>Normal</span>
-                </StylusButton>
-                <StylusButton variant="ghost" onClick={() => onSpeak?.(d.traditional, 0.65)}>
-                  <span>Slow</span>
-                </StylusButton>
+                <StylusButton variant="secondary" onClick={() => onSpeak?.(d.traditional, 0.92)}><span>Normal</span></StylusButton>
+                <StylusButton variant="ghost" onClick={() => onSpeak?.(d.traditional, 0.65)}><span>Slow</span></StylusButton>
               </div>
             </div>
           ))}
@@ -307,23 +291,31 @@ export const NtnuExplorerView: React.FC<{
   const lessonKey = `${activeVolume.volume}-${activeLesson.lesson}`;
   const isDone = completedSet.has(lessonKey);
   const [queuedNotice, setQueuedNotice] = useState<string | null>(null);
-  const [quizChoice, setQuizChoice] = useState<number | null>(null);
+  const [quizChoice, setQuizChoice] = useState<string | null>(null);
+  const [quizIdx, setQuizIdx] = useState<number>(0);
+  const [quizCorrectCount, setQuizCorrectCount] = useState<number>(0);
+  const [hideVocabList, setHideVocabList] = useState<boolean>(false);
 
   useEffect(() => {
     setQueuedNotice(null);
     setQuizChoice(null);
+    setQuizIdx(0);
+    setQuizCorrectCount(0);
   }, [lessonKey]);
 
   const lessonVocab = activeLesson.keyVocab || [];
-  const quizTarget = lessonVocab[0];
+  const quizTarget = lessonVocab[quizIdx % Math.max(1, lessonVocab.length)];
   const quizOptions = useMemo(() => {
     if (!quizTarget) return [];
-    const distractors = activeVolume.lessons
-      .flatMap((l) => l.keyVocab || [])
-      .filter((v) => v.traditional !== quizTarget.traditional)
-      .slice(0, 2);
-    return [quizTarget, ...distractors];
-  }, [quizTarget, activeVolume]);
+    const pool = activeVolume.lessons.flatMap((l) => l.keyVocab || []).filter((v) => v.traditional !== quizTarget.traditional);
+    const distractors = pool.slice(0, 3);
+    const merged = [quizTarget, ...distractors];
+    for (let i = merged.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [merged[i], merged[j]] = [merged[j], merged[i]];
+    }
+    return merged;
+  }, [quizTarget, activeVolume, quizIdx]);
 
   const handleQueueAllLessonVocab = () => {
     let next = progress;
@@ -456,11 +448,15 @@ export const NtnuExplorerView: React.FC<{
                 <h3 className="text-sm font-bold uppercase tracking-wider" style={{ color: 'var(--fs-text-secondary)' }}>
                   Key Vocabulary ({lessonVocab.length})
                 </h3>
-                <StylusButton variant="secondary" onClick={handleQueueAllLessonVocab}>
-                  <span>Add All to FSRS Queue</span>
-                </StylusButton>
+                <div className="flex flex-wrap gap-2">
+                  <StylusButton variant="ghost" onClick={() => setHideVocabList((v) => !v)}>
+                    <span>{hideVocabList ? 'Show Vocab List' : 'Hide Vocab for Check'}</span>
+                  </StylusButton>
+                  <StylusButton variant="secondary" onClick={handleQueueAllLessonVocab}><span>Add All to FSRS Queue</span></StylusButton>
+                </div>
               </div>
               {queuedNotice && <div className="text-xs font-semibold" style={{ color: 'var(--fs-accent-text)' }}>{queuedNotice}</div>}
+              {!hideVocabList && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {lessonVocab.map((item, idx) => (
                   <button
@@ -483,28 +479,43 @@ export const NtnuExplorerView: React.FC<{
                   </button>
                 ))}
               </div>
+              )}
             </div>
           )}
 
           {quizTarget && quizOptions.length >= 2 && (
             <div className="fs-subtle-box p-4 space-y-2.5">
-              <div className="text-xs font-bold uppercase" style={{ color: 'var(--fs-accent-text)' }}>
-                Quick Lesson Check · What does 「{quizTarget.traditional}」 ({quizTarget.pinyin}) mean?
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="text-xs font-bold uppercase" style={{ color: 'var(--fs-accent-text)' }}>
+                  Shuffled Lesson Check ({quizIdx + 1}/{Math.min(3, lessonVocab.length)} · Score: {quizCorrectCount}) · Listen &amp; pick the meaning of 「{quizTarget.traditional}」
+                </div>
+                <StylusButton variant="ghost" onClick={() => onSpeak?.(quizTarget.traditional, 0.85)}><span>Play Word</span></StylusButton>
               </div>
               <div className="flex flex-wrap gap-2">
-                {quizOptions.map((opt, idx) => (
-                  <StylusButton
-                    key={opt.traditional}
-                    variant={quizChoice === idx ? (idx === 0 ? 'primary' : 'danger') : 'secondary'}
-                    onClick={() => {
-                      setQuizChoice(idx);
-                      onSpeak?.(quizTarget.traditional, 0.85);
-                    }}
-                  >
-                    <span>{opt.english}</span>
-                  </StylusButton>
-                ))}
+                {quizOptions.map((opt) => {
+                  const isRight = opt.traditional === quizTarget.traditional;
+                  return (
+                    <StylusButton
+                      key={opt.traditional}
+                      variant={quizChoice === opt.traditional ? (isRight ? 'primary' : 'danger') : 'secondary'}
+                      onClick={() => {
+                        if (quizChoice === null && isRight) setQuizCorrectCount((c) => c + 1);
+                        setQuizChoice(opt.traditional);
+                        onSpeak?.(quizTarget.traditional, 0.85);
+                      }}
+                    >
+                      <span>{opt.english}</span>
+                    </StylusButton>
+                  );
+                })}
               </div>
+              {quizChoice !== null && lessonVocab.length > 1 && (
+                <div className="flex justify-end">
+                  <StylusButton variant="secondary" onClick={() => { setQuizChoice(null); setQuizIdx((i) => (i + 1) % Math.min(3, lessonVocab.length)); }}>
+                    <span>Next Question →</span>
+                  </StylusButton>
+                </div>
+              )}
             </div>
           )}
 
