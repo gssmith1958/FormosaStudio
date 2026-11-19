@@ -460,3 +460,26 @@ export const RETROFLEX_MINIMAL_PAIRS: RetroflexMinimalPair[] = [
   { id: 'mp-9', retroflexWord: '商業', retroflexZhuyin: 'ㄕㄤ ㄧㄝˋ', retroflexPinyin: 'shāngyè', retroflexMeaningEn: 'commerce / business', retroflexInitial: 'ㄕ', flatWord: '桑葉', flatZhuyin: 'ㄙㄤ ㄧㄝˋ', flatPinyin: 'sāngyè', flatMeaningEn: 'mulberry leaf', flatInitial: 'ㄙ', articulatoryTipEn: 'Keep the tongue tip slightly raised for ㄕㄤ and flat against the teeth for ㄙㄤ.', taiwanSociolinguisticNote: 'Identical rhyme ㄤ and tone (Tone 1), making initial placement the sole cue.' },
   { id: 'mp-10', retroflexWord: '日本', retroflexZhuyin: 'ㄖˋ ㄅㄣˇ', retroflexPinyin: 'Rìběn', retroflexMeaningEn: 'Japan', retroflexInitial: 'ㄖ', flatWord: '字本', flatZhuyin: 'ㄗˋ ㄅㄣˇ', flatPinyin: 'zìběn', flatMeaningEn: 'character workbook', flatInitial: 'ㄗ', articulatoryTipEn: 'ㄖ is a voiced postalveolar approximant/fricative (no dental closure); ㄗ is an unvoiced dental affricate.', taiwanSociolinguisticNote: 'In Southern Taiwan, older speakers sometimes realize ㄖ closer to [dz/l], so clarity on ㄖ vs. ㄗ aids comprehension.' },
 ];
+
+export async function playFloat32Waveform(
+  samples: Float32Array,
+  sampleRate: number = 44100,
+  existingCtx?: AudioContext | null
+): Promise<AudioContext | null> {
+  if (typeof window === 'undefined') return existingCtx || null;
+  const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+  if (!AudioCtx) return existingCtx || null;
+  try {
+    const ctx = existingCtx || new AudioCtx();
+    if (ctx.state === 'suspended') await ctx.resume();
+    const buf = ctx.createBuffer(1, samples.length, sampleRate);
+    buf.getChannelData(0).set(samples);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(ctx.destination);
+    src.start();
+    return ctx;
+  } catch {
+    return existingCtx || null;
+  }
+}

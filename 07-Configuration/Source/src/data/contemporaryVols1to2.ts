@@ -107,7 +107,7 @@ export const CONTEMPORARY_VOLS_1_TO_2: ContemporaryVolumeOverview[] = [
         titleEnglish: 'Beef Noodles Are Really Delicious',
         topic: '飲食 Food and Drink',
         grammarPoints: ['有一點 yǒu yìdiǎn (slightly)', 'Complement Marker 得 de', 'Acquired Skills 會 huì', 'Destination Marker 到 dào'],
-        culturalNote: 'Night Market Street Vendors in Taiwan (夜市小吃) &の小籠包.',
+        culturalNote: 'Night Market Street Vendors in Taiwan (夜市小吃) & Soup Dumplings (小籠包).',
         keyVocab: [
           { traditional: '牛肉麵', zhuyin: 'ㄋㄧㄡˊ ㄖㄡˋ ㄇㄧㄢˋ', pinyin: 'niúròumiàn', english: 'beef noodle soup' },
           { traditional: '小籠包', zhuyin: 'ㄒㄧㄠˇ ㄌㄨㄥˊ ㄅㄠ', pinyin: 'xiǎolóngbāo', english: 'soup dumplings' },

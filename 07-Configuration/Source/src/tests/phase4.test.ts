@@ -4,6 +4,7 @@
  */
 
 import { tokenizeAndAnnotate, detectToneSandhi } from '../lib/zhuyinTokenizer.ts';
+import { parseZhuyinSyllable } from '../lib/zhuyinTypes.ts';
 import { analyzePassageComprehensibility, generatePassageClozes } from '../lib/readingEngine.ts';
 import { REGISTER_BRIDGE_PAIRS } from '../data/gradedStoriesData.ts';
 import {
@@ -49,10 +50,19 @@ import {
 import {
   createInitialProgressState,
   exportProgressJson,
+  getOverallPathwaySummary,
+  getStage0Summary,
+  getTodayProgressSummary,
   importProgressJson,
+  markDailyStepComplete,
+  markStage0ModuleComplete,
   recordStrokePractice,
   recordWordPractice,
+  toggleNtnuLessonComplete,
+  togglePimsleurUnitComplete,
 } from '../lib/progressStore.ts';
+import { STAGE0_MODULES, STAGE0_RADICAL_QUIZ, STAGE0_ZHUYIN_FAMILIES } from '../data/stage0BeginnerData.ts';
+import { PIMSLEUR_UNITS } from '../data/pimsleurUnitsB.ts';
 import {
   STUDIO_DEFINITIONS,
   clearStudioHandoff,
@@ -310,6 +320,51 @@ describe('Phase 4 Suite 7: Unified Shell, In-App Manual (FORM-REQ-0023) & Cross-
     state = recordStrokePractice(state, { char: '臺', zhuyin: 'ㄊㄞˊ', accuracy: 98 }, true, 4);
     expect(state.charMastery['臺'].level).toBeGreaterThanOrEqual(2);
     expect(state.strokeMastery['臺'].attemptCount).toBe(3);
+
+    // Verify Daily 10-Min Progress Ring & 6-Stage Learning Pathway persistence (v1.1.0 HMI)
+    state = markDailyStepComplete(state, 1);
+    const today = getTodayProgressSummary(state);
+    expect(today.minutesCompleted).toBe(3);
+    expect(today.percentComplete).toBe(30);
+    expect(today.nextStep).toBe(2);
+
+    state = togglePimsleurUnitComplete(state, 1);
+    state = toggleNtnuLessonComplete(state, '1-1');
+    const pathway = getOverallPathwaySummary(state);
+    expect(pathway.completedLessonsTotal).toBe(2);
+    expect(pathway.stages.length).toBe(6);
+    expect(pathway.currentStage.stageNumber).toBe(1);
+    expect(pathway.currentStage.completedUnits).toBe(2);
+
+    // Verify Stage 0 Beginner Launchpad, Pinyin training wheels & Taiwanized Pimsleur (v1.2.0 / FORM-LL-009)
+    expect(createInitialProgressState().showPinyinHint).toBe(true);
+    expect(STAGE0_MODULES.length).toBe(5);
+    const totalZhuyinSymbols = STAGE0_ZHUYIN_FAMILIES.reduce((acc, f) => acc + f.symbols.length, 0);
+    expect(totalZhuyinSymbols).toBe(37);
+    expect(STAGE0_ZHUYIN_FAMILIES[0].symbols[0].englishCue.startsWith('b ')).toBe(true);
+    expect(STAGE0_ZHUYIN_FAMILIES.every((f) => f.blends.length >= 5)).toBe(true);
+    expect(STAGE0_ZHUYIN_FAMILIES[0].blends.every((b) => ['ㄅ', 'ㄆ', 'ㄇ', 'ㄈ'].includes(b.zhuyin[0]))).toBe(true);
+    expect(STAGE0_RADICAL_QUIZ.every((q) => Boolean(q.zhuyin && q.pinyin && q.meaningEn))).toBe(true);
+    expect(SURVIVAL_MODULES[0].labels.some((l) => l.traditional.includes('洗手間'))).toBe(true);
+    expect(SURVIVAL_MODULES[1].labels.some((l) => l.traditional.includes('多少錢'))).toBe(true);
+    expect(SURVIVAL_MODULES[2].labels.some((l) => l.traditional.includes('怎麼走'))).toBe(true);
+    state = markStage0ModuleComplete(state, '0.1');
+    expect(getStage0Summary(state).completedCount).toBe(1);
+    expect(PIMSLEUR_UNITS.every((u) => !u.dialogues.some((d) => d.traditional.includes('普通話') || d.traditional.includes('一點兒')))).toBe(true);
+
+    // Verify exact tone-marked Hanyu Pinyin conversion from Zhuyin (no garbled dwuei/bwu/qyi)
+    expect(parseZhuyinSyllable('ㄉㄨㄟˋ').pinyin).toBe('duì');
+    expect(parseZhuyinSyllable('ㄅㄨˋ').pinyin).toBe('bù');
+    expect(parseZhuyinSyllable('ㄑㄧˇ').pinyin).toBe('qǐ');
+    expect(parseZhuyinSyllable('ㄨㄛˇ').pinyin).toBe('wǒ');
+    expect(parseZhuyinSyllable('ㄇㄧㄥˊ').pinyin).toBe('míng');
+    expect(parseZhuyinSyllable('ㄏㄨㄟˋ').pinyin).toBe('huì');
+    expect(parseZhuyinSyllable('ㄕㄨㄛ').pinyin).toBe('shuō');
+    expect(parseZhuyinSyllable('ㄓㄨㄥ').pinyin).toBe('zhōng');
+    expect(parseZhuyinSyllable('ㄒㄧㄝˋ').pinyin).toBe('xiè');
+    expect(parseZhuyinSyllable('ㄌㄩˋ').pinyin).toBe('lǜ');
+    expect(parseZhuyinSyllable('ㄓ').pinyin).toBe('zhī');
+    expect(parseZhuyinSyllable('˙ㄇㄚ').pinyin).toBe('ma');
   });
 });
 

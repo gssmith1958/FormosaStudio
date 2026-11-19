@@ -101,7 +101,7 @@ export const GlobalOmnibarModal: React.FC<GlobalOmnibarModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Global Omnibar Search" className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-start justify-center p-4 pt-12">
+    <div role="dialog" aria-modal="true" aria-label="Global Omnibar Search" className="fixed inset-0 z-50 fs-modal-backdrop backdrop-blur-sm flex items-start justify-center p-4 pt-12">
       <div className="w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl p-5 space-y-4">
         <div className="flex items-center justify-between gap-3">
           <div className="text-sm font-extrabold text-emerald-300 uppercase tracking-wider">
@@ -395,7 +395,7 @@ export const InteractiveHelpManualDrawer: React.FC<InteractiveHelpManualDrawerPr
   if (!isOpen) return null;
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="FormosaStudio User Manual and Reference Guide" className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+    <div role="dialog" aria-modal="true" aria-label="FormosaStudio User Manual and Reference Guide" className="fixed inset-0 z-50 fs-modal-backdrop backdrop-blur-sm flex items-center justify-center p-4">
       <div className="w-full max-w-4xl max-h-[88vh] overflow-y-auto bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl p-6 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
           <div>

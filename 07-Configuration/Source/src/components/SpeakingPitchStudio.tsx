@@ -13,6 +13,7 @@ import {
   detectPitchYinOffline,
   generateReferenceToneWaveform,
   getReferenceChaoContour,
+  playFloat32Waveform,
 } from '../lib/pitchContourEngine.ts';
 import { UserProgressState, recordWordPractice } from '../lib/progressStore.ts';
 import {
@@ -72,15 +73,22 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
   );
   const [liveHzReadout, setLiveHzReadout] = useState<number | null>(158.4);
   const [isRecording, setIsRecording] = useState<boolean>(false);
+  const [micStatus, setMicStatus] = useState<string>('Ready — click Record, speak the phrase, then click Stop.');
+  const [micLevelPct, setMicLevelPct] = useState<number>(0);
   const [lastRecordedBuffer, setLastRecordedBuffer] = useState<Float32Array | null>(null);
+  const [recordedAudioUrl, setRecordedAudioUrl] = useState<string | null>(null);
   const [selectedPairIdx, setSelectedPairIdx] = useState<number>(0);
   const [listeningTargetIsRetroflex, setListeningTargetIsRetroflex] = useState<boolean>(true);
   const [listeningQuizResult, setListeningQuizResult] = useState<string | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const intervalRef = useRef<number | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordedChunksRef = useRef<Blob[]>([]);
+  const capturedChaoRef = useRef<number[]>([]);
   useEffect(() => () => {
     if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
+    if (mediaRecorderRef.current?.state === 'recording') mediaRecorderRef.current.stop();
     streamRef.current?.getTracks().forEach((t) => t.stop());
   }, []);
   const activePreset =
@@ -118,58 +126,9 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
       sourceLabel: 'Speaking & Pitch Lab',
     });
   }, [subTab, selectedTonePreset, selectedSandhiId]);
-  const playFloat32Waveform = (samples: Float32Array, sampleRate: number = 44100) => {
-    if (typeof window === 'undefined') return;
-    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    if (!AudioCtx) return;
-    try {
-      const ctx = audioCtxRef.current || new AudioCtx();
-      audioCtxRef.current = ctx;
-      const buf = ctx.createBuffer(1, samples.length, sampleRate);
-      buf.getChannelData(0).set(samples);
-      const src = ctx.createBufferSource();
-      src.buffer = buf;
-      src.connect(ctx.destination);
-      src.start();
-    } catch {
-      // Ignore AudioContext autoplay restrictions in headless tests
-    }
-  };
-  // Simulate or Capture Offline YIN Pitch Extraction
-  const handleSimulateCapture = (quality: 'excellent' | 'flat_error') => {
-    const simulatedContour =
-      quality === 'excellent'
-        ? targetCurve.map((v, i) => Number(Math.max(1, Math.min(5, v + Math.sin(i) * 0.14)).toFixed(2)))
-        : new Array(20).fill(3.1);
-    const wave = generateReferenceToneWaveform({
-      chaoContour: simulatedContour, durationSec: 0.5, sampleRate: 44100, speakerFloorHz: speakerRange.floorHz,
-      speakerCeilingHz: speakerRange.ceilingHz,
-    });
-    setLastRecordedBuffer(wave);
-    // Run real offline YIN detector across 20 overlapping windows of the waveform
-    const windowSize = 1800;
-    const step = Math.floor((wave.length - windowSize) / 19);
-    const extractedChao: number[] = [];
-    let lastValidHz: number | null = null;
-    for (let w = 0; w < 20; w++) {
-      const start = Math.max(0, w * step);
-      const slice = wave.subarray(start, start + windowSize);
-      const res = detectPitchYinOffline(
-        slice,
-        44100,
-        speakerRange.floorHz,
-        speakerRange.ceilingHz
-      );
-      if (res.chaoLevel !== null) {
-        extractedChao.push(res.chaoLevel);
-        lastValidHz = res.f0Hz;
-      } else {
-        extractedChao.push(simulatedContour[w]);
-      }
-    }
-    setUserChaoCurve(extractedChao);
-    if (lastValidHz !== null) setLiveHzReadout(lastValidHz);
-    const report = computeToneContourMatchScore(targetCurve, extractedChao);
+  const commitCapturedContour = (contour: number[]) => {
+    setUserChaoCurve(contour);
+    const report = computeToneContourMatchScore(targetCurve, contour);
     const itemWord = subTab === 'sandhi_coach' ? activeSandhi.hanzi : activePreset.exampleChar;
     const itemZhuyin = subTab === 'sandhi_coach' ? activeSandhi.spokenSandhiZhuyin : activePreset.exampleZhuyin;
     const itemEn = subTab === 'sandhi_coach' ? activeSandhi.english : activePreset.exampleEnglish;
@@ -181,83 +140,122 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
         report.matchScore >= 88 ? 4 : report.matchScore >= 72 ? 3 : 2
       )
     );
+    return report;
+  };
+  const handleSimulateCapture = (quality: 'excellent' | 'flat_error') => {
+    const simulatedContour =
+      quality === 'excellent'
+        ? targetCurve.map((v, i) => Number(Math.max(1, Math.min(5, v + Math.sin(i) * 0.14)).toFixed(2)))
+        : new Array(20).fill(3.1);
+    const wave = generateReferenceToneWaveform({
+      chaoContour: simulatedContour, durationSec: 0.5, sampleRate: 44100, speakerFloorHz: speakerRange.floorHz,
+      speakerCeilingHz: speakerRange.ceilingHz,
+    });
+    if (recordedAudioUrl) URL.revokeObjectURL(recordedAudioUrl);
+    setRecordedAudioUrl(null);
+    setLastRecordedBuffer(wave);
+    const windowSize = 1800;
+    const step = Math.floor((wave.length - windowSize) / 19);
+    const extractedChao: number[] = [];
+    let lastValidHz: number | null = null;
+    for (let w = 0; w < 20; w++) {
+      const start = Math.max(0, w * step);
+      const res = detectPitchYinOffline(wave.subarray(start, start + windowSize), 44100, speakerRange.floorHz, speakerRange.ceilingHz);
+      if (res.chaoLevel !== null) {
+        extractedChao.push(res.chaoLevel);
+        lastValidHz = res.f0Hz;
+      } else {
+        extractedChao.push(simulatedContour[w]);
+      }
+    }
+    if (lastValidHz !== null) setLiveHzReadout(lastValidHz);
+    const report = commitCapturedContour(extractedChao);
+    setMicStatus(`Simulated ${quality === 'excellent' ? 'native match' : 'monotone error'} (${report.matchScore}%).`);
+  };
+  const stopLiveMicCapture = () => {
+    if (intervalRef.current !== null) { window.clearInterval(intervalRef.current); intervalRef.current = null; }
+    if (mediaRecorderRef.current?.state === 'recording') mediaRecorderRef.current.stop();
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+    setIsRecording(false);
+    setMicLevelPct(0);
+    const frames = capturedChaoRef.current;
+    if (frames.length >= 2) {
+      const report = commitCapturedContour([...frames]);
+      setMicStatus(`Captured ${frames.length} voiced frames — Tone Match: ${report.matchScore}%. Click Replay to hear your voice.`);
+    } else {
+      setMicStatus('Mic was silent or too quiet — speak clearly near your microphone and try again.');
+    }
   };
   const handleToggleLiveMic = async () => {
-    if (isRecording) {
-      if (intervalRef.current !== null) {
-        window.clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      setIsRecording(false);
-      streamRef.current?.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
-      return;
-    }
+    if (isRecording) { stopLiveMicCapture(); return; }
     if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
-      handleSimulateCapture('excellent');
+      setMicStatus('Browser microphone API unavailable (requires localhost/HTTPS). Use Simulate buttons to test.');
       return;
     }
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: true, autoGainControl: true } });
       streamRef.current = stream;
-      setIsRecording(true);
+      capturedChaoRef.current = [];
+      recordedChunksRef.current = [];
+      if (typeof MediaRecorder !== 'undefined') {
+        const rec = new MediaRecorder(stream);
+        rec.ondataavailable = (ev) => { if (ev.data.size > 0) recordedChunksRef.current.push(ev.data); };
+        rec.onstop = () => {
+          if (recordedChunksRef.current.length > 0) {
+            const nextUrl = URL.createObjectURL(new Blob(recordedChunksRef.current, { type: rec.mimeType || 'audio/webm' }));
+            setRecordedAudioUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return nextUrl; });
+          }
+        };
+        rec.start();
+        mediaRecorderRef.current = rec;
+      }
       const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       const ctx = audioCtxRef.current || new AudioCtx();
       audioCtxRef.current = ctx;
+      if (ctx.state === 'suspended') await ctx.resume();
       const source = ctx.createMediaStreamSource(stream);
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 2048;
       source.connect(analyser);
-      const collectedChao: number[] = [];
-      const collectedSamples: number[] = [];
       const tempBuf = new Float32Array(analyser.fftSize);
+      const startedAt = Date.now();
+      setIsRecording(true);
+      setMicStatus('Listening… speak the character or phrase now, then click Stop.');
       intervalRef.current = window.setInterval(() => {
         analyser.getFloatTimeDomainData(tempBuf);
-        const frame = detectPitchYinOffline(
-          tempBuf,
-          ctx.sampleRate,
-          speakerRange.floorHz,
-          speakerRange.ceilingHz
-        );
+        const frame = detectPitchYinOffline(tempBuf, ctx.sampleRate, speakerRange.floorHz, speakerRange.ceilingHz, 0.004, 0.22);
+        setMicLevelPct(Math.min(100, Math.round(frame.rms * 650)));
         if (frame.f0Hz !== null && frame.chaoLevel !== null) {
           setLiveHzReadout(frame.f0Hz);
-          collectedChao.push(frame.chaoLevel);
-          for (let i = 0; i < tempBuf.length; i += 4) {
-            collectedSamples.push(tempBuf[i]);
-          }
+          capturedChaoRef.current.push(frame.chaoLevel);
+          if (capturedChaoRef.current.length >= 2) setUserChaoCurve([...capturedChaoRef.current]);
+          setMicStatus(`Capturing voice… ${capturedChaoRef.current.length} voiced frames (${frame.f0Hz} Hz)`);
         }
-        if (collectedChao.length >= 20) {
-          if (intervalRef.current !== null) {
-            window.clearInterval(intervalRef.current);
-            intervalRef.current = null;
-          }
-          stream.getTracks().forEach((t) => t.stop());
-          setIsRecording(false);
-          setUserChaoCurve(collectedChao.slice(0, 20));
-          setLastRecordedBuffer(new Float32Array(collectedSamples));
-        }
-      }, 65);
-    } catch {
-      // Fallback cleanly if microphone permission is declined or unavailable
-      handleSimulateCapture('excellent');
+        if (capturedChaoRef.current.length >= 40 || Date.now() - startedAt > 4500) stopLiveMicCapture();
+      }, 45);
+    } catch (err) {
+      setMicStatus(`Microphone unavailable or permission denied (${err instanceof Error ? err.message : 'check browser permissions'}).`);
     }
   };
   const handleReplayComparison = () => {
-    const userWave =
-      lastRecordedBuffer ||
-      generateReferenceToneWaveform({
-        chaoContour: userChaoCurve, durationSec: 0.45, speakerFloorHz: speakerRange.floorHz, speakerCeilingHz: speakerRange.ceilingHz,
-      });
-    const nativeWave = generateReferenceToneWaveform({
-      chaoContour: targetCurve, durationSec: 0.45, speakerFloorHz: speakerRange.floorHz, speakerCeilingHz: speakerRange.ceilingHz,
-    });
-    playFloat32Waveform(userWave, 44100);
-    if (onSpeak) {
-      const text = subTab === 'sandhi_coach' ? activeSandhi.hanzi : activePreset.exampleChar;
-      window.setTimeout(() => onSpeak(text), 520);
-    } else {
-      window.setTimeout(() => playFloat32Waveform(nativeWave, 44100), 520);
+    const text = subTab === 'sandhi_coach' ? activeSandhi.hanzi : activePreset.exampleChar;
+    const playNative = () => {
+      if (onSpeak) { onSpeak(text); return; }
+      const nativeWave = generateReferenceToneWaveform({ chaoContour: targetCurve, durationSec: 0.45, speakerFloorHz: speakerRange.floorHz, speakerCeilingHz: speakerRange.ceilingHz });
+      void playFloat32Waveform(nativeWave, 44100, audioCtxRef.current).then((c) => { audioCtxRef.current = c; });
+    };
+    if (recordedAudioUrl) {
+      const audio = new Audio(recordedAudioUrl);
+      audio.onended = () => window.setTimeout(playNative, 260);
+      audio.onerror = () => playNative();
+      audio.play().catch(() => playNative());
+      setMicStatus('Playing your recorded voice → followed by native Taiwanese reference…');
+      return;
     }
+    const userWave = lastRecordedBuffer || generateReferenceToneWaveform({ chaoContour: userChaoCurve, durationSec: 0.45, speakerFloorHz: speakerRange.floorHz, speakerCeilingHz: speakerRange.ceilingHz });
+    void playFloat32Waveform(userWave, 44100, audioCtxRef.current).then((c) => { audioCtxRef.current = c; });
+    window.setTimeout(playNative, 560);
   };
   const activePair = RETROFLEX_MINIMAL_PAIRS[selectedPairIdx] || RETROFLEX_MINIMAL_PAIRS[0];
   // Build SVG polyline strings for Dual-Curve Chao 1..5 Visualizer
@@ -279,9 +277,9 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
     <div className="space-y-5">
       <StudioHeaderBanner
         studioId="speaking"
-        titleZh="發音聲調與雙曲線 F0 實驗室"
-        titleEn="Speaking, Offline YIN Pitch Contour & Minimal-Pair Lab"
-        subtitle="100% offline WebAudio time-domain YIN autocorrelation F0 extractor (75–450 Hz, < 3 Hz error), Speaker-Normalized Chao 1–5 Dual-Curve Visualizer, Taiwan Tone Sandhi Coach, and ㄓㄔㄕㄖ vs. ㄗㄘㄙ Minimal-Pair Lab."
+        titleZh="發音聲調教練"
+        titleEn="Live Tone Pitch Coach & Listening Lab"
+        subtitle="Record your voice offline to compare your spoken tone contour (blue) against the native Taiwanese melody (green), practice spoken tone shifts, and train curled (ㄓㄔㄕㄖ) vs. flat (ㄗㄘㄙ) tongue sounds."
         rightSlot={
           <div className="flex flex-wrap items-center gap-2">
             <StylusButton
@@ -330,6 +328,7 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
                   <RubyText
                     text={activePreset.exampleChar}
                     zhuyin={activePreset.exampleZhuyin}
+                    showPinyinHint={progress.showPinyinHint}
                     size="xl"
                     zhuyinDisplayMode="always"
                   />
@@ -365,6 +364,7 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
                       text={activeSandhi.hanzi}
                       zhuyin={activeSandhi.spokenSandhiZhuyin}
                       pinyin={activeSandhi.pinyin}
+                      showPinyinHint={progress.showPinyinHint}
                       size="lg"
                       zhuyinDisplayMode="always"
                     />
@@ -431,13 +431,23 @@ export const SpeakingPitchStudio: React.FC<SpeakingPitchStudioProps> = ({
               </svg>
             </div>
             <div
-              className={`rounded-2xl p-3.5 text-xs sm:text-sm border ${
+              className={`rounded-2xl p-3.5 text-xs sm:text-sm border space-y-2 ${
                 matchReport.passed
                   ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-100'
                   : 'bg-rose-950/60 border-rose-500/50 text-rose-100'
               }`}
             >
-              <strong>Tone Match Score: {matchReport.matchScore}%</strong> — {matchReport.diagnosticFeedbackEn}
+              <div>
+                <strong>Tone Match Score: {matchReport.matchScore}%</strong> — {matchReport.diagnosticFeedbackEn}
+              </div>
+              <div className="flex items-center justify-between gap-3 text-xs opacity-90">
+                <span>{micStatus}</span>
+                {isRecording && (
+                  <div className="w-28 h-2 rounded-full overflow-hidden shrink-0" style={{ backgroundColor: 'var(--fs-surface)' }}>
+                    <div className="h-full transition-all duration-75" style={{ width: `${micLevelPct}%`, backgroundColor: 'var(--fs-accent)' }} />
+                  </div>
+                )}
+              </div>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <StylusButton variant={isRecording ? 'danger' : 'primary'} onClick={handleToggleLiveMic} >

@@ -297,6 +297,7 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
                                 charMastery={progress.charMastery}
                                 showPinyinHint={progress.showPinyinHint}
                                 size="lg"
+                                nonInteractive
                               />
                             </button>
                           );
@@ -450,7 +451,7 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
                     onClick={() => handleInspectWord(seg)}
                     className="rounded-lg border border-slate-800 hover:border-teal-500/60 px-1.5 py-1"
                   >
-                    <RubyText text={seg.text} zhuyin={seg.writtenZhuyin} zhuyinDisplayMode="always" size="md" />
+                    <RubyText text={seg.text} zhuyin={seg.writtenZhuyin} zhuyinDisplayMode="always" size="md" nonInteractive />
                   </button>
                 ) : (
                   <span key={idx} className="text-lg text-slate-400 px-0.5">{seg.text}</span>

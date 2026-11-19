@@ -3,14 +3,14 @@
 ```yaml
 id: FORM-DESCHAR-001
 type: DesignCharacterDocument
-title: FormosaStudio Design Character Document — Taipei Night-Slate & Wacom Calligraphy Ergonomics
+title: FormosaStudio Design Character Document — Warm Paper Light & Calm Dark Studio HMI (v2.0.0)
 status: Approved
-version: 1.0.0
+version: 2.0.0
 project: FORM
 owner: Principal Engineer
 created_date: 2026-11-13
-updated_date: 2026-11-13
-framework_reference: "ASEF Guide 008 v0.9.1 Part 2, Guide 007 §1"
+updated_date: 2026-11-19
+framework_reference: "ASEF Guide 008 v0.9.1 Part 2, Guide 007 §1, FORM-LL-008, FORM-LL-009"
 traces_to:
   - FORM-TAILOR-001
   - FORM-REQ-0018
@@ -18,16 +18,15 @@ traces_to:
 
 ---
 
-## 1. Design Character Elicitation Summary (`Guide 008 Part 2`)
+## 1. Design Character Elicitation Summary (`Guide 008 Part 2` — Updated `v2.0.0`)
 
 * **Positive References (Emulate):**
-  1. **Taiwan Ministry of Education (`教育部國語小字典` & NTNU *Contemporary Chinese*) Typography:** Crisp, generous Traditional Chinese (`Noto Sans TC` / `Noto Serif TC`) glyphs with authentic right-hand vertical Zhuyin (`直式注音`) and properly positioned tone marks (`ˊ ˇ ˋ` beside the column, neutral dot `˙` centered at the top).
-  2. **Procreate / Krita Wacom Pen Canvas Ergonomics:** Unobstructed drawing area (`九宮格` 9-square calligraphy grid), large `>= 44×44 px` stylus-friendly action buttons, instant left/right-handed toolbar docking so the user's drawing hand never covers controls, and live pen-pressure feedback.
-  3. **Bilingual Books' *Chinese in 10 Minutes a Day*:** High-contrast visual "Sticky Labels," zero academic jargon, and realistic physical artifacts (Taiwanese breakfast/bento paper tick-menus `點菜單`, MRT exit signs, 7-Eleven receipts).
+  1. **Warm Paper Stationery & Modern Desktop Studios (Apple Books / Linear / Taiwanese Print Textbooks):** Calm rice-paper off-white canvas (`#F7F4EE`), crisp elevated paper cards (`#FFFFFF`), deep sumi-ink text (`#1C1917`), a single disciplined **Taiwanese Jade (`#0F766E`)** primary accent, and an optional **Calm Studio Dark (`#13161A`)** toggle—eliminating loud neon dark-slate slabs.
+  2. **Clean Left Sidebar Rail + Slim Progress Header:** Frees full vertical height for active lessons, embeds live **Today's 10-Min Goal** progress telemetry right in the rail, swaps cleanly to the right edge in Left-Handed Wacom mode, and keeps the Context Inspector on-demand.
+  3. **True Day-1 Beginner Ergonomics (`Stage 0: Start From Zero` + Pinyin/Zhuyin Training Wheels):** Default Pinyin+Zhuyin bridge for novice native English speakers, plain-English tone/stroke/grammar onboarding, easy-first SVG-aligned calligraphy (`人/大/水/木/日/中` before complex characters), and authentic live `MediaRecorder` + YIN $F_0$ playback.
 * **Negative References (Avoid):**
-  1. **Sprawling Tab Bars (`FDSS` 35-tab anti-pattern):** Hard ceiling of **`<= 8` top-level workspace tabs**, with related sub-tools grouped cleanly inside each studio.
-  2. **Hover-Dependent Micro-Controls:** Impossible to use comfortably while holding a Wacom stylus.
-  3. **Low-Contrast Red/Amber Badges on Dark Slate (`VEIL-LL-009` `#EF4444` trap):** All text and tone badges must use WCAG 2.1 AA-verified foreground/background pairs (`>= 4.5:1`).
+  1. **Loud Developer Debug Dashboards & Cramped 10–12px Text:** Body copy must sit at `15–16px`, headings at `22–28px`, with generous whitespace and zero competing neon accent slabs.
+  2. **Static-Only UI Audits & Hand-Estimated Stroke Coordinates:** Every GUI change must be visually inspected via rendered browser screenshots (`FORM-LL-008`), and every calligraphy guide must derive from exact offline SVG vector geometry (`moeStrokeVectorData.json`).
 
 ---
 

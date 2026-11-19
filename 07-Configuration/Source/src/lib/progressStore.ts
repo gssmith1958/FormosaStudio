@@ -7,6 +7,7 @@ export type MasteryLevel = 0 | 1 | 2 | 3;
 export type FsrsRating = 1 | 2 | 3 | 4; // 1: Again, 2: Hard, 3: Good, 4: Easy
 export type ZhuyinDisplayMode = 'adaptive' | 'always' | 'hover_only';
 export type StylusHandedness = 'right' | 'left';
+export type ThemeMode = 'light' | 'dark';
 
 export interface FsrsMetrics {
   stability: number;     // Days (0.15 .. 365.0)
@@ -65,6 +66,15 @@ export interface UserProgressState {
   showPinyinHint: boolean;
   handedness: StylusHandedness;
   palmRejectionPenOnly: boolean;
+  theme?: ThemeMode;
+  dailyGoalMinutes?: number;
+  dailyDateIso?: string;
+  dailyStepsCompleted?: number[];
+  completedStage0Modules?: string[];
+  stage0Skipped?: boolean;
+  completedPimsleurUnits?: number[];
+  completedNtnuLessons?: string[];
+  completedSurvivalModules?: string[];
   completedNodes: Record<string, NodeProgressRecord>;
   charMastery: Record<string, CharMasteryRecord>;
   wordMastery: Record<string, WordMasteryRecord>;
@@ -161,9 +171,18 @@ export function createInitialProgressState(): UserProgressState {
     maxHearts: 5,
     infiniteHearts: true,
     zhuyinDisplayMode: 'adaptive',
-    showPinyinHint: false,
+    showPinyinHint: true,
     handedness: 'right',
     palmRejectionPenOnly: false,
+    theme: 'light',
+    dailyGoalMinutes: 10,
+    dailyDateIso: today,
+    dailyStepsCompleted: [],
+    completedStage0Modules: [],
+    stage0Skipped: false,
+    completedPimsleurUnits: [],
+    completedNtnuLessons: [],
+    completedSurvivalModules: [],
     completedNodes: {},
     charMastery: {},
     wordMastery: {},
@@ -414,9 +433,35 @@ export function importProgressJson(rawJson: string): UserProgressState {
     ...candidate,
     handedness,
     zhuyinDisplayMode,
+    theme: candidate.theme === 'dark' ? 'dark' : 'light',
+    dailyGoalMinutes: typeof candidate.dailyGoalMinutes === 'number' ? candidate.dailyGoalMinutes : 10,
+    dailyDateIso: typeof candidate.dailyDateIso === 'string' ? candidate.dailyDateIso : defaults.dailyDateIso,
+    dailyStepsCompleted: Array.isArray(candidate.dailyStepsCompleted) ? candidate.dailyStepsCompleted : [],
+    completedStage0Modules: Array.isArray(candidate.completedStage0Modules) ? candidate.completedStage0Modules : [],
+    stage0Skipped: Boolean(candidate.stage0Skipped),
+    completedPimsleurUnits: Array.isArray(candidate.completedPimsleurUnits) ? candidate.completedPimsleurUnits : [],
+    completedNtnuLessons: Array.isArray(candidate.completedNtnuLessons) ? candidate.completedNtnuLessons : [],
+    completedSurvivalModules: Array.isArray(candidate.completedSurvivalModules) ? candidate.completedSurvivalModules : [],
     completedNodes: candidate.completedNodes || {},
     charMastery: candidate.charMastery || {},
     wordMastery: candidate.wordMastery || {},
     strokeMastery: candidate.strokeMastery || {},
   };
 }
+
+export {
+  STAGE0_MODULE_IDS,
+  getOverallPathwaySummary,
+  getStage0Summary,
+  getTodayProgressSummary,
+  markDailyStepComplete,
+  markStage0ModuleComplete,
+  setStage0Skipped,
+  toggleNtnuLessonComplete,
+  togglePimsleurUnitComplete,
+} from './pathwayEngine.ts';
+export type {
+  PathwayStageProgress,
+  Stage0ModuleId,
+  TodayProgressSummary,
+} from './pathwayEngine.ts';

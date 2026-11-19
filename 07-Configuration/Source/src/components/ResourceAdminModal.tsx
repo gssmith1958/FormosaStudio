@@ -149,7 +149,7 @@ export const ResourceAdminModal: React.FC<ResourceAdminModalProps> = ({
   };
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Curriculum and Resource Admin Manager" className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div role="dialog" aria-modal="true" aria-label="Curriculum and Resource Admin Manager" className="fixed inset-0 z-50 fs-modal-backdrop backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
       <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-5xl w-full p-5 sm:p-7 space-y-5 shadow-2xl max-h-[92vh] overflow-y-auto">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
           <div>

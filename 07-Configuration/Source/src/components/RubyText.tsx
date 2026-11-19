@@ -18,6 +18,7 @@ export interface RubyTextProps {
   showSpokenSandhi?: boolean;
   charMastery?: Record<string, CharMasteryRecord>;
   colorByTone?: boolean;
+  nonInteractive?: boolean;
   onSelectChar?: (char: string, zhuyin: string, wordContext?: string) => void;
 }
 
@@ -30,6 +31,7 @@ export const RubyText: React.FC<RubyTextProps> = ({
   showSpokenSandhi = true,
   charMastery = {},
   colorByTone = true,
+  nonInteractive = false,
   onSelectChar,
 }) => {
   const [peekedIndices, setPeekedIndices] = useState<Record<number, boolean>>({});
@@ -37,10 +39,10 @@ export const RubyText: React.FC<RubyTextProps> = ({
   const tokens = annotated.chars;
 
   const sizeMap = {
-    sm: { hanzi: 'text-lg', ruby: 'text-[10px]', pinyin: 'text-[9px]', box: 'px-0.5 py-0.5' },
-    md: { hanzi: 'text-2xl', ruby: 'text-[11px]', pinyin: 'text-[10px]', box: 'px-1 py-0.5' },
-    lg: { hanzi: 'text-3xl', ruby: 'text-xs', pinyin: 'text-[11px]', box: 'px-1.5 py-1' },
-    xl: { hanzi: 'text-4xl sm:text-5xl', ruby: 'text-sm', pinyin: 'text-xs', box: 'px-2 py-1' },
+    sm: { hanzi: 'text-xl', ruby: 'text-[11px]', pinyin: 'text-xs', box: 'px-1 py-0.5' },
+    md: { hanzi: 'text-3xl', ruby: 'text-xs', pinyin: 'text-xs', box: 'px-1.5 py-1' },
+    lg: { hanzi: 'text-4xl', ruby: 'text-sm', pinyin: 'text-sm', box: 'px-2 py-1' },
+    xl: { hanzi: 'text-5xl sm:text-6xl', ruby: 'text-base', pinyin: 'text-sm', box: 'px-2.5 py-1.5' },
   }[size];
 
   const togglePeek = (idx: number) => {
@@ -54,7 +56,8 @@ export const RubyText: React.FC<RubyTextProps> = ({
           return (
             <span
               key={idx}
-              className={`${sizeMap.hanzi} font-bold text-slate-300 mx-0.5 self-center`}
+              className={`${sizeMap.hanzi} font-semibold mx-0.5 self-center`}
+              style={{ color: 'var(--fs-text-secondary)' }}
             >
               {tok.char}
             </span>
@@ -63,8 +66,7 @@ export const RubyText: React.FC<RubyTextProps> = ({
 
         const masteryLevel = charMastery[tok.char]?.level ?? 0;
         const isPeeked = !!peekedIndices[idx];
-        const toneInfo = TONE_BY_NUMBER[tok.zhuyin.tone];
-        const toneColor = colorByTone ? toneInfo.color : '#e2e8f0';
+        const toneColor = colorByTone ? `var(--fs-tone-${tok.zhuyin.tone})` : 'var(--fs-text)';
 
         // Adaptive Zhuyin Fading (FORM-DESCHAR-001 Principle 1 & DEP-04 tap-to-peek)
         let rubyOpacityClass = 'opacity-100';
@@ -88,6 +90,87 @@ export const RubyText: React.FC<RubyTextProps> = ({
           tok.spokenZhuyin &&
           tok.spokenZhuyin !== tok.zhuyin.normalized;
 
+        const charBody = (
+          <>
+            <span className="inline-flex items-center gap-0.5">
+              {/* Traditional Character */}
+              <span
+                className={`${sizeMap.hanzi} font-bold tracking-tight`}
+                style={{ color: toneColor }}
+              >
+                {tok.char}
+              </span>
+
+              {/* Right-Side Vertical Taiwanese Book-Style Zhuyin Column (直式注音) */}
+              <span
+                className={`inline-flex items-center transition-opacity duration-200 ${rubyOpacityClass}`}
+              >
+                <span className="inline-flex flex-col items-center justify-center leading-[1.05]">
+                  {isNeutral && (
+                    <span
+                      className="text-xs font-bold leading-none mb-0.5"
+                      style={{ color: 'var(--fs-tone-5)' }}
+                    >
+                      ˙
+                    </span>
+                  )}
+                  {phoneticChars.map((sym, sIdx) => (
+                    <span
+                      key={sIdx}
+                      className={`${sizeMap.ruby} font-semibold leading-[1.08]`}
+                      style={{ color: 'var(--fs-text-secondary)' }}
+                    >
+                      {sym}
+                    </span>
+                  ))}
+                </span>
+                {toneMark && (
+                  <span
+                    className={`${sizeMap.ruby} font-bold ml-0.5 self-center`}
+                    style={{ color: toneColor }}
+                  >
+                    {toneMark}
+                  </span>
+                )}
+              </span>
+            </span>
+
+            {/* Optional Spoken Sandhi Indicator or Pinyin Hint */}
+            {hasSandhiShift && (
+              <span
+                className="text-xs font-semibold px-1.5 py-0.5 rounded mt-1"
+                style={{ backgroundColor: 'var(--fs-warm-soft)', color: 'var(--fs-warm)' }}
+              >
+                →{tok.spokenZhuyin}
+              </span>
+            )}
+            {showPinyinHint && tok.pinyin && (
+              <span
+                className={`${sizeMap.pinyin} font-medium mt-0.5`}
+                style={{ color: 'var(--fs-text-muted)' }}
+              >
+                {tok.pinyin}
+              </span>
+            )}
+          </>
+        );
+
+        const tooltipText = tok.moeNote
+          ? `${tok.char} (${tok.zhuyin.normalized}) — ${tok.moeNote}`
+          : `${tok.char} (${tok.zhuyin.normalized}${hasSandhiShift ? ` → spoken ${tok.spokenZhuyin}` : ''})`;
+
+        if (nonInteractive) {
+          return (
+            <span
+              key={idx}
+              title={tooltipText}
+              className={`group inline-flex flex-col items-center rounded-xl transition ${sizeMap.box}`}
+            >
+              {charBody}
+            </span>
+          );
+        }
+
         return (
           <button
             key={idx}
@@ -99,63 +182,10 @@ export const RubyText: React.FC<RubyTextProps> = ({
               }
             }}
             style={{ touchAction: 'manipulation' }}
-            title={
-              tok.moeNote
-                ? `${tok.char} (${tok.zhuyin.normalized}) — ${tok.moeNote}`
-                : `${tok.char} (${tok.zhuyin.normalized}${hasSandhiShift ? ` → spoken ${tok.spokenZhuyin}` : ''})`
-            }
-            className={`group inline-flex flex-col items-center rounded-xl hover:bg-slate-800/80 focus:bg-slate-800/80 transition ${sizeMap.box}`}
+            title={tooltipText}
+            className={`group inline-flex flex-col items-center rounded-xl transition ${sizeMap.box}`}
           >
-            <span className="inline-flex items-center gap-0.5">
-              {/* Traditional Character */}
-              <span
-                className={`${sizeMap.hanzi} font-extrabold tracking-tight`}
-                style={{ color: toneColor }}
-              >
-                {tok.char}
-              </span>
-
-              {/* Right-Side Vertical Taiwanese Book-Style Zhuyin Column (直式注音) */}
-              <span
-                className={`inline-flex items-center transition-opacity duration-200 ${rubyOpacityClass}`}
-              >
-                <span className="inline-flex flex-col items-center justify-center leading-[1.02]">
-                  {isNeutral && (
-                    <span className="text-[10px] font-black text-purple-300 leading-none mb-0.5">
-                      ˙
-                    </span>
-                  )}
-                  {phoneticChars.map((sym, sIdx) => (
-                    <span
-                      key={sIdx}
-                      className={`${sizeMap.ruby} font-bold text-slate-200 leading-[1.05]`}
-                    >
-                      {sym}
-                    </span>
-                  ))}
-                </span>
-                {toneMark && (
-                  <span
-                    className={`${sizeMap.ruby} font-black ml-0.5 self-center`}
-                    style={{ color: toneColor }}
-                  >
-                    {toneMark}
-                  </span>
-                )}
-              </span>
-            </span>
-
-            {/* Optional Spoken Sandhi Indicator or Pinyin Hint */}
-            {hasSandhiShift && (
-              <span className="text-[9px] font-extrabold text-amber-300 bg-amber-950/70 px-1 rounded mt-0.5">
-                →{tok.spokenZhuyin}
-              </span>
-            )}
-            {showPinyinHint && tok.pinyin && (
-              <span className={`${sizeMap.pinyin} text-slate-400 font-medium mt-0.5`}>
-                {tok.pinyin}
-              </span>
-            )}
+            {charBody}
           </button>
         );
       })}

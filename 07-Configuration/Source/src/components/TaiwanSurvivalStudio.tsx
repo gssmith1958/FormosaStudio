@@ -86,14 +86,14 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
       <StudioHeaderBanner
         studioId="survival"
         titleZh="臺灣十分鐘生存工作室"
-        titleEn="Taiwan in 10 Minutes a Day — Sticky Labels, 點菜單 Tick-Menu & Functional Listening Gym"
-        subtitle="Bite-sized visual sticky labels for your home/AC/trash, 12 Swiss-Army-Knife sentence frames, interactive paper 點菜單 simulator, and rapid NT$/民國/address listening reflex drills."
+        titleEn="Taiwan in 10 Minutes a Day — Real-World Essentials, 點菜單 Menu & Listening Gym"
+        subtitle="Practical Day-1 survival phrases—bathrooms, prices, directions, ordering food, 7-Eleven, and emergencies—plus 12 Swiss-Army-Knife frames, an interactive paper 點菜單 menu, and rapid listening drills."
         rightSlot={
           <StudioModeSwitcher
             activeMode={subMode}
             onSelect={(m) => setSubMode(m as SurvivalSubMode)}
             modes={[
-              { id: 'sticky_labels', labelZh: '情境便利貼', labelEn: 'Sticky Labels', badge: '6' },
+              { id: 'sticky_labels', labelZh: '情境便利貼', labelEn: 'Survival Cards', badge: '6' },
               { id: 'swiss_army_frames', labelZh: '萬用句型', labelEn: '12 Frames', badge: '12' },
               { id: 'tick_menu', labelZh: '點菜單模擬', labelEn: '點菜單 Menu' },
               { id: 'pragmatics', labelZh: '語助詞與臺語', labelEn: '語助詞 & 臺語' },
@@ -117,7 +117,7 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
                     setActiveLabel(mod.labels[0]);
                   }}
                 >
-                  <span>{mod.moduleNumber}. {mod.titleTraditional}</span>
+                  <span>{mod.moduleNumber}. {mod.titleEnglish.split('—')[0].split('(')[0].trim()}</span>
                 </StylusButton>
               ))}
             </div>

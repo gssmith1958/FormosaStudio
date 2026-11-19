@@ -1,6 +1,6 @@
 {
-  "object_count": 75,
-  "edge_count": 129,
+  "object_count": 80,
+  "edge_count": 135,
   "objects": {
     "FORM-BOE-001": {
       "id": "FORM-BOE-001",
@@ -919,14 +919,14 @@
     "FORM-DESCHAR-001": {
       "id": "FORM-DESCHAR-001",
       "type": "DesignCharacterDocument",
-      "title": "FormosaStudio Design Character Document — Taipei Night-Slate & Wacom Calligraphy Ergonomics",
+      "title": "FormosaStudio Design Character Document — Warm Paper Light & Calm Dark Studio HMI (v2.0.0)",
       "status": "Approved",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "project": "FORM",
       "owner": "Principal Engineer",
       "created_date": "2026-11-13",
-      "updated_date": "2026-11-13",
-      "framework_reference": "ASEF Guide 008 v0.9.1 Part 2, Guide 007 §1",
+      "updated_date": "2026-11-19",
+      "framework_reference": "ASEF Guide 008 v0.9.1 Part 2, Guide 007 §1, FORM-LL-008, FORM-LL-009",
       "traces_to": [
         "FORM-TAILOR-001",
         "FORM-REQ-0018"
@@ -1190,6 +1190,70 @@
       "proposed_change": "Add a 'Canonical R1 & R2 Tailoring Profiles (Consolidated Artifacts & 4-Gate Folding)' subsection and an 'R1 Prototype-to-R2 Graduation Pattern' to `ASEF Guide 002`, grounded in `FormosaStudio` (`n = 3`).",
       "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
     },
+    "FORM-LL-008": {
+      "id": "FORM-LL-008",
+      "type": "LessonLearned",
+      "title": "Static Source-Code UI/UX Audits Cannot Substitute for Live Rendered Browser Visual & HMI Inspection",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase_discovered": "Phase 4 Post-Release User Visual Review (v1.0.0 -> v1.1.0 HMI Redesign)",
+      "category": "Human-Machine Interface & Visual Verification (ASEF Guide 008)",
+      "disposition": "Mitigated in FormosaStudio v1.1.0 Warm Paper Light + Calm Dark Left-Rail Redesign & Browser Screenshot Audit; promoted to FORM-FIR-002",
+      "created_date": "2026-11-19",
+      "description": "Although `DEP-04` (UI/UX & Accessibility Designer) audited all TypeScript/JSX components statically during Phases 1–4 and verified WCAG numeric contrast constants, >= 44px button styles, and LOC budgets, neither the builder nor `DEP-04` inspected rendered browser screenshots before `v1.0.0`. First-hand visual review immediately revealed harsh neon dark-slate color slabs, cramped 10–12px body text, multi-row top-chrome clutter, and missing daily/overall learning pathway progress feedback. Subsequently running live browser screenshot inspection caught 6 real rendered defects (invisible text in light-mode callouts, dark Wacom canvas leak, sidebar truncation, tab wrapping, and React DOM nesting warnings) that static review missed.",
+      "preventive_action": "Redesigned FormosaStudio (`v1.1.0`) with a Warm Paper Light + Calm Dark semantic token system, clean Left Sidebar Rail, modern 15–16px typography scale, Today's 10-Min Progress Ring, and 6-Stage Overall Learning Pathway, and verified every studio visually via live browser screenshots before sign-off. Promoted to `FORM FIR-002`.",
+      "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
+    },
+    "FORM-FIR-002": {
+      "id": "FORM-FIR-002",
+      "type": "FrameworkImprovementRequest",
+      "project_qualified_citation": "FORM FIR-002",
+      "title": "Mandate Live Rendered Visual & HMI Screenshot Verification in ASEF Guide 008 Touchpoint B Reviews",
+      "status": "Proposed",
+      "version": "1.0.0",
+      "originating_lesson": "FORM-LL-008",
+      "target_documents": [
+        "ASEF Guide 008 User-Centered Design.md"
+      ],
+      "created_date": "2026-11-19",
+      "updated_date": "2026-11-19",
+      "problem_statement": "`ASEF Guide 008` defines usability and accessibility thresholds, but does not mechanically require inspecting live rendered screenshots of interactive GUI/web applications during `DEP-04` Touchpoint B sign-off, allowing visually unpleasant palettes, cramped typography, and missing user-journey progress cues to pass static code inspection.",
+      "proposed_change": "Add a mandatory 'Live Rendered Visual & HMI Inspection Gate' checklist to `ASEF Guide 008` requiring live browser/GUI screenshot review of primary user workflows, visual hierarchy, typography readability, color restraint, and explicit daily/overall progress feedback before any GUI Touchpoint B or Gate 6/7 sign-off.",
+      "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
+    },
+    "FORM-LL-009": {
+      "id": "FORM-LL-009",
+      "type": "LessonLearned",
+      "title": "Prototype Anchoring Bias, Late Domain-Expert Discovery & Tautological Verification in Folded-Gate R2 Left Day-1 Novice Onboarding Missing",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase_discovered": "Phase 4 Post-Release Pedagogical Audit (v1.1.0 -> v1.2.0 Stage 0 Novice Launchpad)",
+      "category": "Scoping, ConOps Elicitation & Verification Integrity (Volume 4 §5, Guide 002, Pattern 13)",
+      "disposition": "Mitigated in FormosaStudio v1.2.0 (Stage 0 Beginner Launchpad, Pinyin+Zhuyin Bridge, Taiwanized Pimsleur, Easy-First SVG Strokes, Interactive Recall Lessons); promoted to FORM-FIR-003",
+      "created_date": "2026-11-19",
+      "description": "Across FormosaStudio (n=3 Pure R2), four post-release user findings traced to systemic scoping/verification blind spots: (1) Prototype Anchoring Bias in R1->R2 graduation focused Phase 0 ConOps on remediating technical defects from Chinese2 rather than modeling the Day-0/Day-1 novice user's starting state (zero Zhuyin, zero tone ear, zero stroke literacy); (2) Domain Experts (DEP-01, DEP-03) were commissioned at Implementation Touchpoint A (after requirements were baselined) rather than challenging ConOps/Requirements at Gate 1; (3) Tautological automated tests passed synthetic sine waves and self-referential hand-typed stroke coordinates while real microphone capture and rendered stroke alignment failed; and (4) Folding Gates 2–5 skipped a lightweight human visual/journey alignment checkpoint prior to construction.",
+      "preventive_action": "Add a mandatory Cold-Start Persona Journey check, a pre-baseline Domain Challenge (Touchpoint 0), a ban on tautological self-referential test fixtures, and a brief Stakeholder Visual & Journey Alignment checkpoint before Phase 1 construction—even under folded R2 gates. Promoted to `FORM FIR-003`.",
+      "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
+    },
+    "FORM-FIR-003": {
+      "id": "FORM-FIR-003",
+      "type": "FrameworkImprovementRequest",
+      "project_qualified_citation": "FORM FIR-003",
+      "title": "Add Touchpoint 0 Pre-Baseline Domain Challenge, Cold-Start Persona Journey & Anti-Tautology Verification Rules to Volume 4, Guide 002 & Guide 006",
+      "status": "Proposed",
+      "version": "1.0.0",
+      "originating_lesson": "FORM-LL-009",
+      "target_documents": [
+        "ASEF Volume 4 Lifecycle Processes.md",
+        "ASEF Guide 002 Tailoring.md",
+        "ASEF Guide 006 AI Patterns.md"
+      ],
+      "created_date": "2026-11-19",
+      "updated_date": "2026-11-19",
+      "problem_statement": "Commissioning Domain Expert Panels only at Implementation Touchpoint A/B checks compliance against already-frozen requirements, allowing R1->R2 prototype anchoring bias to omit Day-0/Day-1 user prerequisites and allowing tautological synthetic tests to pass broken real-hardware/UI workflows.",
+      "proposed_change": "Introduce 'Touchpoint 0 (Pre-Baseline Domain & Cold-Start Challenge)' at Gate 1/2 before freezing requirements, require a 5-minute Stakeholder Visual & User-Journey Alignment Checkpoint before Phase 1 even in folded R2 gates, and prohibit tautological test fixtures where tests validate geometry/signals against the same hand-authored constants used by the renderer.",
+      "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
+    },
     "FORM-MAN-001": {
       "id": "FORM-MAN-001",
       "type": "ValidationOutput",
@@ -1226,6 +1290,25 @@
         "FORM-VER-001"
       ],
       "_file": "09-Releases/FORM-REL-001_v1.0.0_Release_Notes.md"
+    },
+    "FORM-REL-002": {
+      "id": "FORM-REL-002",
+      "type": "ValidationOutput",
+      "title": "FormosaStudio v1.2.0 Release Notes — Warm Paper HMI, Real Hardware Verification & Day-1 Novice Learner Launchpad",
+      "status": "Approved",
+      "version": "1.2.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-19",
+      "updated_date": "2026-11-19",
+      "framework_reference": "Volume 4 §14, Guide 002 §6, Guide 008 v0.9.1",
+      "traces_to": [
+        "FORM-PLAN-001",
+        "FORM-TAILOR-001",
+        "FORM-DESCHAR-001",
+        "FORM-LL-001"
+      ],
+      "_file": "09-Releases/FORM-REL-002_v1.2.0_Release_Notes.md"
     }
   },
   "edges": [
@@ -1840,6 +1923,16 @@
       "target": "FORM-LL-006"
     },
     {
+      "source": "FORM-FIR-002",
+      "relation": "originating_lesson",
+      "target": "FORM-LL-008"
+    },
+    {
+      "source": "FORM-FIR-003",
+      "relation": "originating_lesson",
+      "target": "FORM-LL-009"
+    },
+    {
       "source": "FORM-MAN-001",
       "relation": "traces_to",
       "target": "FORM-REQ-0023"
@@ -1873,6 +1966,26 @@
       "source": "FORM-REL-001",
       "relation": "traces_to",
       "target": "FORM-VER-001"
+    },
+    {
+      "source": "FORM-REL-002",
+      "relation": "traces_to",
+      "target": "FORM-PLAN-001"
+    },
+    {
+      "source": "FORM-REL-002",
+      "relation": "traces_to",
+      "target": "FORM-TAILOR-001"
+    },
+    {
+      "source": "FORM-REL-002",
+      "relation": "traces_to",
+      "target": "FORM-DESCHAR-001"
+    },
+    {
+      "source": "FORM-REL-002",
+      "relation": "traces_to",
+      "target": "FORM-LL-001"
     }
   ]
 }

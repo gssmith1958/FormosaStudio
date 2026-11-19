@@ -102,12 +102,17 @@ export const ToneBadge: React.FC<{
   compact?: boolean;
 }> = ({ tone, showContour = true, compact = false }) => {
   const token = WCAG_TONE_PALETTE[tone] || WCAG_TONE_PALETTE[1];
+  const cssColor = `var(--fs-tone-${tone})`;
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full border font-bold ${
-        compact ? 'px-2 py-0.5 text-[11px]' : 'px-2.5 py-1 text-xs'
-      } ${token.tailwindBadgeClass}`}
-      style={{ color: token.textHex, borderColor: token.borderHex }}
+      className={`inline-flex items-center gap-1 rounded-full border font-semibold ${
+        compact ? 'px-2.5 py-0.5 text-xs' : 'px-3 py-1 text-sm'
+      }`}
+      style={{
+        color: cssColor,
+        borderColor: cssColor,
+        backgroundColor: 'var(--fs-subtle)',
+      }}
     >
       <span>{token.labelZh.split(' ')[0]}</span>
       {showContour && <span className="opacity-85">({token.contour})</span>}
@@ -122,7 +127,7 @@ export interface StylusButtonProps extends React.ButtonHTMLAttributes<HTMLButton
 }
 
 /**
- * Wacom Stylus-First Button Primitive enforcing >= 44x44 px hit target and zero hover-only dependencies.
+ * Wacom Stylus-First Button Primitive enforcing >= 44x44 px hit target and calm Warm-Paper / Calm-Dark styling.
  */
 export const StylusButton: React.FC<StylusButtonProps> = ({
   variant = 'secondary',
@@ -133,25 +138,26 @@ export const StylusButton: React.FC<StylusButtonProps> = ({
   ...rest
 }) => {
   const variantClasses: Record<NonNullable<StylusButtonProps['variant']>, string> = {
-    primary: 'bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-300 text-slate-950 border-emerald-400 font-extrabold shadow',
-    secondary: active
-      ? 'bg-slate-800 text-emerald-300 border-emerald-400/80 font-bold'
-      : 'bg-slate-900 hover:bg-slate-800 active:bg-slate-700 text-slate-100 border-slate-700 font-bold',
-    amber: 'bg-amber-400 hover:bg-amber-300 active:bg-amber-200 text-slate-950 border-amber-300 font-extrabold shadow',
-    ghost: 'bg-slate-950/60 hover:bg-slate-900 text-slate-300 border-slate-800 font-semibold',
-    danger: 'bg-rose-950/90 hover:bg-rose-900 text-rose-200 border-rose-500/60 font-bold',
+    primary: 'fs-btn-primary shadow-sm',
+    secondary: active ? 'fs-btn-active' : 'fs-btn-secondary',
+    amber: 'fs-btn-warm',
+    ghost: 'fs-btn-ghost',
+    danger: 'fs-btn-danger',
   };
 
   return (
     <button
       type="button"
       style={{ minHeight: '44px', minWidth: '44px', touchAction: 'manipulation' }}
-      className={`min-h-[44px] min-w-[44px] px-3.5 py-2 rounded-xl border text-xs sm:text-sm inline-flex items-center justify-center gap-2 transition select-none ${variantClasses[variant]} ${className}`}
+      className={`min-h-[44px] min-w-[44px] px-4 py-2 rounded-xl border text-sm whitespace-nowrap shrink-0 inline-flex items-center justify-center gap-2 transition select-none ${variantClasses[variant]} ${className}`}
       {...rest}
     >
       {children}
       {shortcutHint && (
-        <kbd className="px-1.5 py-0.5 rounded bg-black/30 text-[10px] font-mono opacity-80">
+        <kbd
+          className="px-1.5 py-0.5 rounded text-xs font-mono opacity-80"
+          style={{ backgroundColor: 'rgba(128, 128, 128, 0.16)' }}
+        >
           {shortcutHint}
         </kbd>
       )}
@@ -167,7 +173,7 @@ export interface StudioModeOption<T extends string = string> {
 }
 
 /**
- * Single-level Studio Sub-Mode Switcher enforcing >= 44px height per tab pill.
+ * Clean Segmented Studio Sub-Mode Switcher enforcing >= 44px height per tab.
  */
 export function StudioModeSwitcher<T extends string>({
   modes,
@@ -181,7 +187,8 @@ export function StudioModeSwitcher<T extends string>({
   return (
     <div
       role="tablist"
-      className="bg-slate-950/90 border border-slate-800 rounded-2xl p-1.5 flex flex-wrap items-center gap-1.5"
+      className="rounded-2xl p-1.5 flex flex-wrap items-center gap-1.5 border"
+      style={{ backgroundColor: 'var(--fs-subtle)', borderColor: 'var(--fs-border)' }}
     >
       {modes.map((m) => {
         const isSelected = m.id === activeMode;
@@ -192,22 +199,27 @@ export function StudioModeSwitcher<T extends string>({
             aria-selected={isSelected}
             type="button"
             onClick={() => onSelect(m.id)}
-            style={{ minHeight: '44px', minWidth: '44px', touchAction: 'manipulation' }}
-            className={`min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition flex items-center gap-2 ${
-              isSelected
-                ? 'bg-emerald-500 text-slate-950 shadow'
-                : 'bg-slate-900/70 text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-800/80'
-            }`}
+            style={{
+              minHeight: '44px',
+              minWidth: '44px',
+              touchAction: 'manipulation',
+              backgroundColor: isSelected ? 'var(--fs-surface)' : 'transparent',
+              color: isSelected ? 'var(--fs-accent-text)' : 'var(--fs-text-secondary)',
+              borderColor: isSelected ? 'var(--fs-accent-border)' : 'transparent',
+              boxShadow: isSelected ? 'var(--fs-shadow)' : 'none',
+            }}
+            className="min-h-[44px] px-3.5 py-2 rounded-xl border text-sm font-semibold whitespace-nowrap transition flex items-center gap-2"
+            title={`${m.labelEn} · ${m.labelZh}`}
           >
-            <span>{m.labelZh}</span>
-            <span className={isSelected ? 'text-slate-900 font-semibold' : 'text-slate-400 font-medium'}>
-              · {m.labelEn}
-            </span>
+            <span className={isSelected ? 'font-bold' : ''}>{m.labelEn}</span>
+            {modes.length <= 3 && <span className="opacity-70 text-xs hidden sm:inline">{m.labelZh}</span>}
             {m.badge !== undefined && (
               <span
-                className={`px-2 py-0.5 rounded-full text-[11px] font-black ${
-                  isSelected ? 'bg-slate-950 text-emerald-300' : 'bg-slate-800 text-amber-300'
-                }`}
+                className="px-2 py-0.5 rounded-full text-xs font-semibold"
+                style={{
+                  backgroundColor: isSelected ? 'var(--fs-accent-soft)' : 'var(--fs-hover)',
+                  color: isSelected ? 'var(--fs-accent-text)' : 'var(--fs-text-secondary)',
+                }}
               >
                 {m.badge}
               </span>
@@ -220,7 +232,7 @@ export function StudioModeSwitcher<T extends string>({
 }
 
 /**
- * Uniform Studio Header Banner used across all 6 top-level studios.
+ * Clean Studio Header Banner used across studios.
  */
 export const StudioHeaderBanner: React.FC<{
   studioId: StudioId;
@@ -231,18 +243,30 @@ export const StudioHeaderBanner: React.FC<{
 }> = ({ studioId, titleZh, titleEn, subtitle, rightSlot }) => {
   const studio = STUDIO_BY_ID[studioId];
   return (
-    <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/30 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-xl">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-extrabold uppercase tracking-wider">
+    <div className="fs-card px-6 py-5">
+      <div className="flex flex-col gap-4">
+        <div className="space-y-1.5 min-w-0">
+          <div
+            className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide uppercase"
+            style={{ color: 'var(--fs-accent-text)' }}
+          >
             <span>{studio.shortLabel}</span>
             <span>·</span>
             <span>{studio.titleZh}</span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-            {titleZh} <span className="text-emerald-300 font-bold">· {titleEn}</span>
+          <h1
+            className="text-2xl sm:text-[26px] font-bold tracking-tight"
+            style={{ color: 'var(--fs-text)' }}
+          >
+            {titleEn}{' '}
+            <span className="font-semibold opacity-70 text-xl">· {titleZh}</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-300 max-w-3xl leading-relaxed">{subtitle}</p>
+          <p
+            className="text-sm sm:text-[15px] max-w-3xl leading-relaxed"
+            style={{ color: 'var(--fs-text-secondary)' }}
+          >
+            {subtitle}
+          </p>
         </div>
         {rightSlot && <div className="flex flex-wrap items-center gap-2 shrink-0">{rightSlot}</div>}
       </div>
@@ -262,9 +286,9 @@ export const HandednessToggle: React.FC<{
     <StylusButton
       variant="secondary"
       onClick={() => onToggle(next)}
-      title="Swap toolbar docking edge so your Wacom drawing hand never covers action buttons"
+      title="Swap sidebar and canvas docking edge so your Wacom drawing hand never covers buttons"
     >
-      <span>✋ {handedness === 'right' ? 'Right-Handed Dock (右手模式)' : 'Left-Handed Dock (左手模式)'}</span>
+      <span>{handedness === 'right' ? 'Right-Handed' : 'Left-Handed'}</span>
     </StylusButton>
   );
 };
@@ -280,14 +304,25 @@ export const ReturnBreadcrumbBar: React.FC<{
   if (!handoff) return null;
   const originStudio = STUDIO_BY_ID[handoff.fromStudio];
   return (
-    <div className="bg-emerald-950/70 border border-emerald-500/50 rounded-2xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shadow-lg">
-      <div className="flex items-center gap-2.5 text-xs sm:text-sm text-emerald-100">
-        <span className="px-2.5 py-1 rounded-lg bg-emerald-500/20 border border-emerald-400/40 font-extrabold text-emerald-300">
-          Cross-Studio Handoff
+    <div
+      className="rounded-2xl px-5 py-3 flex flex-wrap items-center justify-between gap-3 border"
+      style={{
+        backgroundColor: 'var(--fs-accent-soft)',
+        borderColor: 'var(--fs-accent-border)',
+      }}
+    >
+      <div className="flex items-center gap-2.5 text-sm" style={{ color: 'var(--fs-text)' }}>
+        <span
+          className="px-2.5 py-0.5 rounded-full text-xs font-semibold"
+          style={{ backgroundColor: 'var(--fs-surface)', color: 'var(--fs-accent-text)' }}
+        >
+          Focused Practice
         </span>
         <span>
-          Practicing <strong className="text-white font-extrabold">「{handoff.targetText}」</strong> from{' '}
-          <strong className="text-emerald-300">{originStudio?.titleEn || handoff.fromLabel}</strong>
+          Practicing <strong className="font-bold">「{handoff.targetText}」</strong> from{' '}
+          <strong style={{ color: 'var(--fs-accent-text)' }}>
+            {originStudio?.titleEn || handoff.fromLabel}
+          </strong>
         </span>
       </div>
       <div className="flex items-center gap-2">

@@ -2,7 +2,9 @@
  * Traces to: FORM-REQ-0012, FORM-REQ-0013, FORM-REQ-0014, FORM-REQ-0021, FORM-DEP-UX-001 */
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  MOE_STROKE_CHARACTER_BANK, MoeCharacterStrokeEntry,
+  MOE_CANVAS_PAD, MOE_CANVAS_SCALE,
+  MOE_STROKE_CHARACTER_BANK, MOE_VECTOR_BOX,
+  MOE_VECTOR_Y_ORIGIN, MoeCharacterStrokeEntry,
   PHONETIC_SERIES_BANK, SEMANTIC_RADICALS,
   getMoeCharacterEntry, } from '../data/moeStrokeAndPhoneticData.ts';
 import {
@@ -42,7 +44,7 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
   progress, onUpdateProgress,
   onSpeak, }) => {
   const [subTab, setSubTab] = useState<Studio4SubTab>('calligraphy');
-  const [selectedChar, setSelectedChar] = useState<string>('裡');
+  const [selectedChar, setSelectedChar] = useState<string>('人');
   const [practiceMode, setPracticeMode] = useState<CalligraphyPracticeMode>('trace');
   const [gridStyle, setGridStyle] = useState<CalligraphyGridStyle>('jiugongge');
   const [drawnStrokes, setDrawnStrokes] = useState<UserDrawnStroke[]>([]);
@@ -94,13 +96,14 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
     if (!ctx) return;
     const w = canvas.width;
     const h = canvas.height;
+    const isLight = progress.theme !== 'dark';
     ctx.clearRect(0, 0, w, h);
-    // 1. Night-Slate Rice-Paper Surface
-    ctx.fillStyle = '#090F1E'; ctx.fillRect(0, 0, w, h);
+    // 1. Warm Rice-Paper (Light) or Calm Slate (Dark) Calligraphy Sheet
+    ctx.fillStyle = isLight ? '#FFFDF7' : '#161B22'; ctx.fillRect(0, 0, w, h);
     // 2. Traditional Taiwanese 九宮格 (9-square) or 田字格 (4-quadrant) Grid
-    ctx.save(); ctx.strokeStyle = 'rgba(52, 211, 153, 0.24)';
+    ctx.save(); ctx.strokeStyle = isLight ? 'rgba(180, 83, 9, 0.35)' : 'rgba(52, 211, 153, 0.28)';
     ctx.lineWidth = 2; ctx.strokeRect(4, 4, w - 8, h - 8);
-    ctx.setLineDash([6, 6]); ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
+    ctx.setLineDash([6, 6]); ctx.strokeStyle = isLight ? 'rgba(120, 113, 108, 0.3)' : 'rgba(148, 163, 184, 0.25)';
     ctx.lineWidth = 1.25;
     if (gridStyle === 'jiugongge') {
       for (const frac of [1 / 3, 2 / 3]) {
@@ -116,18 +119,29 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
       ctx.lineTo(0, h); ctx.stroke();
     }
     ctx.restore();
-    // 3. Background Character Silhouette (hidden in Dictation mode until complete or revealed)
+    // 3. Exact Offline SVG Vector Character Silhouette (100% aligned with stroke medians & demos)
+    const nextStrokeIdx = drawnStrokes.length;
     const showSilhouette = practiceMode === 'trace' ||
       (practiceMode === 'freehand' && (drawnStrokes.length === 0 || gradeReport !== null)) ||
       (practiceMode === 'dictation' && (revealDictationGlyph || gradeReport !== null));
-    if (showSilhouette) {
-      ctx.save(); ctx.font = `700 ${Math.round(w * 0.72)}px "Noto Sans TC", "PingFang TC", serif`;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillStyle = practiceMode === 'trace' ? 'rgba(51, 65, 85, 0.46)' : 'rgba(16, 185, 129, 0.16)';
-      ctx.fillText(charEntry.char, w / 2, h * 0.53); ctx.restore();
+    if (showSilhouette && charEntry.svgStrokes && charEntry.svgStrokes.length > 0 && typeof Path2D !== 'undefined') {
+      const scaleX = (w * MOE_CANVAS_SCALE) / MOE_VECTOR_BOX;
+      const scaleY = (h * MOE_CANVAS_SCALE) / MOE_VECTOR_BOX;
+      ctx.save();
+      ctx.translate(w * MOE_CANVAS_PAD, h * MOE_CANVAS_PAD + MOE_VECTOR_Y_ORIGIN * scaleY);
+      ctx.scale(scaleX, -scaleY);
+      charEntry.svgStrokes.forEach((svgPath, idx) => {
+        const isCurrent = practiceMode === 'trace' && idx === nextStrokeIdx;
+        ctx.fillStyle = isCurrent
+          ? (isLight ? 'rgba(217, 119, 6, 0.24)' : 'rgba(245, 158, 11, 0.30)')
+          : practiceMode === 'trace'
+          ? (isLight ? 'rgba(28, 25, 23, 0.14)' : 'rgba(203, 213, 225, 0.22)')
+          : (isLight ? 'rgba(15, 118, 110, 0.14)' : 'rgba(16, 185, 129, 0.18)');
+        ctx.fill(new Path2D(svgPath));
+      });
+      ctx.restore();
     }
-    // 4. MOE Vector Skeleton & Next-Stroke Guide Arrow (in Trace mode or post-grade overlay)
-    const nextStrokeIdx = drawnStrokes.length;
+    // 4. MOE Vector Centerline & Next-Stroke Guide (drawn in identical normalized space)
     if (practiceMode === 'trace' || gradeReport !== null) {
       charEntry.strokes.forEach((st, idx) => {
         const isCurrentGuide = practiceMode === 'trace' && idx === nextStrokeIdx;
@@ -135,18 +149,27 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
         if (!isCurrentGuide && !gradeReport && !isCompleted) return;
         ctx.save(); ctx.beginPath();
         ctx.moveTo(st.start.x * w, st.start.y * h);
-        if (st.mid) {
+        if (st.waypoints && st.waypoints.length > 0) {
+          for (const wp of st.waypoints) {
+            ctx.lineTo(wp.x * w, wp.y * h);
+          }
+          ctx.lineTo(st.end.x * w, st.end.y * h);
+        } else if (st.mid && (st.type === '折' || st.type === '鉤')) {
+          ctx.lineTo(st.mid.x * w, st.mid.y * h);
+          ctx.lineTo(st.end.x * w, st.end.y * h);
+        } else if (st.mid) {
           ctx.quadraticCurveTo(st.mid.x * w, st.mid.y * h, st.end.x * w, st.end.y * h);
         } else {
           ctx.lineTo(st.end.x * w, st.end.y * h);
         }
-        ctx.strokeStyle = isCurrentGuide ? 'rgba(251, 191, 36, 0.85)'
-          : gradeReport ? 'rgba(56, 189, 248, 0.5)'
+        ctx.strokeStyle = isCurrentGuide ? 'rgba(217, 119, 6, 0.92)'
+          : gradeReport ? 'rgba(14, 165, 233, 0.65)'
           : 'rgba(100, 116, 139, 0.35)';
-        ctx.lineWidth = isCurrentGuide ? 4 : 2.5; ctx.setLineDash(isCurrentGuide ? [8, 5] : []);
+        ctx.lineWidth = isCurrentGuide ? 3.5 : 2.2; ctx.setLineDash(isCurrentGuide ? [7, 5] : []);
         ctx.stroke();
         if (isCurrentGuide) {
-          // Starting amber circle + stroke index
+          ctx.beginPath(); ctx.arc(st.end.x * w, st.end.y * h, 4.5, 0, Math.PI * 2);
+          ctx.fillStyle = '#D97706'; ctx.fill();
           ctx.beginPath(); ctx.arc(st.start.x * w, st.start.y * h, 10, 0, Math.PI * 2);
           ctx.fillStyle = '#F59E0B'; ctx.fill();
           ctx.fillStyle = '#090F1E'; ctx.font = '800 11px sans-serif';
@@ -178,13 +201,15 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
     };
     drawnStrokes.forEach((st, idx) => {
       const singleGrade = gradeReport?.strokeResults[idx];
-      const strokeColor = singleGrade && !singleGrade.passed ? '#FDA4AF' : '#6EE7B7';
+      const strokeColor = singleGrade && !singleGrade.passed
+        ? (isLight ? '#BE123C' : '#FDA4AF')
+        : (isLight ? '#1C1917' : '#6EE7B7');
       drawSamplePolyline(st.points, strokeColor);
     });
     if (activePoints.length > 0) {
-      drawSamplePolyline(activePoints, '#38BDF8');
+      drawSamplePolyline(activePoints, isLight ? '#0F766E' : '#38BDF8');
     }
-  }, [charEntry, drawnStrokes, activePoints, practiceMode, gridStyle, gradeReport, revealDictationGlyph]);
+  }, [charEntry, drawnStrokes, activePoints, practiceMode, gridStyle, gradeReport, revealDictationGlyph, progress.theme]);
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     const nativeEv = e.nativeEvent as unknown as Parameters<typeof extractCoalescedPoints>[0];
     if (!shouldAcceptPointerEvent(nativeEv, progress.palmRejectionPenOnly)) {
@@ -248,12 +273,14 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
     const nextIdx = drawnStrokes.length;
     if (nextIdx >= charEntry.strokes.length) return;
     const ref = charEntry.strokes[nextIdx];
-    const pts: StylusSamplePoint[] = [
-      { x: ref.start.x, y: ref.start.y, pressure: 0.45, widthPx: 5.8, timestamp: Date.now(), pointerType: 'pen' }, ...(ref.mid
-        ? [{ x: ref.mid.x, y: ref.mid.y, pressure: 0.72, widthPx: 9.2, timestamp: Date.now() + 20, pointerType: 'pen' }]
-        : [{ x: (ref.start.x + ref.end.x) / 2, y: (ref.start.y + ref.end.y) / 2, pressure: 0.7, widthPx: 8.9, timestamp: Date.now() + 20, pointerType: 'pen' }]),
-      { x: ref.end.x, y: ref.end.y, pressure: 0.55, widthPx: 7.0, timestamp: Date.now() + 40, pointerType: 'pen' }, ];
-    const nextStrokes = [...drawnStrokes, { points: pts, startedAt: Date.now(), endedAt: Date.now() + 40 }];
+    const spine = [ref.start, ...(ref.waypoints && ref.waypoints.length > 0 ? ref.waypoints : ref.mid ? [ref.mid] : []), ref.end];
+    const now = Date.now();
+    const pts: StylusSamplePoint[] = spine.map((pt, i) => {
+      const t = spine.length <= 1 ? 0.5 : i / (spine.length - 1);
+      const pressure = Number((0.48 + Math.sin(t * Math.PI) * 0.32).toFixed(2));
+      return { x: pt.x, y: pt.y, pressure, widthPx: 4.5 + pressure * 8.5, timestamp: now + i * 16, pointerType: 'pen' };
+    });
+    const nextStrokes = [...drawnStrokes, { points: pts, startedAt: now, endedAt: now + pts.length * 16 }];
     setDrawnStrokes(nextStrokes);
     if (nextStrokes.length >= charEntry.strokes.length) {
       const report = gradeCharacterWriting(nextStrokes, charEntry, practiceMode);
@@ -395,6 +422,7 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
                     <RubyText text={practiceMode === 'dictation' && !revealDictationGlyph && !gradeReport ? '？' : charEntry.char}
                       zhuyin={charEntry.zhuyin}
                       pinyin={charEntry.pinyin}
+                      showPinyinHint={progress.showPinyinHint}
                       size="xl" zhuyinDisplayMode="always"
                     />
                   </div>

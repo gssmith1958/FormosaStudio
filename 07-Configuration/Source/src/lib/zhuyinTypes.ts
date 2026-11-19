@@ -214,6 +214,90 @@ export function normalizeZhuyinString(raw: string): string {
     .trim();
 }
 
+const PINYIN_INITIAL_MAP: Record<string, string> = {
+  ㄅ: 'b', ㄆ: 'p', ㄇ: 'm', ㄈ: 'f',
+  ㄉ: 'd', ㄊ: 't', ㄋ: 'n', ㄌ: 'l',
+  ㄍ: 'g', ㄎ: 'k', ㄏ: 'h',
+  ㄐ: 'j', ㄑ: 'q', ㄒ: 'x',
+  ㄓ: 'zh', ㄔ: 'ch', ㄕ: 'sh', ㄖ: 'r',
+  ㄗ: 'z', ㄘ: 'c', ㄙ: 's',
+};
+
+const APICAL_INITIALS = new Set(['ㄓ', 'ㄔ', 'ㄕ', 'ㄖ', 'ㄗ', 'ㄘ', 'ㄙ']);
+const PALATAL_INITIALS = new Set(['ㄐ', 'ㄑ', 'ㄒ']);
+
+const ZERO_INIT_RIME: Record<string, string> = {
+  ㄚ: 'a', ㄛ: 'o', ㄜ: 'e', ㄝ: 'ê', ㄞ: 'ai', ㄟ: 'ei', ㄠ: 'ao', ㄡ: 'ou',
+  ㄢ: 'an', ㄣ: 'en', ㄤ: 'ang', ㄥ: 'eng', ㄦ: 'er',
+  ㄧ: 'yi', ㄧㄚ: 'ya', ㄧㄛ: 'yo', ㄧㄝ: 'ye', ㄧㄞ: 'yai', ㄧㄠ: 'yao',
+  ㄧㄡ: 'you', ㄧㄢ: 'yan', ㄧㄣ: 'yin', ㄧㄤ: 'yang', ㄧㄥ: 'ying',
+  ㄨ: 'wu', ㄨㄚ: 'wa', ㄨㄛ: 'wo', ㄨㄞ: 'wai', ㄨㄟ: 'wei',
+  ㄨㄢ: 'wan', ㄨㄣ: 'wen', ㄨㄤ: 'wang', ㄨㄥ: 'weng',
+  ㄩ: 'yu', ㄩㄝ: 'yue', ㄩㄢ: 'yuan', ㄩㄣ: 'yun', ㄩㄥ: 'yong',
+};
+
+const WITH_INIT_RIME: Record<string, string> = {
+  ㄚ: 'a', ㄛ: 'o', ㄜ: 'e', ㄝ: 'ê', ㄞ: 'ai', ㄟ: 'ei', ㄠ: 'ao', ㄡ: 'ou',
+  ㄢ: 'an', ㄣ: 'en', ㄤ: 'ang', ㄥ: 'eng', ㄦ: 'er',
+  ㄧ: 'i', ㄧㄚ: 'ia', ㄧㄛ: 'io', ㄧㄝ: 'ie', ㄧㄞ: 'iai', ㄧㄠ: 'iao',
+  ㄧㄡ: 'iu', ㄧㄢ: 'ian', ㄧㄣ: 'in', ㄧㄤ: 'iang', ㄧㄥ: 'ing',
+  ㄨ: 'u', ㄨㄚ: 'ua', ㄨㄛ: 'uo', ㄨㄞ: 'uai', ㄨㄟ: 'ui',
+  ㄨㄢ: 'uan', ㄨㄣ: 'un', ㄨㄤ: 'uang', ㄨㄥ: 'ong',
+  ㄩ: 'ü', ㄩㄝ: 'üe', ㄩㄢ: 'üan', ㄩㄣ: 'ün', ㄩㄥ: 'iong',
+};
+
+const TONE_VOWELS: Record<string, [string, string, string, string]> = {
+  a: ['ā', 'á', 'ǎ', 'à'],
+  e: ['ē', 'é', 'ě', 'è'],
+  i: ['ī', 'í', 'ǐ', 'ì'],
+  o: ['ō', 'ó', 'ǒ', 'ò'],
+  u: ['ū', 'ú', 'ǔ', 'ù'],
+  ü: ['ǖ', 'ǘ', 'ǚ', 'ǜ'],
+  ê: ['ê̄', 'ế', 'ê̌', 'ề'],
+};
+
+function applyPinyinToneMark(base: string, tone: 1 | 2 | 3 | 4 | 5): string {
+  if (!base || tone === 5) return base;
+  const idx = tone - 1;
+  if (base.includes('a')) return base.replace('a', TONE_VOWELS.a[idx]);
+  if (base.includes('e')) return base.replace('e', TONE_VOWELS.e[idx]);
+  if (base.includes('ou')) return base.replace('o', TONE_VOWELS.o[idx]);
+  const chars = Array.from(base);
+  for (let i = chars.length - 1; i >= 0; i--) {
+    const c = chars[i];
+    if (TONE_VOWELS[c]) {
+      chars[i] = TONE_VOWELS[c][idx];
+      return chars.join('');
+    }
+  }
+  return base;
+}
+
+export function zhuyinToHanyuPinyin(
+  initial: string,
+  medial: string,
+  final: string,
+  tone: 1 | 2 | 3 | 4 | 5
+): string {
+  const rimeKey = `${medial}${final}`;
+  let base = '';
+  if (!initial) {
+    base = ZERO_INIT_RIME[rimeKey] || '';
+  } else {
+    const pInit = PINYIN_INITIAL_MAP[initial] || '';
+    if (!rimeKey) {
+      base = APICAL_INITIALS.has(initial) ? `${pInit}i` : pInit;
+    } else {
+      let pRime = WITH_INIT_RIME[rimeKey] || '';
+      if (PALATAL_INITIALS.has(initial) && pRime.startsWith('ü')) {
+        pRime = `u${pRime.slice(1)}`;
+      }
+      base = `${pInit}${pRime}`;
+    }
+  }
+  return applyPinyinToneMark(base, tone);
+}
+
 export function parseZhuyinSyllable(rawSyl: string): ParsedZhuyinSyllable {
   const normalized = normalizeZhuyinString(rawSyl);
   let initial = '';
@@ -259,10 +343,7 @@ export function parseZhuyinSyllable(rawSyl: string): ParsedZhuyinSyllable {
     .map((k) => (k === ' ' ? 'Space' : k.toUpperCase()))
     .join(' ');
 
-  const pInit = initial && SYMBOL_BY_CHAR[initial] ? SYMBOL_BY_CHAR[initial].pinyin : '';
-  const pMed = medial && SYMBOL_BY_CHAR[medial] ? SYMBOL_BY_CHAR[medial].pinyin.split('/')[0].trim() : '';
-  const pFin = final && SYMBOL_BY_CHAR[final] ? SYMBOL_BY_CHAR[final].pinyin.split('/')[0].trim() : '';
-  const approxPinyin = `${pInit}${pMed}${pFin}` || normalized;
+  const hanyuPinyin = zhuyinToHanyuPinyin(initial, medial, final, tone) || normalized;
 
   return {
     raw: rawSyl,
@@ -275,7 +356,7 @@ export function parseZhuyinSyllable(rawSyl: string): ParsedZhuyinSyllable {
     toneMark,
     daqianKeys,
     daqianDisplay,
-    pinyin: approxPinyin,
+    pinyin: hanyuPinyin,
   };
 }
 

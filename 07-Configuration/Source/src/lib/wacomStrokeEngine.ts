@@ -172,6 +172,9 @@ function computePolylineLength(pts: NormalizedPoint[]): number {
 }
 
 function computeReferenceLength(ref: MoeVectorStroke): number {
+  if (ref.waypoints && ref.waypoints.length > 0) {
+    return computePolylineLength([ref.start, ...ref.waypoints, ref.end]);
+  }
   if (ref.mid) {
     return euclideanDistance(ref.start, ref.mid) + euclideanDistance(ref.mid, ref.end);
   }
