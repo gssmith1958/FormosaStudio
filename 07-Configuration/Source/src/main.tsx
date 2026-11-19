@@ -16,3 +16,12 @@ if (rootEl) {
     </React.StrictMode>
   );
 }
+
+// Register lightweight offline PWA cache on HTTPS origins (GitHub Pages / iPad / Mobile)
+if (window.location.protocol === 'https:' && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {
+      // Ignore registration failures on unsupported environments
+    });
+  });
+}

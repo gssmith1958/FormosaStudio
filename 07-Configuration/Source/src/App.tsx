@@ -95,6 +95,13 @@ export const App: React.FC = () => {
   useEffect(() => subscribeStudioBus(setBusState), []);
   useEffect(() => subscribeCurriculumAdminChanges(() => setAdminRevision((r) => r + 1)), []);
 
+  // Support desktop shortcut quick-launch actions (?studio=calligraphy|speaking|survival|reader|dojo|hub)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const req = new URLSearchParams(window.location.search).get('studio') as StudioId | null;
+    if (req && req in STUDIO_NAV_META) setActiveStudio(req);
+  }, []);
+
   // Global keyboard shortcuts (Alt+1..6 Studio Switch, Ctrl+K Omnibar, F1/? Help Manual, Esc Close)
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
