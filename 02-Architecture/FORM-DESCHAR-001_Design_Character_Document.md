@@ -43,3 +43,23 @@ traces_to:
    * Tone 3 (`214`): `#FBBF24` (`10.4:1` on `#0F172A`)
    * Tone 4 (`51`): `#FCA5A5` / `#F87171` (`6.8:1` on `#0F172A` — avoiding pure `#EF4444` which fails AA at `4.43:1`)
    * Tone 5 (`Neutral`): `#C084FC` (`7.4:1` on `#0F172A`)
+
+---
+
+## 3. End-to-End Cohesive Studio Architecture & Anti-Silo Contract (`FORM-DEP-UX-001` & `FORM-REQ-0021`)
+
+To remediate the "piece-part and glued-together" feel of `Chinese2` (`FORM-LL-007`), `FormosaStudio` enforces three structural UI/UX invariants from **Phase 1 through Phase 4**:
+
+1. **Single-Row Fixed 6-Studio Shell (Zero Double-Chrome, Zero Disappearing Tabs):**
+   * Eliminates `Chinese2`'s competing 4-dropdown `AppMenuBar` + 12-closable-tab `WorkspaceTabBar` + nested sub-tab bars.
+   * Replaces them with **6 permanent, predictable Top-Level Studios**:
+     1. `Today & Daily Flow` (`今日學習` — featuring the **Inline 10-Minute Daily Flow Runner** that steps through *Survival → Reading/Vocab → Wacom/Pitch* without tab-jumping)
+     2. `10-Min Taiwan` (`臺灣生存` — Sticky Labels, Wacom/Mouse `點菜單` Simulator, `語助詞`/`臺語`, Functional Listening Gym)
+     3. `Reader & Grammar` (`閱讀語法` — TOCFL A1–B2 Adaptive `i+1` Reader, Custom Text Importer & Cloze, `口語/書面語` Bridge)
+     4. `Wacom Calligraphy` (`書法筆順` — `PointerEvent` Pressure/Eraser `九宮格` Canvas, Taiwan MOE Stroke Order, `形聲字` Builder)
+     5. `Speaking & Pitch` (`發音聲調` — Offline WebAudio $F_0$ Pitch-Contour Visualizer, Tone Sandhi & `ㄓㄔㄕㄖ vs ㄗㄘㄙ` Coach)
+     6. `Vocab, SRS & Dojo` (`詞彙與大千` — TOCFL Word Bank, FSRS-Lite Queue, 8-Stage DaQian Typing Dojo & 3-Stage Match Arena)
+2. **Phase 1 Shared UI Primitive Kit (`src/components/uiPrimitives.tsx`):**
+   * Built in **Phase 1** before any feature studios in Phases 2–3 so every studio uses identical `<StudioHeaderBanner>`, `<StudioModeSwitcher>`, `<StylusButton>` (`>= 44×44 px`), `<HandednessToggle>`, `<ToneBadge>` (`WCAG_TONE_PALETTE`), `<ReturnBreadcrumbBar>`, and `<CrossStudioActionPills>`.
+3. **Cross-Studio Context Handoff Bus (`src/lib/studioContextBus.ts`):**
+   * Clicking any word, character, or sentence in *any* studio populates the persistent **Right Context & Quick-Practice Dock** and exposes 1-click **`[✒️ Write on Wacom]`**, **`[🎤 Coach Pitch ($F_0$)]`**, **`[📖 Open in Reader]`**, and **`[🧠 Boost in SRS]`** actions that deep-link into the target studio pre-loaded with that item and a 1-click **`← Return to [Source Studio]`** breadcrumb banner.

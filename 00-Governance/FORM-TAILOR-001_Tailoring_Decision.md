@@ -53,7 +53,7 @@ traces_to:
 * `06-Repositories/` — Zero-daemon embedded SQLite traceability database (`formosa_traceability.db`) and JSON graph (`formosa_graph.json`) generated deterministically from Markdown YAML blocks.
 * `07-Configuration/Source/` — Modular TypeScript/React/Vite application source and automated tests.
 * `08-Automation/` — Pure Python 3 standard-library governance checks (`session_start.py`, `check_structural_scaffolding.py`, `sync_traceability_graph.py`, `test_governance_adversarial.py`).
-* `09-Releases/` — `v1.0.0` Release Manifest (`FORM-REL-001`).
+* `09-Releases/` — Comprehensive User's Manual (`FORM-MAN-001_FormosaStudio_User_Manual.md`) and `v1.0.0` Release Manifest (`FORM-REL-001`).
 * `10-Archive/` — Historical/superseded records.
 
 ### 3.2 Excluded / Streamlined at `R2`
@@ -75,7 +75,7 @@ traces_to:
 | **`DEP-01`** | **Taiwanese Mandarin (`zh-TW`) & TOCFL Computational Linguist** | Word segmentation (`FMM`), polyphones (`破音字`), Taiwan MOE standard pronunciations (`兩岸異讀字`, `和=ㄏㄢˋ`, `垃圾=ㄌㄜˋ ㄙㄜˋ`), tone sandhi, `語助詞`, Hokkien (`臺語`) loanwords, `口語/書面語` register, and *Contemporary Chinese* Vols. 1–6 / *Pimsleur* alignment | Any phase touching NLP tokenization, Zhuyin annotation, dictionaries, graded stories, or curriculum data |
 | **`DEP-02`** | **Acoustic Speech DSP & Wacom Stylus Hardware Engineer** | WebAudio microphone pitch-contour ($F_0$) autocorrelation/YIN tracking, Chao 5-level tone scoring, W3C `PointerEvent` Wacom pen pressure (`e.pressure`), coalesced sampling (`getCoalescedEvents()`), eraser/barrel buttons, and Taiwan MOE vector stroke-order grading | Any phase touching `audioService`, `pitchTracker`, `wacomStrokeEngine`, or canvas/audio hardware APIs |
 | **`DEP-03`** | **SLA & "Taiwan in 10 Minutes a Day" Survival Pedagogist** | Adaptive `i + 1` reading comprehensibility math, FSRS-lite spaced repetition intervals, and practical English-speaker survival modules (sticky labels, paper tick-menus `點菜單`, `打折` discount math, `民國` dates, `段/巷/弄/號` addresses, clinic/pharmacy survival) | Any phase touching SRS scheduling, `i + 1` grading, survival modules, or functional listening drills |
-| **`DEP-04`** | **UI/UX & Accessibility Designer (`Guide 008`)** | Adherence to `FORM-DESCHAR-001`, Wacom pen ergonomics (left/right-handed stylus toolbar, `>= 44px` pen hit targets, zero hover-only traps), WCAG 2.1 AA contrast (`>= 4.5:1`), vertical Zhuyin ruby legibility, and navigation ceiling (`<= 8` tabs) | Any phase touching React UI components, workspace navigation, canvas overlays, or visual themes |
+| **`DEP-04`** | **UI/UX & Accessibility Designer (`Guide 008`) — Standing End-to-End Co-Lead** | Adherence to `FORM-DESCHAR-001`, elimination of `Chinese2`'s piece-part/glued-together UX (`FORM-LL-007`), shared UI primitive kit (`uiPrimitives.tsx`), Cross-Studio Context Handoff Bus (`studioContextBus.ts`), Wacom pen ergonomics (left/right-handed stylus toolbar, `>= 44px` pen hit targets, zero hover-only traps), WCAG 2.1 AA contrast (`>= 4.5:1`), vertical Zhuyin ruby legibility, and single-row 6-studio navigation shell (`<= 8` ceiling) | **Mandatory Standing Co-Lead across ALL Phases (`Phase 1`, `Phase 2`, `Phase 3`, and `Phase 4`) at both Touchpoint A (pre-code UX design & primitive enforcement) and Touchpoint B (post-code end-to-end journey walkthrough & anti-silo audit), plus Phase 1 First-Milestone Calibration (`Guide 008`) and Phase 3 Aggregate Re-Review (`Pattern 20`)** |
 
 ---
 

@@ -70,6 +70,22 @@ mitigated_by:
   - FORM-REQ-0011
 ```
 
+```yaml
+id: FORM-RISK-006
+type: Risk
+title: Piece-Part Studio Silos, Competing Navigation Chrome, and Late-Phase UI/UX Review Degrade End-to-End Learning Flow
+status: Approved
+version: 1.0.0
+probability: High
+impact: High
+description: "If features are built as isolated piece-part tabs and glued together (as occurred in Chinese2's 4-menu dropdown + 12-closable-tab shell with zero cross-studio context handoff) or if UI/UX review (DEP-04) is deferred until Phase 4, the resulting application feels clunky, fragmented, and ergonomically inconsistent across Wacom stylus and keyboard workflows."
+mitigated_by:
+  - FORM-DEC-004
+  - FORM-REQ-0018
+  - FORM-REQ-0020
+  - FORM-REQ-0021
+```
+
 ---
 
 ## 2. Assumptions (`Volume 4 §5.5`)

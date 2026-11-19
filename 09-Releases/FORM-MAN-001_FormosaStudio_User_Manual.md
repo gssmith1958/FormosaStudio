@@ -1,0 +1,136 @@
+# FormosaStudio (`FORM`) — Comprehensive User's Manual & Reference Guide (`FORM-MAN-001`)
+
+```yaml
+id: FORM-MAN-001
+type: ValidationOutput
+title: FormosaStudio v1.0.0 Comprehensive User's Manual & Taiwan MOE Linguistic Reference Guide
+status: Approved
+version: 1.0.0
+project: FORM
+owner: Principal Engineer
+created_date: 2026-11-14
+updated_date: 2026-11-14
+framework_reference: "Volume 4 §11.6, Volume 4 §14, Guide 007 §12, FORM-REQ-0023"
+traces_to:
+  - FORM-REQ-0023
+  - FORM-REQ-0018
+  - FORM-REQ-0021
+  - FORM-REQ-0022
+```
+
+---
+
+## 1. Quick-Start & Unified 6-Studio Workspace Architecture
+
+**FormosaStudio (`寶島華語正體與注音全能工坊`)** is an offline-first, Wacom-stylus and acoustic-DSP workstation designed specifically for mastering **Taiwanese Traditional Chinese (`正體字`)** and **Taiwan Ministry of Education (`教育部`) vertical Bopomofo (`注音符號`)**.
+
+### 1.1 The 6 Permanent Top-Level Studios (`Alt+1` through `Alt+6`)
+
+To eliminate nested menu clutter, every tool in FormosaStudio lives inside one of **6 permanent top-level studios**:
+
+| Shortcut | Studio Name | Core Capabilities |
+| :---: | :--- | :--- |
+| **`Alt+1`** | **1. 今日學習 · Today & Daily Flow** | Inline 10-Minute Daily Flow Runner, **Pimsleur Taiwanese Mandarin Units 1–19+**, **NTNU *Contemporary Chinese* (`當代中文課程`) Volumes 1–6 (61+ Lessons)**, and **TOCFL Novice 1 – Band B2 Readiness Dashboard**. |
+| **`Alt+2`** | **2. 臺灣生存 · 10-Min Taiwan Survival** | 6 Visual Sticky-Label Household Modules (with **🖨️ Printable Sheet Mode**), 12 "Swiss-Army-Knife" Survival Sentence Frames, Interactive Laminated Paper Tick-Menu (`點菜單`), Taiwanese Sentence-Final Particles (`語助詞`) & Hokkien (`臺語`) Loanwords, and 5-Category Functional Listening Gym. |
+| **`Alt+3`** | **3. 閱讀語法 · Reader & Grammar** | 8 Multi-Paragraph Graded Stories (`Novice 1` to `Band B2`) with live **$i+1$ Comprehensibility Scoring**, `< 50 ms` Custom Traditional Text Importer & Instant 4-Option Cloze Generator, and 16 Spoken (`口語`) vs. Written (`書面語`) Taiwan Register Bridge Drills. |
+| **`Alt+4`** | **4. 書法筆順 · Wacom Calligraphy** | W3C `PointerEvent` Pressure-Tapered (`2.5–14 px`) Calligraphy Canvas on `九宮格` / `田字格` grids, **20-Character Taiwan MOE Standard Vector Stroke-Order Grader** (`描紅` Guided Trace, `臨摹` Freehand Overlay, `聽寫默寫` Dictation Recall), Left/Right-Handed Docking Swap, and **10-Series Semantic-Phonetic (`形聲字`) Workbench**. |
+| **`Alt+5`** | **5. 發音聲調 · Speaking & Pitch Lab** | **100% Offline WebAudio YIN $F_0$ Pitch-Contour Extractor** (`75–450 Hz`, `< 3 Hz` error), Speaker-Normalized Chao `1–5` Dual-Curve Visualizer, 1-click **"🔁 Replay My Voice vs. Native Speaker"**, 8 Spoken Taiwanese Tone Sandhi Drills, and 10 Retroflex (`ㄓㄔㄕㄖ`) vs. Flat Sibilant (`ㄗㄘㄙ`) Minimal Pairs. |
+| **`Alt+6`** | **6. 詞彙與大千 · Vocab, SRS & Dojo** | **8-Stage Taiwan DaQian (`大千式`) Touch-Typing Dojo** (41-key interactive keyboard, per-key error heatmap, blind-keycap mode), **FSRS-Lite Spaced Repetition Review Queue**, **TOCFL Novice 1 – Band B2 Word Bank**, **5-World Skill Tree (`20` nodes)**, and **3-Stage Match Arena**. |
+
+### 1.2 Global Keyboard Shortcuts & Cross-Studio Navigation
+
+- **`Ctrl+K` (or `Cmd+K`):** Opens the **Global Omnibar** from anywhere to search Traditional Hanzi, Zhuyin (`ㄅㄆㄇ`), Pinyin, English glosses, Polyphones (`破音字`), or MOE Stroke Characters.
+- **`?` or `F1`:** Opens the **In-App Interactive Help & Manual Drawer**.
+- **`Esc`:** Closes any open modal or drawer.
+- **Cross-Studio Deep-Link Pills & Return Breadcrumb:** Clicking **`✒️ Write on Wacom`**, **`🎤 Coach Pitch (F0)`**, **`📖 Open in Reader`**, or **`🧠 Boost in FSRS`** on any word immediately jumps to that studio with the target pre-loaded and displays a green **`← Return to [Origin Studio]`** breadcrumb bar at the top of the screen.
+
+---
+
+## 2. Recommended Daily 10-Minute Study Workflow
+
+1. **Minutes 0–3 (Step 1 — FSRS & Polyphone Warmup):**
+   - In **Studio 1 (`Alt+1`)**, review your due FSRS cards in the **Inline 10-Minute Daily Flow Runner**. Rate each card (`1 Again`, `2 Hard`, `3 Good`, `4 Easy`) to update its Stability ($S$) and Difficulty ($D$).
+2. **Minutes 3–7 (Step 2 — Pimsleur & Taiwan Survival Shadowing):**
+   - Listen to the daily Pimsleur or Taiwan Survival prompt, shadow it aloud, and click **`🎤 Open in F0 Pitch Lab`** if you want to inspect your pitch contour on the Chao `1–5` graph.
+3. **Minutes 7–10 (Step 3 — Taiwan MOE Stroke & DaQian Keystroke Reflex):**
+   - Review the daily Taiwan MOE character (`裡, 為, 骨, 黃, 臺, 灣, 麵, 捷, 運, 請, 謝`), trace it on the Wacom `九宮格` canvas (`Alt+4`), or type its DaQian keysequence in the Dojo (`Alt+6`).
+
+---
+
+## 3. Linux Wacom Stylus & Offline WebAudio $F_0$ Calibration Guide
+
+### 3.1 Wacom Tablet Configuration on Linux (X11 / Wayland)
+- **Stylus Pressure & Coalesced Sampling:** Studio 4 (`Alt+4`) automatically reads `PointerEvent.pressure` (`0.0–1.0`) and `event.getCoalescedEvents()` to render smooth 200 Hz calligraphy strokes from `2.5 px` (hairline tip) to `14.0 px` (full press).
+- **Wacom Eraser Nib & Barrel Button Undo:** Flipping your Wacom pen to the **eraser nib** (`pointerType === 'eraser'` or `buttons === 32`) or pressing the **upper barrel button** (`button === 5`) on the canvas automatically undoes the most recent stroke.
+- **Pen-Only Palm Rejection (`🛡️ Pen-Only Palm Rejection: ON`):** Toggle this button in Studio 4's header banner to ignore capacitive finger/palm touches (`pointerType === 'touch'`) while resting your hand on a touch+EMR display.
+- **Left-Handed vs. Right-Handed Toolbar Docking (`✋ Right-Handed / Left-Handed Dock`):** Click this toggle in the global header or Studio 4 banner to swap the horizontal layout (`Canvas Left / Controls Right` vs. `Controls Left / Canvas Right`) and mirror the collapsible Side Context Dock so your drawing arm never covers action buttons.
+- **Linux Driver Verification:** On X11, verify tablet detection with `xsetwacom --list devices`; on Wayland, confirm `libinput list-devices` lists the Wacom Pen stylus.
+
+### 3.2 Offline WebAudio YIN $F_0$ Microphone Calibration (`Studio 5 · Alt+5`)
+- **100% Offline Processing:** Pitch detection runs entirely inside your local browser via time-domain YIN Cumulative Mean Normalized Difference Function (`CMNDF`) with 3-point parabolic lag interpolation (`75–450 Hz`, `< 3.0 Hz` error). Zero audio ever leaves your machine.
+- **Browser Secure-Context Requirement:** Linux Chromium/Firefox browsers require serving FormosaStudio from `http://localhost` (e.g. `npm run dev` / `npm run preview`) or `https://` to unlock `navigator.mediaDevices.getUserMedia({ audio: true })`.
+- **Voice Range Calibration:**
+  - Click **`🎙️ Low Voice (95–220 Hz)`** for typical baritone/tenor/low vocal ranges.
+  - Click **`🎙️ High Voice (145–330 Hz)`** for typical alto/soprano/high vocal ranges.
+- **Self-Monitoring Loop:** After recording, click **`🔁 Replay My Voice vs. Native Speaker`** to hear your captured audio immediately followed by the native reference contour.
+
+---
+
+## 4. Taiwan Ministry of Education (`教育部國語`) Linguistic Reference
+
+### 4.1 Cross-Strait Standard Pronunciations (`兩岸異讀字`)
+
+FormosaStudio strictly enforces authentic **Taiwan MOE (`教育部重編國語辭典修訂本`)** pronunciations:
+
+| Traditional Word | Taiwan MOE Zhuyin | Taiwan Pinyin | Mainland Pinyin | Meaning & Taiwan Usage Note |
+| :--- | :--- | :--- | :--- | :--- |
+| **垃圾** | `ㄌㄜˋ ㄙㄜˋ` | `lèsè` | `lājī` | Trash / garbage (`垃圾車 ㄌㄜˋ ㄙㄜˋ ㄔㄜ`, `倒垃圾`) |
+| **星期** | `ㄒㄧㄥ ㄑㄧˊ` | `xīngqí` | `xīngqī` | Week (`期` is Rising Tone 2 `ㄑㄧˊ` in Taiwan) |
+| **研究** | `ㄧㄢˊ ㄐㄧㄡˋ` | `yánjiù` | `yánjiū` | Research (`究` is Falling Tone 4 `ㄐㄧㄡˋ` in Taiwan) |
+| **企業** | `ㄑㄧˋ ㄧㄝˋ` | `qìyè` | `qǐyè` | Enterprise (`企` is Falling Tone 4 `ㄑㄧˋ` in Taiwan) |
+| **法國** | `ㄈㄚˋ ㄍㄨㄛˊ` | `Fàguó` | `Fǎguó` | France (`法` in `法國/法文` is Tone 4 `ㄈㄚˋ` in Taiwan MOE) |
+| **液體** | `ㄧㄝˋ ㄊㄧˇ` | `yètǐ` | `yètǐ / yìtǐ` | Liquid (`液` is strictly `ㄧㄝˋ` in Taiwan MOE) |
+| **微糖** | `ㄨㄟˊ ㄊㄤˊ` | `wéitáng` | `wēitáng` | 30% sugar (`微` is Rising Tone 2 `ㄨㄟˊ` in Taiwan) |
+| **和 (連詞)** | `ㄏㄢˋ` | `hàn` | `hé` | "And / with" (`我和你 ㄨㄛˇ ㄏㄢˋ ㄋㄧˇ` in everyday Taiwan speech) |
+| **角色** | `ㄐㄧㄠˇ ㄙㄜˋ` | `jiǎosè` | `juésè` | Role / character (`角` is `ㄐㄧㄠˇ` in Taiwan MOE) |
+| **蝸牛** | `ㄍㄨㄚ ㄋㄧㄡˊ` | `guāniú` | `wōniú` | Snail (`蝸` is `ㄍㄨㄚ` in Taiwan MOE) |
+| **危險** | `ㄨㄟˊ ㄒㄧㄢˇ` | `wéixiǎn` | `wēixiǎn` | Dangerous (`危` is Rising Tone 2 `ㄨㄟˊ` in Taiwan) |
+| **知識** | `ㄓ ㄕˋ` | `zhīshì` | `zhīshi` | Knowledge (`識` retains full Tone 4 `ㄕˋ` in Taiwan) |
+
+### 4.2 Spoken Taiwanese Tone Sandhi Rules (`連讀變調`)
+1. **Two Consecutive 3rd Tones (`3 + 3 → 2 + 3`):** `你好 (ㄋㄧˇ ㄏㄠˇ)` is spoken as **`ㄋㄧˊ ㄏㄠˇ`**, where the final `好` is realized as a natural Taiwanese **low-dipping half-third (`半上 [21]`)** rather than rising all the way to `[214]`.
+2. **Three Consecutive 3rd Tones (`3 + 3 + 3 → 2 + 2 + 3`):** `展覽館 (ㄓㄢˇ ㄌㄢˇ ㄍㄨㄢˇ)` is spoken as **`ㄓㄢˊ ㄌㄢˊ ㄍㄨㄢˇ`**.
+3. **`不` (`ㄅㄨˋ`) Sandhi:** Shifts to Rising Tone 2 (**`ㄅㄨˊ`**) before a 4th-tone syllable (`不要 → ㄅㄨˊ ㄧㄠˋ`, `不錯 → ㄅㄨˊ ㄘㄨㄛˋ`), remaining `ㄅㄨˋ` before Tones 1, 2, and 3 (`不好意思 → ㄅㄨˋ ㄏㄠˇ ㄧˋ ˙ㄙ`).
+4. **`一` (`ㄧ`) Sandhi:** Shifts to Rising Tone 2 (**`ㄧˊ`**) before Tone 4 (`一個 → ㄧˊ ˙ㄍㄜ`, `一樣 → ㄧˊ ㄧㄤˋ`), shifts to Falling Tone 4 (**`ㄧˋ`**) before Tones 1, 2, and 3 (`一天 → ㄧˋ ㄊㄧㄢ`, `一杯 → ㄧˋ ㄅㄟ`), and stays High Flat **`ㄧ`** in ordinals/numbers (`第一 → ㄉㄧˋ ㄧ`).
+
+### 4.3 Taiwan DaQian (`大千式`) Standard Keyboard Map
+
+Every syllable is typed in strict order: **`Initial (聲母) → Medial (介音 ㄧ/ㄨ/ㄩ) → Rhyme (韻母) → Tone Key`**:
+- **Tone Keys:** **`Space` = Tone 1 (`ˉ`)**, **`6` = Tone 2 (`ˊ`)**, **`3` = Tone 3 (`ˇ`)**, **`4` = Tone 4 (`ˋ`)**, **`7` = Neutral Tone (`˙`)**.
+- **Left-Hand Initials:** `1/Q/A/Z` (`ㄅㄆㄇㄈ`), `2/W/S/X` (`ㄉㄊㄋㄌ`), `E/D/C` (`ㄍㄎㄏ`), `R/F/V` (`ㄐㄑㄒ`), `5/T/G/B` (`ㄓㄔㄕㄖ`).
+- **Right-Hand Initials & Medials:** `Y/H/N` (`ㄗㄘㄙ`), `U/J/M` (`ㄧㄨㄩ`).
+- **Right-Hand Rhymes:** `8/I/K/,` (`ㄚㄛㄜㄝ`), `9/O/L/.` (`ㄞㄟㄠㄡ`), `0` / `P` / `;` / `/` (`ㄢㄣㄤㄥ`), `-` (`ㄦ`).
+
+---
+
+## 5. Adding Custom Pimsleur & NTNU Materials (`⚙️ Resource Admin`)
+
+Click **`⚙️ Resource Admin`** in the top header to open the **3-Step Guided Curriculum Importer**:
+1. **Step 1 (Select Source & Upload/Paste):**
+   - Choose **`🎧 Pimsleur Unit Pack`** (e.g., Units 20–30, Levels II–V) or **`📘 NTNU Contemporary Lesson`** (Volumes 1–6 supplemental lessons & workbooks).
+   - Upload a `.docx`, `.txt`, `.csv`, or `.json` file, or paste pipe-delimited lines:
+     ```text
+     銀行 | bank | ㄧㄣˊ ㄏㄤˊ | vocab
+     還錢 | repay money | ㄏㄨㄢˊ ㄑㄧㄢˊ | vocab
+     請問銀行在哪裡？我去銀行還錢。 | Excuse me, where is the bank? I am going to the bank to repay money. | | dialogue
+     ```
+2. **Step 2 (Taiwan MOE Zhuyin & Polyphone Preview/Edit):**
+   - Any line with blank Zhuyin is **automatically segmented and annotated** by the Taiwan MOE Forward Maximum-Matching (`FMM`) polyphone tokenizer (`銀行 -> ㄧㄣˊ ㄏㄤˊ`, `還錢 -> ㄏㄨㄢˊ ㄑㄧㄢˊ`). You can fine-tune any reading interactively before publishing.
+3. **Step 3 (Publish & Export Portable JSON Packs):**
+   - Click **`✓ Publish to All 6 Studios`** to propagate your new unit/lesson live across all 6 studios (`Today & Curriculum Hub`, `TOCFL Word Bank`, `FSRS Queue`, `Adaptive i+1 Reader`, `Speaking Lab`, and `DaQian Dojo`).
+
+---
+
+## 6. FSRS-Lite Progress Backup & Restore (`Studio 6 · Alt+6`)
+
+In **Studio 6 (`詞彙與大千`) → `FSRS 智慧記憶複習`**, click **`📤 Export Progress JSON`** to download a schema-validated (`formosa-progress-v2`) JSON snapshot containing your XP, Streak, FSRS character/word/stroke Stability ($S$) and Difficulty ($D$) records, Wacom handedness, and Skill Tree crowns, or click **`📥 Restore JSON File`** to import a saved backup file.

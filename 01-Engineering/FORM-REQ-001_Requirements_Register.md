@@ -4,7 +4,7 @@
 id: FORM-REQ-0001
 type: Requirement
 title: Forward Maximum-Matching (FMM) Word Tokenizer & Polyphone (破音字) Disambiguation Engine
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 1
 category: Functional
@@ -20,7 +20,7 @@ traces_to:
 id: FORM-REQ-0002
 type: Requirement
 title: Taiwan Ministry of Education (教育部) Standard Pronunciation & Tone Sandhi Engine
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 1
 category: Functional
@@ -37,7 +37,7 @@ traces_to:
 id: FORM-REQ-0003
 type: Requirement
 title: Complete Contemporary Chinese (Volumes 1–6) & Pimsleur (Units 1–19) Curriculum Database
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 1
 category: Functional
@@ -54,7 +54,7 @@ traces_to:
 id: FORM-REQ-0004
 type: Requirement
 title: FSRS-Lite Stability/Difficulty Scheduler & Portable JSON Backup/Restore
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 1
 category: Functional
@@ -71,7 +71,7 @@ traces_to:
 id: FORM-REQ-0005
 type: Requirement
 title: Modular Core & Data Decomposition Under 800 LOC Ceiling
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 1
 category: Maintainability
@@ -88,7 +88,7 @@ traces_to:
 id: FORM-REQ-0006
 type: Requirement
 title: Adaptive i+1 Graded Reader Across TOCFL Bands A1–B2
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 2
 category: Functional
@@ -105,7 +105,7 @@ traces_to:
 id: FORM-REQ-0007
 type: Requirement
 title: Custom Traditional Chinese Text Importer & Instant Cloze Generator
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 2
 category: Functional
@@ -122,7 +122,7 @@ traces_to:
 id: FORM-REQ-0008
 type: Requirement
 title: Spoken vs. Written Taiwan Register Bridge (口語 vs. 書面語)
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 2
 category: Functional
@@ -138,7 +138,7 @@ traces_to:
 id: FORM-REQ-0009
 type: Requirement
 title: Taiwan in 10 Minutes a Day — Bite-Sized Visual Survival Modules & Sticky Labels
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 2
 category: Functional
@@ -155,7 +155,7 @@ traces_to:
 id: FORM-REQ-0010
 type: Requirement
 title: Interactive Taiwanese Paper Tick-Menu (點菜單) Simulator & Taiwanese Pragmatics (語助詞 & 臺語)
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 2
 category: Functional
@@ -172,7 +172,7 @@ traces_to:
 id: FORM-REQ-0011
 type: Requirement
 title: Taiwan Functional Listening Gym (NT$ Prices, 民國 Dates, Addresses & Receipts)
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 2
 category: Functional
@@ -188,7 +188,7 @@ traces_to:
 id: FORM-REQ-0012
 type: Requirement
 title: Wacom Stylus (PointerEvent) Calligraphy Canvas with Pressure, Coalesced Sampling & Eraser Support
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 3
 category: Functional
@@ -205,7 +205,7 @@ traces_to:
 id: FORM-REQ-0013
 type: Requirement
 title: Taiwan MOE Standard Vector Stroke-Order Grading Engine (國字標準字體筆順)
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 3
 category: Functional
@@ -222,7 +222,7 @@ traces_to:
 id: FORM-REQ-0014
 type: Requirement
 title: Semantic-Phonetic (形聲字) Radical & Sound-Component Workbench
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 3
 category: Functional
@@ -238,7 +238,7 @@ traces_to:
 id: FORM-REQ-0015
 type: Requirement
 title: Offline WebAudio Autocorrelation / YIN Pitch-Contour (F0) Extractor
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 3
 category: Functional
@@ -255,7 +255,7 @@ traces_to:
 id: FORM-REQ-0016
 type: Requirement
 title: Live Dual-Curve Pitch-Contour Visualizer, Tone Sandhi & Retroflex/Sibilant Coach
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 3
 category: Functional
@@ -272,7 +272,7 @@ traces_to:
 id: FORM-REQ-0017
 type: Requirement
 title: Preserved & Modularized DaQian 8-Stage Typing Dojo, Skill Tree & Match Arena
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 3
 category: Functional
@@ -288,7 +288,7 @@ traces_to:
 id: FORM-REQ-0018
 type: Requirement
 title: Ergonomic Wacom & Keyboard Usability Thresholds (ASEF Guide 008)
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 4
 category: Usability
@@ -306,14 +306,14 @@ traces_to:
 id: FORM-REQ-0019
 type: Requirement
 title: Automated Verification Suite & Mechanical Structural Governance
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 4
 category: Verification
 priority: Mandatory
-description: "Every requirement (FORM-REQ-0001..0020) shall be verified by automated tests executed via the Node.js/TypeScript test runner and mechanical governance checks in 08-Automation/."
+description: "Every requirement (FORM-REQ-0001..0023) shall be verified by automated tests executed via the Node.js/TypeScript test runner and mechanical governance checks in 08-Automation/."
 acceptance_criteria:
-  - "100% of requirements (20/20) trace to passing automated verification tests and 08-Automation/check_structural_scaffolding.py + sync_traceability_graph.py pass with 0 errors."
+  - "100% of requirements (23/23) trace to passing automated verification tests and 08-Automation/check_structural_scaffolding.py + sync_traceability_graph.py pass with 0 errors."
 traces_to:
   - FORM-CONOPS-001
 ```
@@ -322,7 +322,7 @@ traces_to:
 id: FORM-REQ-0020
 type: Requirement
 title: Cross-Module State Synchronization Between Reader, Wacom Studio, Survival & SRS Store
-status: Approved
+status: Verified
 version: 1.0.0
 phase: Phase 4
 category: Functional
@@ -336,4 +336,59 @@ traces_to:
   - FORM-CAP-004
   - FORM-CAP-005
   - FORM-CAP-006
+```
+
+```yaml
+id: FORM-REQ-0021
+type: Requirement
+title: Unified 6-Studio Application Shell, Shared UI Primitive Kit (uiPrimitives.tsx) & Cross-Studio Context Handoff Bus
+status: Verified
+version: 1.0.0
+phase: Phase 1
+category: Usability
+priority: Mandatory
+description: "To prevent the piece-part, glued-together UX observed in the Chinese2 prototype, Phase 1 shall establish a shared UI primitive library (uiPrimitives.tsx), a Cross-Studio Context Handoff Bus (studioContextBus.ts) with 1-click Return Breadcrumbs, and a single-row 6-Studio navigation shell contract before feature studios are constructed in Phases 2–3."
+acceptance_criteria:
+  - "Exports WCAG 2.1 AA-verified tone palette tokens (WCAG_TONE_PALETTE), <ToneBadge>, <StudioHeaderBanner>, <StudioModeSwitcher>, <StylusButton> (>= 44x44 px hit targets), <HandednessToggle>, <ReturnBreadcrumbBar>, and <CrossStudioActionPills> from src/components/uiPrimitives.tsx in Phase 1."
+  - "Eliminates Chinese2's competing 4-menu dropdown + 12-closable-tab double-chrome in favor of 6 fixed, permanent top-level studios and a deterministic StudioContextBus that deep-links any inspected word/character into Wacom Calligraphy, Speaking Pitch Lab, Reader, or FSRS with a 1-click '<- Return to [Source Studio]' breadcrumb."
+traces_to:
+  - FORM-CONOPS-001
+  - FORM-DESCHAR-001
+```
+
+```yaml
+id: FORM-REQ-0022
+type: Requirement
+title: Curriculum & Resource Admin Manager — Dynamic Pimsleur, NTNU Contemporary Chinese & Custom Pack Importer/Editor
+status: Verified
+version: 1.0.0
+phase: Phase 1
+category: Functional
+priority: Mandatory
+description: "The system shall provide an in-app Curriculum & Resource Admin Manager allowing the user to import, create, edit, and export additional Pimsleur units (e.g., Units 20–30, Levels II–V from .docx/.txt/.csv/.json or structured paste) and additional NTNU A Course in Contemporary Chinese lessons, workbook exercises, vocabulary, and dialogues, automatically annotating them via the Taiwan MOE FMM polyphone tokenizer and propagating them live across all 6 studios."
+acceptance_criteria:
+  - "Supports 3-step guided ingestion (1. File upload of .docx/.txt/.csv/.json or structured paste -> 2. Interactive Taiwan MOE Zhuyin, polyphone 破音字 & DaQian key preview/editor -> 3. Live publish to persistent curriculumAdminStore)."
+  - "Newly added Pimsleur units and NTNU Contemporary Chinese lessons immediately propagate (Pattern 21) into the unified Vocabulary Catalog, FSRS queue, Adaptive i+1 Reader, Wacom Calligraphy character bank, Speaking F0 Pitch Lab, and DaQian Typing/Match Dojo, and can be exported/restored as portable JSON packs."
+traces_to:
+  - FORM-CAP-001
+  - FORM-CAP-002
+  - FORM-DESCHAR-001
+```
+
+```yaml
+id: FORM-REQ-0023
+type: Requirement
+title: Comprehensive User's Manual (FORM-MAN-001) & In-App Interactive Help/Reference Guide
+status: Verified
+version: 1.0.0
+phase: Phase 4
+category: Usability
+priority: Mandatory
+description: "Per ASEF Volume 4 §11.6, §14, and Guide 007 §12, the project shall deliver both a standalone, printable User's Manual (09-Releases/FORM-MAN-001_FormosaStudio_User_Manual.md) and an in-app interactive Help & Quick-Reference Drawer ('?' / F1 shortcut) covering end-to-end daily study workflows, Linux Wacom stylus setup & ergonomics, WebAudio F0 microphone calibration, DaQian (大千) keyboard layout, Taiwan MOE orthography/sandhi rules, and step-by-step Resource Admin ingestion for new Pimsleur and NTNU materials."
+acceptance_criteria:
+  - "09-Releases/FORM-MAN-001_FormosaStudio_User_Manual.md is complete, verified against the as-built 6-Studio application at Gate 6/7, and covers all 6 studios, hardware configuration (Wacom + Linux WebAudio), Resource Admin file formats/templates, and JSON backup/restore."
+  - "The application Global Header HUD includes a 1-click Help & Manual drawer ('?') rendering quick-reference guides for every studio."
+traces_to:
+  - FORM-CONOPS-001
+  - FORM-DESCHAR-001
 ```

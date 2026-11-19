@@ -42,6 +42,7 @@ REQUIRED_FILES = [
     "02-Architecture/FORM-DESCHAR-001_Design_Character_Document.md",
     "02-Architecture/FORM-ARCH-001_Architecture_and_Decisions.md",
     "03-Verification/FORM-VER-001_Verification_and_Validation_Plan.md",
+    "03-Verification/FORM-DEP-UX-001_End_to_End_UX_Architecture_Review.md",
     "04-Implementation/FORM-BSL-001_Baseline_Register.md",
     "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md",
     "05-Knowledge/FORM-EVAL-001_ASEF_N3_R2_Empirical_Scorecard.md",
@@ -65,8 +66,27 @@ def run_check(root: pathlib.Path) -> tuple[list[str], list[str]]:
         if not p.is_file() or p.stat().st_size == 0:
             errors.append(f"Missing or empty required governance artifact: {rel}")
 
+    # Enforce Mandatory End-to-End DEP-04 (UI/UX) Touchpoint A & B Sign-Off in every Phase AISR (FORM-LL-007)
+    impl_dir = root / "04-Implementation"
+    if impl_dir.is_dir():
+        for aisr_path in sorted(impl_dir.glob("FORM-AISR-*.md")):
+            aisr_text = aisr_path.read_text(encoding="utf-8", errors="replace")
+            rel_aisr = aisr_path.relative_to(root)
+            if "DEP-04" not in aisr_text or "Touchpoint A" not in aisr_text or "Touchpoint B" not in aisr_text:
+                errors.append(
+                    f"Missing mandatory end-to-end DEP-04 (UI/UX) Touchpoint A & B sign-off in {rel_aisr}"
+                )
+
     src_root = root / "07-Configuration" / "Source" / "src"
     if src_root.is_dir():
+        comp_dir = src_root / "components"
+        if comp_dir.is_dir() and list(comp_dir.glob("*.tsx")):
+            primitives_path = comp_dir / "uiPrimitives.tsx"
+            if not primitives_path.is_file() or primitives_path.stat().st_size == 0:
+                errors.append(
+                    "Missing Phase 1 Shared UI Primitive Kit (07-Configuration/Source/src/components/uiPrimitives.tsx) "
+                    "required by FORM-REQ-0021 before constructing UI components"
+                )
         for ext in ("*.ts", "*.tsx", "*.py"):
             for fpath in sorted(src_root.rglob(ext)):
                 if "node_modules" in fpath.parts or "dist" in fpath.parts:

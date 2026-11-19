@@ -1,7 +1,52 @@
 {
-  "object_count": 64,
-  "edge_count": 87,
+  "object_count": 75,
+  "edge_count": 129,
   "objects": {
+    "FORM-BOE-001": {
+      "id": "FORM-BOE-001",
+      "type": "EngineeringPlan",
+      "title": "Phase 1 Basis of Estimate — Shared UI Primitive Kit, Cross-Studio Handoff Bus, Taiwan MOE Linguistic Core, Full Curriculum & Resource Admin Manager",
+      "status": "Approved",
+      "version": "1.0.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-13",
+      "updated_date": "2026-11-13",
+      "framework_reference": "Volume 7 §5, Guide 002 §3, Guide 007 §13.1",
+      "traces_to": [
+        "FORM-ROAD-001",
+        "FORM-REQ-0001",
+        "FORM-REQ-0002",
+        "FORM-REQ-0003",
+        "FORM-REQ-0004",
+        "FORM-REQ-0005",
+        "FORM-REQ-0021",
+        "FORM-REQ-0022"
+      ],
+      "_file": "00-Governance/FORM-BOE-001_Phase1_Basis_of_Estimate.md"
+    },
+    "FORM-BOE-002": {
+      "id": "FORM-BOE-002",
+      "type": "EngineeringPlan",
+      "title": "Phase 2 Basis of Estimate — Adaptive i+1 Reader, Spoken/Written Register Bridge & \"Taiwan in 10 Minutes a Day\" Survival Studio",
+      "status": "Approved",
+      "version": "1.0.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-13",
+      "updated_date": "2026-11-13",
+      "framework_reference": "Volume 7 §5, Guide 002 §3, Guide 007 §13.1",
+      "traces_to": [
+        "FORM-ROAD-001",
+        "FORM-REQ-0006",
+        "FORM-REQ-0007",
+        "FORM-REQ-0008",
+        "FORM-REQ-0009",
+        "FORM-REQ-0010",
+        "FORM-REQ-0011"
+      ],
+      "_file": "00-Governance/FORM-BOE-002_Phase2_Basis_of_Estimate.md"
+    },
     "FORM-PLAN-001": {
       "id": "FORM-PLAN-001",
       "type": "EngineeringPlan",
@@ -27,7 +72,7 @@
       "project": "FORM",
       "owner": "Principal Engineer",
       "created_date": "2026-11-13",
-      "updated_date": "2026-11-13",
+      "updated_date": "2026-11-19",
       "framework_reference": "Volume 4 §6.4, Guide 006 Pattern 14",
       "traces_to": [
         "FORM-PLAN-001"
@@ -226,7 +271,7 @@
       "id": "FORM-REQ-0001",
       "type": "Requirement",
       "title": "Forward Maximum-Matching (FMM) Word Tokenizer & Polyphone (破音字) Disambiguation Engine",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 1",
       "category": "Functional",
@@ -244,7 +289,7 @@
       "id": "FORM-REQ-0002",
       "type": "Requirement",
       "title": "Taiwan Ministry of Education (教育部) Standard Pronunciation & Tone Sandhi Engine",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 1",
       "category": "Functional",
@@ -263,7 +308,7 @@
       "id": "FORM-REQ-0003",
       "type": "Requirement",
       "title": "Complete Contemporary Chinese (Volumes 1–6) & Pimsleur (Units 1–19) Curriculum Database",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 1",
       "category": "Functional",
@@ -282,7 +327,7 @@
       "id": "FORM-REQ-0004",
       "type": "Requirement",
       "title": "FSRS-Lite Stability/Difficulty Scheduler & Portable JSON Backup/Restore",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 1",
       "category": "Functional",
@@ -301,7 +346,7 @@
       "id": "FORM-REQ-0005",
       "type": "Requirement",
       "title": "Modular Core & Data Decomposition Under 800 LOC Ceiling",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 1",
       "category": "Maintainability",
@@ -320,7 +365,7 @@
       "id": "FORM-REQ-0006",
       "type": "Requirement",
       "title": "Adaptive i+1 Graded Reader Across TOCFL Bands A1–B2",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 2",
       "category": "Functional",
@@ -339,7 +384,7 @@
       "id": "FORM-REQ-0007",
       "type": "Requirement",
       "title": "Custom Traditional Chinese Text Importer & Instant Cloze Generator",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 2",
       "category": "Functional",
@@ -358,7 +403,7 @@
       "id": "FORM-REQ-0008",
       "type": "Requirement",
       "title": "Spoken vs. Written Taiwan Register Bridge (口語 vs. 書面語)",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 2",
       "category": "Functional",
@@ -376,7 +421,7 @@
       "id": "FORM-REQ-0009",
       "type": "Requirement",
       "title": "Taiwan in 10 Minutes a Day — Bite-Sized Visual Survival Modules & Sticky Labels",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 2",
       "category": "Functional",
@@ -395,7 +440,7 @@
       "id": "FORM-REQ-0010",
       "type": "Requirement",
       "title": "Interactive Taiwanese Paper Tick-Menu (點菜單) Simulator & Taiwanese Pragmatics (語助詞 & 臺語)",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 2",
       "category": "Functional",
@@ -414,7 +459,7 @@
       "id": "FORM-REQ-0011",
       "type": "Requirement",
       "title": "Taiwan Functional Listening Gym (NT$ Prices, 民國 Dates, Addresses & Receipts)",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 2",
       "category": "Functional",
@@ -432,7 +477,7 @@
       "id": "FORM-REQ-0012",
       "type": "Requirement",
       "title": "Wacom Stylus (PointerEvent) Calligraphy Canvas with Pressure, Coalesced Sampling & Eraser Support",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 3",
       "category": "Functional",
@@ -451,7 +496,7 @@
       "id": "FORM-REQ-0013",
       "type": "Requirement",
       "title": "Taiwan MOE Standard Vector Stroke-Order Grading Engine (國字標準字體筆順)",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 3",
       "category": "Functional",
@@ -470,7 +515,7 @@
       "id": "FORM-REQ-0014",
       "type": "Requirement",
       "title": "Semantic-Phonetic (形聲字) Radical & Sound-Component Workbench",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 3",
       "category": "Functional",
@@ -488,7 +533,7 @@
       "id": "FORM-REQ-0015",
       "type": "Requirement",
       "title": "Offline WebAudio Autocorrelation / YIN Pitch-Contour (F0) Extractor",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 3",
       "category": "Functional",
@@ -507,7 +552,7 @@
       "id": "FORM-REQ-0016",
       "type": "Requirement",
       "title": "Live Dual-Curve Pitch-Contour Visualizer, Tone Sandhi & Retroflex/Sibilant Coach",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 3",
       "category": "Functional",
@@ -526,7 +571,7 @@
       "id": "FORM-REQ-0017",
       "type": "Requirement",
       "title": "Preserved & Modularized DaQian 8-Stage Typing Dojo, Skill Tree & Match Arena",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 3",
       "category": "Functional",
@@ -544,7 +589,7 @@
       "id": "FORM-REQ-0018",
       "type": "Requirement",
       "title": "Ergonomic Wacom & Keyboard Usability Thresholds (ASEF Guide 008)",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 4",
       "category": "Usability",
@@ -564,14 +609,14 @@
       "id": "FORM-REQ-0019",
       "type": "Requirement",
       "title": "Automated Verification Suite & Mechanical Structural Governance",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 4",
       "category": "Verification",
       "priority": "Mandatory",
-      "description": "Every requirement (FORM-REQ-0001..0020) shall be verified by automated tests executed via the Node.js/TypeScript test runner and mechanical governance checks in 08-Automation/.",
+      "description": "Every requirement (FORM-REQ-0001..0023) shall be verified by automated tests executed via the Node.js/TypeScript test runner and mechanical governance checks in 08-Automation/.",
       "acceptance_criteria": [
-        "100% of requirements (20/20) trace to passing automated verification tests and 08-Automation/check_structural_scaffolding.py + sync_traceability_graph.py pass with 0 errors."
+        "100% of requirements (23/23) trace to passing automated verification tests and 08-Automation/check_structural_scaffolding.py + sync_traceability_graph.py pass with 0 errors."
       ],
       "traces_to": [
         "FORM-CONOPS-001"
@@ -582,7 +627,7 @@
       "id": "FORM-REQ-0020",
       "type": "Requirement",
       "title": "Cross-Module State Synchronization Between Reader, Wacom Studio, Survival & SRS Store",
-      "status": "Approved",
+      "status": "Verified",
       "version": "1.0.0",
       "phase": "Phase 4",
       "category": "Functional",
@@ -597,6 +642,67 @@
         "FORM-CAP-004",
         "FORM-CAP-005",
         "FORM-CAP-006"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0021": {
+      "id": "FORM-REQ-0021",
+      "type": "Requirement",
+      "title": "Unified 6-Studio Application Shell, Shared UI Primitive Kit (uiPrimitives.tsx) & Cross-Studio Context Handoff Bus",
+      "status": "Verified",
+      "version": "1.0.0",
+      "phase": "Phase 1",
+      "category": "Usability",
+      "priority": "Mandatory",
+      "description": "To prevent the piece-part, glued-together UX observed in the Chinese2 prototype, Phase 1 shall establish a shared UI primitive library (uiPrimitives.tsx), a Cross-Studio Context Handoff Bus (studioContextBus.ts) with 1-click Return Breadcrumbs, and a single-row 6-Studio navigation shell contract before feature studios are constructed in Phases 2–3.",
+      "acceptance_criteria": [
+        "Exports WCAG 2.1 AA-verified tone palette tokens (WCAG_TONE_PALETTE), <ToneBadge>, <StudioHeaderBanner>, <StudioModeSwitcher>, <StylusButton> (>= 44x44 px hit targets), <HandednessToggle>, <ReturnBreadcrumbBar>, and <CrossStudioActionPills> from src/components/uiPrimitives.tsx in Phase 1.",
+        "Eliminates Chinese2's competing 4-menu dropdown + 12-closable-tab double-chrome in favor of 6 fixed, permanent top-level studios and a deterministic StudioContextBus that deep-links any inspected word/character into Wacom Calligraphy, Speaking Pitch Lab, Reader, or FSRS with a 1-click '<- Return to [Source Studio]' breadcrumb."
+      ],
+      "traces_to": [
+        "FORM-CONOPS-001",
+        "FORM-DESCHAR-001"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0022": {
+      "id": "FORM-REQ-0022",
+      "type": "Requirement",
+      "title": "Curriculum & Resource Admin Manager — Dynamic Pimsleur, NTNU Contemporary Chinese & Custom Pack Importer/Editor",
+      "status": "Verified",
+      "version": "1.0.0",
+      "phase": "Phase 1",
+      "category": "Functional",
+      "priority": "Mandatory",
+      "description": "The system shall provide an in-app Curriculum & Resource Admin Manager allowing the user to import, create, edit, and export additional Pimsleur units (e.g., Units 20–30, Levels II–V from .docx/.txt/.csv/.json or structured paste) and additional NTNU A Course in Contemporary Chinese lessons, workbook exercises, vocabulary, and dialogues, automatically annotating them via the Taiwan MOE FMM polyphone tokenizer and propagating them live across all 6 studios.",
+      "acceptance_criteria": [
+        "Supports 3-step guided ingestion (1. File upload of .docx/.txt/.csv/.json or structured paste -> 2. Interactive Taiwan MOE Zhuyin, polyphone 破音字 & DaQian key preview/editor -> 3. Live publish to persistent curriculumAdminStore).",
+        "Newly added Pimsleur units and NTNU Contemporary Chinese lessons immediately propagate (Pattern 21) into the unified Vocabulary Catalog, FSRS queue, Adaptive i+1 Reader, Wacom Calligraphy character bank, Speaking F0 Pitch Lab, and DaQian Typing/Match Dojo, and can be exported/restored as portable JSON packs."
+      ],
+      "traces_to": [
+        "FORM-CAP-001",
+        "FORM-CAP-002",
+        "FORM-DESCHAR-001"
+      ],
+      "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
+    },
+    "FORM-REQ-0023": {
+      "id": "FORM-REQ-0023",
+      "type": "Requirement",
+      "title": "Comprehensive User's Manual (FORM-MAN-001) & In-App Interactive Help/Reference Guide",
+      "status": "Verified",
+      "version": "1.0.0",
+      "phase": "Phase 4",
+      "category": "Usability",
+      "priority": "Mandatory",
+      "description": "Per ASEF Volume 4 §11.6, §14, and Guide 007 §12, the project shall deliver both a standalone, printable User's Manual (09-Releases/FORM-MAN-001_FormosaStudio_User_Manual.md) and an in-app interactive Help & Quick-Reference Drawer ('?' / F1 shortcut) covering end-to-end daily study workflows, Linux Wacom stylus setup & ergonomics, WebAudio F0 microphone calibration, DaQian (大千) keyboard layout, Taiwan MOE orthography/sandhi rules, and step-by-step Resource Admin ingestion for new Pimsleur and NTNU materials.",
+      "acceptance_criteria": [
+        "09-Releases/FORM-MAN-001_FormosaStudio_User_Manual.md is complete, verified against the as-built 6-Studio application at Gate 6/7, and covers all 6 studios, hardware configuration (Wacom + Linux WebAudio), Resource Admin file formats/templates, and JSON backup/restore.",
+        "The application Global Header HUD includes a 1-click Help & Manual drawer ('?') rendering quick-reference guides for every studio."
+      ],
+      "traces_to": [
+        "FORM-CONOPS-001",
+        "FORM-DESCHAR-001"
       ],
       "_file": "01-Engineering/FORM-REQ-001_Requirements_Register.md"
     },
@@ -672,6 +778,23 @@
       "mitigated_by": [
         "FORM-REQ-0009",
         "FORM-REQ-0011"
+      ],
+      "_file": "01-Engineering/FORM-RISK-001_Risk_and_Assumption_Register.md"
+    },
+    "FORM-RISK-006": {
+      "id": "FORM-RISK-006",
+      "type": "Risk",
+      "title": "Piece-Part Studio Silos, Competing Navigation Chrome, and Late-Phase UI/UX Review Degrade End-to-End Learning Flow",
+      "status": "Approved",
+      "version": "1.0.0",
+      "probability": "High",
+      "impact": "High",
+      "description": "If features are built as isolated piece-part tabs and glued together (as occurred in Chinese2's 4-menu dropdown + 12-closable-tab shell with zero cross-studio context handoff) or if UI/UX review (DEP-04) is deferred until Phase 4, the resulting application feels clunky, fragmented, and ergonomically inconsistent across Wacom stylus and keyboard workflows.",
+      "mitigated_by": [
+        "FORM-DEC-004",
+        "FORM-REQ-0018",
+        "FORM-REQ-0020",
+        "FORM-REQ-0021"
       ],
       "_file": "01-Engineering/FORM-RISK-001_Risk_and_Assumption_Register.md"
     },
@@ -774,6 +897,25 @@
       ],
       "_file": "02-Architecture/FORM-ARCH-001_Architecture_and_Decisions.md"
     },
+    "FORM-DEC-004": {
+      "id": "FORM-DEC-004",
+      "type": "ArchitectureDecision",
+      "title": "Fixed 6-Studio Single-Row Shell, Phase 1 Shared UI Primitive Kit (uiPrimitives.tsx) & Cross-Studio Context Handoff Bus Over Piece-Part Tab Accretion",
+      "status": "Approved",
+      "version": "1.0.0",
+      "problem_statement": "The Chinese2 prototype felt clunky and glued-together because it stacked a 4-dropdown AppMenuBar above a 12-closable-tab WorkspaceTabBar and nested sub-tab bars, built each tab with ad-hoc local styles, and dropped user study context whenever switching tabs.",
+      "alternatives_considered": [
+        "Option A: Retain Chinese2's 4-menu dropdown bar + 12 dynamic closable tabs and add a 13th/14th tab for Wacom and 10-Min Taiwan (rejected: worsens navigation clutter and studio silos).",
+        "Option B (Selected): Consolidate navigation into a single-row 6-Studio Shell, mandate a Phase 1 Shared UI Primitive Kit (src/components/uiPrimitives.tsx), embed an Inline 10-Minute Daily Flow Runner inside Today's Hub, and wire a deterministic Cross-Studio Context Handoff Bus (src/lib/studioContextBus.ts) with 1-click Return Breadcrumbs."
+      ],
+      "rationale": "Option B eliminates competing navigation chrome, guarantees visual/ergonomic consistency (>= 44x44 px stylus targets, WCAG AA tone badges) from Phase 1 onward, and turns isolated feature tabs into a single fluid learning loop.",
+      "traces_to": [
+        "FORM-REQ-0018",
+        "FORM-REQ-0020",
+        "FORM-REQ-0021"
+      ],
+      "_file": "02-Architecture/FORM-ARCH-001_Architecture_and_Decisions.md"
+    },
     "FORM-DESCHAR-001": {
       "id": "FORM-DESCHAR-001",
       "type": "DesignCharacterDocument",
@@ -808,6 +950,26 @@
       ],
       "_file": "03-Verification/FORM-VER-001_Verification_and_Validation_Plan.md"
     },
+    "FORM-VER-RPT-001": {
+      "id": "FORM-VER-RPT-001",
+      "type": "ValidationOutput",
+      "title": "FormosaStudio v1.0.0 Verification & Golden Scenario Validation Report (Gate 6/7)",
+      "status": "Approved",
+      "version": "1.0.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-19",
+      "updated_date": "2026-11-19",
+      "framework_reference": "Volume 4 §12, Volume 4 §13, Guide 007 §9, Guide 007 §10, Guide 008 Part 1",
+      "traces_to": [
+        "FORM-VER-001",
+        "FORM-REQ-0018",
+        "FORM-REQ-0019",
+        "FORM-REQ-0020",
+        "FORM-REQ-0023"
+      ],
+      "_file": "03-Verification/FORM-VER-RPT-001_Verification_and_Validation_Report.md"
+    },
     "FORM-BSL-REG-001": {
       "id": "FORM-BSL-REG-001",
       "type": "BaselineRegister",
@@ -817,7 +979,7 @@
       "project": "FORM",
       "owner": "Principal Engineer",
       "created_date": "2026-11-13",
-      "updated_date": "2026-11-13",
+      "updated_date": "2026-11-19",
       "framework_reference": "Volume 8 §5, Guide 001 §40, Guide 002 §6",
       "traces_to": [
         "FORM-TAILOR-001"
@@ -859,8 +1021,9 @@
       "id": "FORM-BSL-003",
       "type": "Baseline",
       "title": "Gate 6/7: Verification Completion & Golden Scenario Validation Acceptance",
-      "status": "Proposed",
-      "version": "0.1.0",
+      "status": "Approved",
+      "version": "1.0.0",
+      "gate_date": "2026-11-19",
       "traces_to": [
         "FORM-VER-001"
       ],
@@ -870,8 +1033,9 @@
       "id": "FORM-BSL-004",
       "type": "Baseline",
       "title": "Gate 8/9: v1.0.0 Release Approval & R2 (n=3) Project Closure",
-      "status": "Proposed",
-      "version": "0.1.0",
+      "status": "Approved",
+      "version": "1.0.0",
+      "gate_date": "2026-11-19",
       "traces_to": [
         "FORM-TAILOR-001"
       ],
@@ -886,11 +1050,12 @@
       "project": "FORM",
       "owner": "Principal Engineer",
       "created_date": "2026-11-13",
-      "updated_date": "2026-11-13",
+      "updated_date": "2026-11-19",
       "traces_to": [
         "FORM-TAILOR-001",
         "FORM-LL-001",
-        "FORM-LL-006"
+        "FORM-LL-006",
+        "FORM-LL-007"
       ],
       "_file": "05-Knowledge/FORM-EVAL-001_ASEF_N3_R2_Empirical_Scorecard.md"
     },
@@ -980,6 +1145,20 @@
       "preventive_action": "Added the Wacom Stylus (`PointerEvent` pressure + coalesced sampling + eraser nib) Calligraphy & Taiwan MOE Vector Stroke-Order Studio (`FORM-REQ-0012`..`0014`).",
       "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
     },
+    "FORM-LL-007": {
+      "id": "FORM-LL-007",
+      "type": "LessonLearned",
+      "title": "Piece-Part Feature Accretion Glued Together Under Competing Navigation Layers Produced a Clunky, Siloed User Experience in Chinese2",
+      "status": "Approved",
+      "version": "1.0.0",
+      "phase_discovered": "Phase 0 (Chinese2 Prototype Retrospective — Principal Engineer & DEP-04 UX Audit)",
+      "category": "End-to-End UI/UX Coherence & Information Architecture (ASEF Guide 008 & Pattern 20)",
+      "disposition": "Mitigated by FORM-DEC-004, FORM-REQ-0018, FORM-REQ-0021, and Mandatory Phase 1-4 DEP-04 Co-Leadership",
+      "created_date": "2026-11-13",
+      "description": "Because `Chinese2` was developed in isolated piece parts and glued together over successive sessions without active end-to-end UI/UX governance (`DEP-04`), it accumulated three severe UX anti-patterns: (1) triple-stacked navigation chrome (`AppMenuBar.tsx` with 4 dropdown menus stacked above `WorkspaceTabBar.tsx` with 12 closable tab types stacked above per-tab sub-tab bars), (2) dead-end studio silos where clicking a word or step in `TodayStudyHub`, `GrammarAndReadingTab`, or `TaiwanSurvivalTab` could not pass context (`activeWord`, `activeCharacter`, `returnBreadcrumb`) to Speaking or Writing practice, and (3) inconsistent ad-hoc visual components and sub-44px hit targets across files.",
+      "preventive_action": "Mandated `DEP-04` (UI/UX & Accessibility Designer) as a Standing Co-Lead at Touchpoint A and Touchpoint B of every phase (Phases 1–4); established a single-row 6-Studio Shell, Phase 1 Shared UI Primitive Kit (`src/components/uiPrimitives.tsx`), and Cross-Studio Context Handoff Bus (`src/lib/studioContextBus.ts`) with 1-click Return Breadcrumbs in `FORM-DEC-004` and `FORM-REQ-0021`; and added mechanical verification of `DEP-04` phase sign-off in `08-Automation/check_structural_scaffolding.py`.",
+      "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
+    },
     "FORM-LL-006": {
       "id": "FORM-LL-006",
       "type": "LessonLearned",
@@ -1010,9 +1189,121 @@
       "problem_statement": "`ASEF Guide 002` defines `R1` and `R2` in the summary table, but its template (§3–§6) only illustrates `R3` mandatory artifacts, leaving a developer starting an `R1` or `R2` project without a concrete low-ceremony consolidation pattern or an `R1 -> R2` prototype graduation checklist.",
       "proposed_change": "Add a 'Canonical R1 & R2 Tailoring Profiles (Consolidated Artifacts & 4-Gate Folding)' subsection and an 'R1 Prototype-to-R2 Graduation Pattern' to `ASEF Guide 002`, grounded in `FormosaStudio` (`n = 3`).",
       "_file": "05-Knowledge/FORM-LL-001_Lessons_Learned_and_FIR_Register.md"
+    },
+    "FORM-MAN-001": {
+      "id": "FORM-MAN-001",
+      "type": "ValidationOutput",
+      "title": "FormosaStudio v1.0.0 Comprehensive User's Manual & Taiwan MOE Linguistic Reference Guide",
+      "status": "Approved",
+      "version": "1.0.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-14",
+      "updated_date": "2026-11-14",
+      "framework_reference": "Volume 4 §11.6, Volume 4 §14, Guide 007 §12, FORM-REQ-0023",
+      "traces_to": [
+        "FORM-REQ-0023",
+        "FORM-REQ-0018",
+        "FORM-REQ-0021",
+        "FORM-REQ-0022"
+      ],
+      "_file": "09-Releases/FORM-MAN-001_FormosaStudio_User_Manual.md"
+    },
+    "FORM-REL-001": {
+      "id": "FORM-REL-001",
+      "type": "ValidationOutput",
+      "title": "FormosaStudio v1.0.0 Production Release Notes & Gate 8/9 Project Closure Record",
+      "status": "Approved",
+      "version": "1.0.0",
+      "project": "FORM",
+      "owner": "Principal Engineer",
+      "created_date": "2026-11-19",
+      "updated_date": "2026-11-19",
+      "framework_reference": "Volume 4 §14, Volume 4 §15, Guide 002 §6, Guide 007 §12",
+      "traces_to": [
+        "FORM-PLAN-001",
+        "FORM-TAILOR-001",
+        "FORM-VER-001"
+      ],
+      "_file": "09-Releases/FORM-REL-001_v1.0.0_Release_Notes.md"
     }
   },
   "edges": [
+    {
+      "source": "FORM-BOE-001",
+      "relation": "traces_to",
+      "target": "FORM-ROAD-001"
+    },
+    {
+      "source": "FORM-BOE-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0001"
+    },
+    {
+      "source": "FORM-BOE-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0002"
+    },
+    {
+      "source": "FORM-BOE-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0003"
+    },
+    {
+      "source": "FORM-BOE-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0004"
+    },
+    {
+      "source": "FORM-BOE-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0005"
+    },
+    {
+      "source": "FORM-BOE-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0021"
+    },
+    {
+      "source": "FORM-BOE-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0022"
+    },
+    {
+      "source": "FORM-BOE-002",
+      "relation": "traces_to",
+      "target": "FORM-ROAD-001"
+    },
+    {
+      "source": "FORM-BOE-002",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0006"
+    },
+    {
+      "source": "FORM-BOE-002",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0007"
+    },
+    {
+      "source": "FORM-BOE-002",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0008"
+    },
+    {
+      "source": "FORM-BOE-002",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0009"
+    },
+    {
+      "source": "FORM-BOE-002",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0010"
+    },
+    {
+      "source": "FORM-BOE-002",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0011"
+    },
     {
       "source": "FORM-PLAN-001",
       "relation": "traces_to",
@@ -1229,6 +1520,41 @@
       "target": "FORM-CAP-006"
     },
     {
+      "source": "FORM-REQ-0021",
+      "relation": "traces_to",
+      "target": "FORM-CONOPS-001"
+    },
+    {
+      "source": "FORM-REQ-0021",
+      "relation": "traces_to",
+      "target": "FORM-DESCHAR-001"
+    },
+    {
+      "source": "FORM-REQ-0022",
+      "relation": "traces_to",
+      "target": "FORM-CAP-001"
+    },
+    {
+      "source": "FORM-REQ-0022",
+      "relation": "traces_to",
+      "target": "FORM-CAP-002"
+    },
+    {
+      "source": "FORM-REQ-0022",
+      "relation": "traces_to",
+      "target": "FORM-DESCHAR-001"
+    },
+    {
+      "source": "FORM-REQ-0023",
+      "relation": "traces_to",
+      "target": "FORM-CONOPS-001"
+    },
+    {
+      "source": "FORM-REQ-0023",
+      "relation": "traces_to",
+      "target": "FORM-DESCHAR-001"
+    },
+    {
       "source": "FORM-RISK-001",
       "relation": "mitigated_by",
       "target": "FORM-REQ-0005"
@@ -1277,6 +1603,26 @@
       "source": "FORM-RISK-005",
       "relation": "mitigated_by",
       "target": "FORM-REQ-0011"
+    },
+    {
+      "source": "FORM-RISK-006",
+      "relation": "mitigated_by",
+      "target": "FORM-DEC-004"
+    },
+    {
+      "source": "FORM-RISK-006",
+      "relation": "mitigated_by",
+      "target": "FORM-REQ-0018"
+    },
+    {
+      "source": "FORM-RISK-006",
+      "relation": "mitigated_by",
+      "target": "FORM-REQ-0020"
+    },
+    {
+      "source": "FORM-RISK-006",
+      "relation": "mitigated_by",
+      "target": "FORM-REQ-0021"
     },
     {
       "source": "FORM-ASM-001",
@@ -1344,6 +1690,21 @@
       "target": "FORM-REQ-0013"
     },
     {
+      "source": "FORM-DEC-004",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0018"
+    },
+    {
+      "source": "FORM-DEC-004",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0020"
+    },
+    {
+      "source": "FORM-DEC-004",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0021"
+    },
+    {
       "source": "FORM-DESCHAR-001",
       "relation": "traces_to",
       "target": "FORM-TAILOR-001"
@@ -1362,6 +1723,31 @@
       "source": "FORM-VER-001",
       "relation": "traces_to",
       "target": "FORM-REQ-0019"
+    },
+    {
+      "source": "FORM-VER-RPT-001",
+      "relation": "traces_to",
+      "target": "FORM-VER-001"
+    },
+    {
+      "source": "FORM-VER-RPT-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0018"
+    },
+    {
+      "source": "FORM-VER-RPT-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0019"
+    },
+    {
+      "source": "FORM-VER-RPT-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0020"
+    },
+    {
+      "source": "FORM-VER-RPT-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0023"
     },
     {
       "source": "FORM-BSL-REG-001",
@@ -1439,6 +1825,11 @@
       "target": "FORM-LL-006"
     },
     {
+      "source": "FORM-EVAL-001",
+      "relation": "traces_to",
+      "target": "FORM-LL-007"
+    },
+    {
       "source": "FORM-LL-001-REG",
       "relation": "traces_to",
       "target": "FORM-TAILOR-001"
@@ -1447,6 +1838,41 @@
       "source": "FORM-FIR-001",
       "relation": "originating_lesson",
       "target": "FORM-LL-006"
+    },
+    {
+      "source": "FORM-MAN-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0023"
+    },
+    {
+      "source": "FORM-MAN-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0018"
+    },
+    {
+      "source": "FORM-MAN-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0021"
+    },
+    {
+      "source": "FORM-MAN-001",
+      "relation": "traces_to",
+      "target": "FORM-REQ-0022"
+    },
+    {
+      "source": "FORM-REL-001",
+      "relation": "traces_to",
+      "target": "FORM-PLAN-001"
+    },
+    {
+      "source": "FORM-REL-001",
+      "relation": "traces_to",
+      "target": "FORM-TAILOR-001"
+    },
+    {
+      "source": "FORM-REL-001",
+      "relation": "traces_to",
+      "target": "FORM-VER-001"
     }
   ]
 }

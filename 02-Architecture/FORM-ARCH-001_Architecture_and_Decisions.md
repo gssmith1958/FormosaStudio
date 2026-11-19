@@ -52,19 +52,23 @@ To remediate the 8 monolithic files (`1,003–1,689` LOC) in `Chinese2`, `07-Con
 │   │   ├── zhuyinTokenizer.ts      # Forward Maximum-Matching (FMM) tokenizer & sandhi engine
 │   │   ├── pitchTracker.ts         # Offline WebAudio autocorrelation/YIN F0 pitch extractor & Chao scorer
 │   │   ├── wacomStrokeEngine.ts    # PointerEvent Wacom pressure curve smoother & Taiwan MOE stroke grader
-│   │   ├── progressStore.ts        # FSRS-lite scheduler + JSON export/import validation
+│   │   ├── progressStore.ts        # FSRS-lite scheduler + UI ergonomics + JSON export/import validation
+│   │   ├── curriculumAdminStore.ts # Dynamic Pimsleur & NTNU Contemporary Chinese resource importer/store
+│   │   ├── studioContextBus.ts     # Cross-Studio Context Handoff Bus & Return Breadcrumb state manager
 │   │   └── audioService.ts         # zh-TW TTS + WebAudio tone synthesizer & voice recorder
 │   ├── data/
 │   │   ├── pimsleurUnitsA.ts       # Pimsleur Mandarin I Units 1–10
 │   │   ├── pimsleurUnitsB.ts       # Pimsleur Mandarin I Units 11–19
 │   │   ├── contemporaryVols1to2.ts # Contemporary Chinese Vols. 1–2 complete lessons
 │   │   ├── contemporaryVols3to6.ts # Contemporary Chinese Vols. 3–6 complete lessons
-│   │   ├── vocabularyCatalog.ts    # Unified TOCFL Novice 1 – Band B2 catalog builder
+│   │   ├── vocabularyCatalog.ts    # Unified TOCFL Novice 1 – Band B2 catalog builder (merges built-in + Admin packs)
 │   │   ├── gradedReaderData.ts     # TOCFL A1–B2 Taiwan graded stories + 口語/書面語 register pairs
 │   │   ├── taiwanTenMinData.ts     # "Taiwan in 10 Minutes a Day" sticky labels, 點菜單 menus, 語助詞, 臺語
 │   │   ├── strokeOrderData.ts      # Taiwan MOE standard stroke vectors & 形聲字 radical-phonetic families
 │   │   └── curriculumWorlds.ts     # 5-World skill tree node definitions
 │   ├── components/
+│   │   ├── uiPrimitives.tsx        # Phase 1 Shared UI Kit: WCAG_TONE_PALETTE, StylusButton (>=44px), StudioHeader, Breadcrumbs
+│   │   ├── ResourceAdminModal.tsx  # 3-Step Guided Admin Importer for Pimsleur (.docx/.txt/.json) & NTNU materials
 │   │   ├── WacomCalligraphyTab.tsx # Wacom Stylus MOE Stroke-Order & 形聲字 Studio
 │   │   ├── TaiwanTenMinTab.tsx     # "Taiwan in 10 Minutes a Day" Survival, 點菜單 & Listening Gym
 │   │   ├── GrammarAndReadingTab.tsx# Adaptive i+1 Graded Reader, Custom Text Studio & Register Bridge
@@ -125,4 +129,21 @@ rationale: "Option B delivers native Wacom calligraphy responsiveness, hardware 
 traces_to:
   - FORM-REQ-0012
   - FORM-REQ-0013
+```
+
+```yaml
+id: FORM-DEC-004
+type: ArchitectureDecision
+title: Fixed 6-Studio Single-Row Shell, Phase 1 Shared UI Primitive Kit (uiPrimitives.tsx) & Cross-Studio Context Handoff Bus Over Piece-Part Tab Accretion
+status: Approved
+version: 1.0.0
+problem_statement: "The Chinese2 prototype felt clunky and glued-together because it stacked a 4-dropdown AppMenuBar above a 12-closable-tab WorkspaceTabBar and nested sub-tab bars, built each tab with ad-hoc local styles, and dropped user study context whenever switching tabs."
+alternatives_considered:
+  - "Option A: Retain Chinese2's 4-menu dropdown bar + 12 dynamic closable tabs and add a 13th/14th tab for Wacom and 10-Min Taiwan (rejected: worsens navigation clutter and studio silos)."
+  - "Option B (Selected): Consolidate navigation into a single-row 6-Studio Shell, mandate a Phase 1 Shared UI Primitive Kit (src/components/uiPrimitives.tsx), embed an Inline 10-Minute Daily Flow Runner inside Today's Hub, and wire a deterministic Cross-Studio Context Handoff Bus (src/lib/studioContextBus.ts) with 1-click Return Breadcrumbs."
+rationale: "Option B eliminates competing navigation chrome, guarantees visual/ergonomic consistency (>= 44x44 px stylus targets, WCAG AA tone badges) from Phase 1 onward, and turns isolated feature tabs into a single fluid learning loop."
+traces_to:
+  - FORM-REQ-0018
+  - FORM-REQ-0020
+  - FORM-REQ-0021
 ```

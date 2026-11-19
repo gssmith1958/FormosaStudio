@@ -9,7 +9,7 @@ version: 1.0.0
 project: FORM
 owner: Principal Engineer
 created_date: 2026-11-13
-updated_date: 2026-11-13
+updated_date: 2026-11-19
 framework_reference: "Volume 8 §5, Guide 001 §40, Guide 002 §6"
 traces_to:
   - FORM-TAILOR-001
@@ -52,8 +52,9 @@ traces_to:
 id: FORM-BSL-003
 type: Baseline
 title: "Gate 6/7: Verification Completion & Golden Scenario Validation Acceptance"
-status: Proposed
-version: 0.1.0
+status: Approved
+version: 1.0.0
+gate_date: 2026-11-19
 traces_to:
   - FORM-VER-001
 ```
@@ -62,8 +63,9 @@ traces_to:
 id: FORM-BSL-004
 type: Baseline
 title: "Gate 8/9: v1.0.0 Release Approval & R2 (n=3) Project Closure"
-status: Proposed
-version: 0.1.0
+status: Approved
+version: 1.0.0
+gate_date: 2026-11-19
 traces_to:
   - FORM-TAILOR-001
 ```

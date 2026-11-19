@@ -80,6 +80,45 @@ class TestGovernanceAdversarial(unittest.TestCase):
                 f"Expected Pattern 18 target-type mismatch, got: {errors}",
             )
 
+    def test_5_missing_dep04_ux_signoff_in_aisr_detected(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = pathlib.Path(tmp)
+            for d in check_structural_scaffolding.CANONICAL_PEW_DIRS:
+                (tmp_root / d).mkdir(parents=True, exist_ok=True)
+            for rel in check_structural_scaffolding.REQUIRED_FILES:
+                dest = tmp_root / rel
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(REPO_ROOT / rel, dest)
+
+            bad_aisr = tmp_root / "04-Implementation" / "FORM-AISR-001_Phase1.md"
+            bad_aisr.write_text("# Phase 1 AISR\nOnly DEP-01 reviewed this phase.\n", encoding="utf-8")
+
+            errors, _ = check_structural_scaffolding.run_check(tmp_root)
+            self.assertTrue(
+                any("Missing mandatory end-to-end DEP-04 (UI/UX) Touchpoint A & B sign-off" in e for e in errors),
+                f"Expected DEP-04 sign-off failure, got: {errors}",
+            )
+
+    def test_6_missing_ui_primitives_detected_when_components_exist(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = pathlib.Path(tmp)
+            for d in check_structural_scaffolding.CANONICAL_PEW_DIRS:
+                (tmp_root / d).mkdir(parents=True, exist_ok=True)
+            for rel in check_structural_scaffolding.REQUIRED_FILES:
+                dest = tmp_root / rel
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(REPO_ROOT / rel, dest)
+
+            comp = tmp_root / "07-Configuration" / "Source" / "src" / "components" / "SomeFeatureTab.tsx"
+            comp.parent.mkdir(parents=True, exist_ok=True)
+            comp.write_text("export const SomeFeatureTab = () => null;\n", encoding="utf-8")
+
+            errors, _ = check_structural_scaffolding.run_check(tmp_root)
+            self.assertTrue(
+                any("Missing Phase 1 Shared UI Primitive Kit" in e for e in errors),
+                f"Expected missing uiPrimitives.tsx error, got: {errors}",
+            )
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

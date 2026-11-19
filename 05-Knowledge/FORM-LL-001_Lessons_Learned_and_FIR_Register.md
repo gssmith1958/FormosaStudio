@@ -17,7 +17,7 @@ traces_to:
 
 ---
 
-## 1. Phase 0 Prototype Retrospective Lessons Learned from `Chinese2` (`FORM-LL-001`..`005`)
+## 1. Phase 0 Prototype Retrospective Lessons Learned from `Chinese2` (`FORM-LL-001`..`005`, `007`)
 
 ```yaml
 id: FORM-LL-001
@@ -87,6 +87,20 @@ disposition: Mitigated by FORM-REQ-0012, FORM-REQ-0013, FORM-REQ-0014, and FORM-
 created_date: 2026-11-13
 description: "`Chinese2` trained recognition and DaQian keyboard typing, but had zero support for the user's attached Wacom pen tablet or Taiwan MOE standard stroke order (`國字標準字體筆順`) and semantic-phonetic (`形聲字`) character composition."
 preventive_action: "Added the Wacom Stylus (`PointerEvent` pressure + coalesced sampling + eraser nib) Calligraphy & Taiwan MOE Vector Stroke-Order Studio (`FORM-REQ-0012`..`0014`)."
+```
+
+```yaml
+id: FORM-LL-007
+type: LessonLearned
+title: Piece-Part Feature Accretion Glued Together Under Competing Navigation Layers Produced a Clunky, Siloed User Experience in Chinese2
+status: Approved
+version: 1.0.0
+phase_discovered: Phase 0 (Chinese2 Prototype Retrospective — Principal Engineer & DEP-04 UX Audit)
+category: End-to-End UI/UX Coherence & Information Architecture (ASEF Guide 008 & Pattern 20)
+disposition: Mitigated by FORM-DEC-004, FORM-REQ-0018, FORM-REQ-0021, and Mandatory Phase 1-4 DEP-04 Co-Leadership
+created_date: 2026-11-13
+description: "Because `Chinese2` was developed in isolated piece parts and glued together over successive sessions without active end-to-end UI/UX governance (`DEP-04`), it accumulated three severe UX anti-patterns: (1) triple-stacked navigation chrome (`AppMenuBar.tsx` with 4 dropdown menus stacked above `WorkspaceTabBar.tsx` with 12 closable tab types stacked above per-tab sub-tab bars), (2) dead-end studio silos where clicking a word or step in `TodayStudyHub`, `GrammarAndReadingTab`, or `TaiwanSurvivalTab` could not pass context (`activeWord`, `activeCharacter`, `returnBreadcrumb`) to Speaking or Writing practice, and (3) inconsistent ad-hoc visual components and sub-44px hit targets across files."
+preventive_action: "Mandated `DEP-04` (UI/UX & Accessibility Designer) as a Standing Co-Lead at Touchpoint A and Touchpoint B of every phase (Phases 1–4); established a single-row 6-Studio Shell, Phase 1 Shared UI Primitive Kit (`src/components/uiPrimitives.tsx`), and Cross-Studio Context Handoff Bus (`src/lib/studioContextBus.ts`) with 1-click Return Breadcrumbs in `FORM-DEC-004` and `FORM-REQ-0021`; and added mechanical verification of `DEP-04` phase sign-off in `08-Automation/check_structural_scaffolding.py`."
 ```
 
 ---

@@ -20,6 +20,7 @@ Never hardcode volatile object counts or gate statuses into this file (`Pattern 
    - Top-level navigation tabs ceiling: **`<= 8` top-level workspace tabs**.
 3. **Domain Expert Panel Touchpoints A & B (`Pattern 13`, `Pattern 17`, `Pattern 20`, `Pattern 21`):**
    - Evaluate all 4 rows of the Trigger Table in `00-Governance/FORM-TAILOR-001_Tailoring_Decision.md` (`DEP-01` Taiwanese Mandarin & TOCFL Computational Linguist, `DEP-02` Acoustic DSP & Wacom Stylus Hardware Engineer, `DEP-03` SLA & "Taiwan in 10 Minutes a Day" Survival Pedagogist, `DEP-04` UI/UX & Accessibility Designer).
+   - **End-to-End UI/UX Co-Leadership Mandate (`FORM-LL-007` & `FORM-DEP-UX-001`):** To prevent the "piece-part and glued-together" UX observed in `Chinese2`, **`DEP-04` (UI/UX & Accessibility Designer) is a Mandatory Standing Co-Lead at both Touchpoint A and Touchpoint B of EVERY phase (`Phase 1`, `Phase 2`, `Phase 3`, and `Phase 4`)**, enforced mechanically by `08-Automation/check_structural_scaffolding.py`. Phase 1 must deliver `src/components/uiPrimitives.tsx` and `src/lib/studioContextBus.ts` (`FORM-REQ-0021`) before any Phase 2–3 feature studios are built.
    - At every Touchpoint B review, execute the **Pattern 21 Shared-Concept Consumer Propagation Check** across all consumers of any modified shared type, dictionary, or store interface.
 4. **Derived-Field & Target-Type Integrity (`Pattern 14` & `Pattern 18`):**
    - Run `python3 08-Automation/sync_traceability_graph.py --check` before every commit.
