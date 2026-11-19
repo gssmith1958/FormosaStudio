@@ -377,7 +377,7 @@ type ManualTabId = 'workflow' | 'hardware_dsp' | 'moe_linguistics' | 'daqian_adm
 
 const MANUAL_TABS: StudioModeOption<ManualTabId>[] = [
   { id: 'workflow', labelZh: '六大工坊與日常流程', labelEn: '6 Studios & Daily Flow' },
-  { id: 'hardware_dsp', labelZh: 'Wacom 數位筆與麥克風設定', labelEn: 'Linux Wacom & WebAudio' },
+  { id: 'hardware_dsp', labelZh: '桌面、iPad 與硬體設定', labelEn: 'Desktop, iPad & Hardware' },
   { id: 'moe_linguistics', labelZh: '教育部異讀字與連讀變調', labelEn: 'MOE Standards & Sandhi' },
   { id: 'daqian_admin', labelZh: '大千鍵盤與教材匯入格式', labelEn: 'DaQian Map & Admin Import' },
 ];
@@ -438,6 +438,20 @@ export const InteractiveHelpManualDrawer: React.FC<InteractiveHelpManualDrawerPr
 
         {tab === 'hardware_dsp' && (
           <div className="space-y-3 text-xs sm:text-sm text-slate-200">
+            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2">
+              <h3 className="font-extrabold text-amber-300">Linux Desktop App &amp; iPad Installation (GitHub Pages PWA)</h3>
+              <p>
+                <strong>Linux Desktop:</strong> Click the <strong>FormosaStudio</strong> Jade <code>臺</code> icon in your Applications menu or Desktop
+                (reinstall/update anytime via <code>python3 07-Configuration/Desktop/install_desktop_app.py</code>). It runs locally on
+                <code>127.0.0.1:41755</code> with zero terminal windows and shuts down automatically when closed.
+              </p>
+              <p>
+                <strong>iPad / iPhone (Anywhere Access):</strong> Open{' '}
+                <code>https://gssmith1958.github.io/FormosaStudio/</code> in Safari → tap <strong>Share → Add to Home Screen</strong>.
+                Trusted HTTPS unlocks <strong>Apple Pencil</strong>, <strong>iPad Microphone</strong>, native <code>zh-TW</code> voices, and offline PWA caching.
+                Move progress between Desktop and iPad via <strong>Export / Import JSON</strong> in Studio 6.
+              </p>
+            </div>
             <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2">
               <h3 className="font-extrabold text-emerald-300">Linux X11/Wayland Wacom Stylus Configuration</h3>
               <p>

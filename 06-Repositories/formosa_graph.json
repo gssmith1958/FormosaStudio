@@ -1257,14 +1257,14 @@
     "FORM-MAN-001": {
       "id": "FORM-MAN-001",
       "type": "ValidationOutput",
-      "title": "FormosaStudio v1.0.0 Comprehensive User's Manual & Taiwan MOE Linguistic Reference Guide",
+      "title": "FormosaStudio v1.2.0 Comprehensive User's Manual & Taiwan MOE Linguistic Reference Guide",
       "status": "Approved",
-      "version": "1.0.0",
+      "version": "1.2.0",
       "project": "FORM",
       "owner": "Principal Engineer",
       "created_date": "2026-11-14",
-      "updated_date": "2026-11-14",
-      "framework_reference": "Volume 4 §11.6, Volume 4 §14, Guide 007 §12, FORM-REQ-0023",
+      "updated_date": "2026-11-19",
+      "framework_reference": "Volume 4 §11.6, Volume 4 §14, Guide 007 §12, Guide 008 v0.9.1, FORM-REQ-0023",
       "traces_to": [
         "FORM-REQ-0023",
         "FORM-REQ-0018",

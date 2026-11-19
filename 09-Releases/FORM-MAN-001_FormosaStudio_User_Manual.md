@@ -3,14 +3,14 @@
 ```yaml
 id: FORM-MAN-001
 type: ValidationOutput
-title: FormosaStudio v1.0.0 Comprehensive User's Manual & Taiwan MOE Linguistic Reference Guide
+title: FormosaStudio v1.2.0 Comprehensive User's Manual & Taiwan MOE Linguistic Reference Guide
 status: Approved
-version: 1.0.0
+version: 1.2.0
 project: FORM
 owner: Principal Engineer
 created_date: 2026-11-14
-updated_date: 2026-11-14
-framework_reference: "Volume 4 §11.6, Volume 4 §14, Guide 007 §12, FORM-REQ-0023"
+updated_date: 2026-11-19
+framework_reference: "Volume 4 §11.6, Volume 4 §14, Guide 007 §12, Guide 008 v0.9.1, FORM-REQ-0023"
 traces_to:
   - FORM-REQ-0023
   - FORM-REQ-0018
@@ -30,8 +30,8 @@ To eliminate nested menu clutter, every tool in FormosaStudio lives inside one o
 
 | Shortcut | Studio Name | Core Capabilities |
 | :---: | :--- | :--- |
-| **`Alt+1`** | **1. 今日學習 · Today & Daily Flow** | Inline 10-Minute Daily Flow Runner, **Pimsleur Taiwanese Mandarin Units 1–19+**, **NTNU *Contemporary Chinese* (`當代中文課程`) Volumes 1–6 (61+ Lessons)**, and **TOCFL Novice 1 – Band B2 Readiness Dashboard**. |
-| **`Alt+2`** | **2. 臺灣生存 · 10-Min Taiwan Survival** | 6 Visual Sticky-Label Household Modules (with **🖨️ Printable Sheet Mode**), 12 "Swiss-Army-Knife" Survival Sentence Frames, Interactive Laminated Paper Tick-Menu (`點菜單`), Taiwanese Sentence-Final Particles (`語助詞`) & Hokkien (`臺語`) Loanwords, and 5-Category Functional Listening Gym. |
+| **`Alt+1`** | **1. 今日學習 · Today & Daily Flow** | **Stage 0: Start From Zero** (5 interactive beginner modules: Tone Ear Boot Camp, 37-Symbol Zhuyin Sound Map + Family Syllable Blender, Grammar Survival Map, Interactive 8-Stroke Practice Pad + Radical Logic Check, First 10 Taipei Phrases), Today's 10-Min Progress Ring & 6-Stage Pathway, **Interactive Taiwanized Pimsleur Units 1–19+** (4-second Timed Recall Drill), **NTNU *Contemporary Chinese* (`當代中文課程`) Volumes 1–6 (61+ Lessons)**, and **TOCFL Novice 1 – Band B2 Readiness Dashboard**. |
+| **`Alt+2`** | **2. 臺灣生存 · 10-Min Taiwan Survival** | 6 Practical Day-1 Survival Modules (**Bathrooms & Help**, **Prices & Paying**, **Directions/MRT/Taxis**, **Food & Boba**, **7-Eleven & Hotels**, **Allergies & Emergencies**, with **🖨️ Printable Sheet Mode**), 12 "Swiss-Army-Knife" Survival Sentence Frames, Interactive Laminated Paper Tick-Menu (`點菜單`), Taiwanese Sentence-Final Particles (`語助詞`) & Hokkien (`臺語`) Loanwords, and 5-Category Functional Listening Gym. |
 | **`Alt+3`** | **3. 閱讀語法 · Reader & Grammar** | 8 Multi-Paragraph Graded Stories (`Novice 1` to `Band B2`) with live **$i+1$ Comprehensibility Scoring**, `< 50 ms` Custom Traditional Text Importer & Instant 4-Option Cloze Generator, and 16 Spoken (`口語`) vs. Written (`書面語`) Taiwan Register Bridge Drills. |
 | **`Alt+4`** | **4. 書法筆順 · Wacom Calligraphy** | W3C `PointerEvent` Pressure-Tapered (`2.5–14 px`) Calligraphy Canvas on `九宮格` / `田字格` grids, **20-Character Taiwan MOE Standard Vector Stroke-Order Grader** (`描紅` Guided Trace, `臨摹` Freehand Overlay, `聽寫默寫` Dictation Recall), Left/Right-Handed Docking Swap, and **10-Series Semantic-Phonetic (`形聲字`) Workbench**. |
 | **`Alt+5`** | **5. 發音聲調 · Speaking & Pitch Lab** | **100% Offline WebAudio YIN $F_0$ Pitch-Contour Extractor** (`75–450 Hz`, `< 3 Hz` error), Speaker-Normalized Chao `1–5` Dual-Curve Visualizer, 1-click **"🔁 Replay My Voice vs. Native Speaker"**, 8 Spoken Taiwanese Tone Sandhi Drills, and 10 Retroflex (`ㄓㄔㄕㄖ`) vs. Flat Sibilant (`ㄗㄘㄙ`) Minimal Pairs. |
@@ -133,4 +133,42 @@ Click **`⚙️ Resource Admin`** in the top header to open the **3-Step Guided 
 
 ## 6. FSRS-Lite Progress Backup & Restore (`Studio 6 · Alt+6`)
 
-In **Studio 6 (`詞彙與大千`) → `FSRS 智慧記憶複習`**, click **`📤 Export Progress JSON`** to download a schema-validated (`formosa-progress-v2`) JSON snapshot containing your XP, Streak, FSRS character/word/stroke Stability ($S$) and Difficulty ($D$) records, Wacom handedness, and Skill Tree crowns, or click **`📥 Restore JSON File`** to import a saved backup file.
+In **Studio 6 (`詞彙與大千`) → `FSRS 智慧記憶複習`**, click **`📤 Export Progress JSON`** to download a schema-validated (`formosa-progress-v2`) JSON snapshot containing your XP, Streak, Stage 0 completion state, FSRS character/word/stroke Stability ($S$) and Difficulty ($D$) records, Wacom handedness, and Skill Tree crowns, or click **`📥 Restore JSON File`** to import a saved backup file.
+
+---
+
+## 7. Installing & Running FormosaStudio on Linux Desktop & iPad (GitHub Pages PWA)
+
+FormosaStudio runs as both a **native-feeling Linux Desktop Application** (with zero terminal windows) and an **installable iPad / iPhone Web App (PWA)** hosted over HTTPS on GitHub Pages.
+
+### 7.1 Linux Desktop Application (Ubuntu GNOME / Freedesktop)
+- **Launching:** Click the **Taiwan Jade `臺` FormosaStudio** icon on your Desktop (`~/Desktop/FormosaStudio.desktop`) or press `Super`, search **FormosaStudio**, and optionally right-click → **Pin to Dash**.
+- **Right-Click Quick-Launch Actions:** Right-clicking the GNOME dock/app icon lets you jump directly into *Today & Start From Zero*, *10-Min Taiwan Survival*, *Wacom Calligraphy & Strokes*, or *Live Tone Pitch Coach*.
+- **How It Works Under the Hood:**
+  - The launcher (`07-Configuration/Desktop/formosa_desktop_app.py`, symlinked at `~/.local/bin/formosa-studio`) serves the compiled production bundle (`07-Configuration/Source/dist/`) on a dedicated private loopback port (`http://127.0.0.1:41755`) so it never conflicts with other local apps (such as `localhost:5173`).
+  - It opens in a clean standalone app window (`StartupWMClass=FormosaStudio`) with its own isolated profile (`~/.local/share/formosa-studio/profile`) so microphone permissions, `zh-TW` voices, Wacom pressure/eraser, and FSRS progress persist automatically.
+  - Closing the FormosaStudio window automatically shuts down the embedded local HTTP server—no stray background processes remain.
+- **Reinstalling or Updating After Local Code Edits:**
+  ```bash
+  python3 07-Configuration/Desktop/install_desktop_app.py
+  ```
+  This regenerates the Jade `臺` SVG/PNG icons, rebuilds `dist/`, and refreshes the GNOME application entry and Desktop shortcut.
+
+### 7.2 iPad & iPhone Installation via GitHub Pages (Anywhere Access + Offline PWA)
+- **Live HTTPS URL:** **https://gssmith1958.github.io/FormosaStudio/**
+- **Install on Your iPad Home Screen (3 Taps):**
+  1. Open **Safari** on your iPad (or iPhone) and navigate to **https://gssmith1958.github.io/FormosaStudio/**.
+  2. Tap the **Share** button (square with upward arrow) in Safari's toolbar.
+  3. Tap **Add to Home Screen** → **Add**.
+- **Full Native iPad Capabilities:**
+  - Opens full-screen with the **Taiwan Jade `臺`** Home-Screen icon (`apple-touch-icon.png`).
+  - **Apple Pencil:** Full pressure-sensitive drawing on **Wacom Calligraphy & Strokes (`Alt+4`)** and the **Stage 0 8-Stroke Practice Pad**.
+  - **Microphone:** Trusted HTTPS unlocks iPad microphone recording & real-voice replay in **Speaking & Pitch Lab (`Alt+5`)**.
+  - **Taiwanese Audio:** Uses iPadOS's built-in `zh-TW` voices (such as *Meijia*).
+  - **Offline Caching:** Once loaded online, the built-in Service Worker (`sw.js`) caches the app so you can keep studying on flights or the Taipei MRT with no internet connection.
+- **Automatic Cloud Updates:** Every push to `main` automatically runs the 41-test verification suite, builds `dist/`, and deploys the updated app to GitHub Pages via `.github/workflows/deploy-pages.yml` (requires the repository to remain Public on GitHub's Free plan).
+
+### 7.3 Moving Progress Between Desktop & iPad
+Your study progress stays **100% private** on each device's local storage (`localStorage`)—nothing personal is ever uploaded to GitHub. To copy progress between your Ubuntu Desktop and your iPad:
+1. On the source device, open **Studio 6 (`Vocab & DaQian`) → `FSRS 智慧記憶複習`** and tap **`📤 Export Progress JSON`** (save to iCloud Drive, email, or USB).
+2. On the target device, open the same screen and tap **`📥 Restore JSON File`** to load your saved snapshot.

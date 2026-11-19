@@ -3,7 +3,12 @@
 **Rigor Level:** **ASEF Pure `R2` (Personal Tool — `n = 3` Empirical Validation)**  
 **Lineage:** Graduated under `ASEF Guide 002 v0.9.6` from the `/home/gssmith/Programming/Chinese2` (`R1` / pre-ASEF exploratory prototype)  
 **Applicable ASEF Version:** `/home/gssmith/Programming/AI Engineering Framework/` (`Volume 0 v0.9.36`, `Standard 001 v0.9.15`, `Guide 002 v0.9.6`, `Guide 006 v0.9.21`, `Guide 007 v0.9.11`, `Guide 008 v0.9.1`, `PEW v0.9.5`)  
-**Current Baseline:** `FORM-BSL-001` (`Gate 1: Approved`) & `FORM-BSL-002` (`Gate 2/3/4/5: Approved`)
+**Current Release:** `v1.2.0` (`FORM-REL-002` — Live Web/iPad PWA: https://gssmith1958.github.io/FormosaStudio/)  
+**User's Manual:** [`09-Releases/FORM-MAN-001_FormosaStudio_User_Manual.md`](09-Releases/FORM-MAN-001_FormosaStudio_User_Manual.md)
+
+### Launching FormosaStudio
+- **iPad / iPhone / Any Browser (HTTPS PWA):** Open **https://gssmith1958.github.io/FormosaStudio/** (in iPad Safari: **Share → Add to Home Screen** for full-screen Apple Pencil, microphone, and offline access).
+- **Linux Desktop App (Ubuntu GNOME):** Run `python3 07-Configuration/Desktop/install_desktop_app.py` once, then click the **FormosaStudio** icon in your Applications menu or Desktop.
 
 ---
 
