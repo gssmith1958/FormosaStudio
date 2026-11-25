@@ -1,6 +1,7 @@
 /** * FormosaStudio (FORM) — Studio 4: Wacom Stylus Calligraphy & Semantic-Phonetic (形聲字) Workbench
  * Traces to: FORM-REQ-0012, FORM-REQ-0013, FORM-REQ-0014, FORM-REQ-0021, FORM-DEP-UX-001 */
 import React, { useEffect, useRef, useState } from 'react';
+import { Eraser, Eye, Grid, PenTool, Shield, Sparkles, Undo2, Volume2 } from 'lucide-react';
 import {
   MOE_CANVAS_PAD, MOE_CANVAS_SCALE,
   MOE_STROKE_CHARACTER_BANK, MOE_VECTOR_BOX,
@@ -15,8 +16,8 @@ import {
   isWacomEraserEvent, shouldAcceptPointerEvent,
 } from '../lib/wacomStrokeEngine.ts';
 import {
-  StylusHandedness, UserProgressState,
-  recordStrokePractice, } from '../lib/progressStore.ts';
+  ResolvedThemeMode, StylusHandedness, UserProgressState,
+  recordStrokePractice, resolveEffectiveTheme, } from '../lib/progressStore.ts';
 import {
   getStudioBusState, setFocusedContextItem,
   subscribeStudioBus, } from '../lib/studioContextBus.ts';
@@ -37,12 +38,14 @@ const PRACTICE_MODES: { id: CalligraphyPracticeMode; labelZh: string; labelEn: s
 ];
 export interface WacomCalligraphyStudioProps {
   progress: UserProgressState;
+  resolvedTheme?: ResolvedThemeMode;
   onUpdateProgress: (next: UserProgressState) => void;
   onSpeak?: (text: string) => void;
 }
 export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
-  progress, onUpdateProgress,
+  progress, resolvedTheme, onUpdateProgress,
   onSpeak, }) => {
+  const effectiveTheme = resolvedTheme ?? resolveEffectiveTheme(progress.theme);
   const [subTab, setSubTab] = useState<Studio4SubTab>('calligraphy');
   const [selectedChar, setSelectedChar] = useState<string>('人');
   const [practiceMode, setPracticeMode] = useState<CalligraphyPracticeMode>('trace');
@@ -96,10 +99,10 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
     if (!ctx) return;
     const w = canvas.width;
     const h = canvas.height;
-    const isLight = progress.theme !== 'dark';
+    const isLight = effectiveTheme !== 'dark';
     ctx.clearRect(0, 0, w, h);
-    // 1. Warm Rice-Paper (Light) or Calm Slate (Dark) Calligraphy Sheet
-    ctx.fillStyle = isLight ? '#FFFDF7' : '#161B22'; ctx.fillRect(0, 0, w, h);
+    // 1. Soft Rice-Paper (#FCFBF7 Light per HW-C3) or Crisp Charcoal (#161920 Dark) Calligraphy Sheet
+    ctx.fillStyle = isLight ? '#FCFBF7' : '#161920'; ctx.fillRect(0, 0, w, h);
     // 2. Traditional Taiwanese 九宮格 (9-square) or 田字格 (4-quadrant) Grid
     ctx.save(); ctx.strokeStyle = isLight ? 'rgba(180, 83, 9, 0.35)' : 'rgba(52, 211, 153, 0.28)';
     ctx.lineWidth = 2; ctx.strokeRect(4, 4, w - 8, h - 8);
@@ -209,7 +212,7 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
     if (activePoints.length > 0) {
       drawSamplePolyline(activePoints, isLight ? '#0F766E' : '#38BDF8');
     }
-  }, [charEntry, drawnStrokes, activePoints, practiceMode, gridStyle, gradeReport, revealDictationGlyph, progress.theme]);
+  }, [charEntry, drawnStrokes, activePoints, practiceMode, gridStyle, gradeReport, revealDictationGlyph, effectiveTheme]);
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     const nativeEv = e.nativeEvent as unknown as Parameters<typeof extractCoalescedPoints>[0];
     if (!shouldAcceptPointerEvent(nativeEv, progress.palmRejectionPenOnly)) {
@@ -310,7 +313,8 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
             <StylusButton variant={progress.palmRejectionPenOnly ? 'primary' : 'secondary'}
               onClick={handleTogglePalmRejection}
               title="Reject capacitive finger/palm touch events and accept only Wacom EMR pen/eraser events" >
-              <span>🛡️ {progress.palmRejectionPenOnly ? 'Pen-Only Palm Rejection: ON' : 'Pen + Mouse/Touch: ON'}</span>
+              <Shield className="w-4 h-4 shrink-0" />
+              <span>{progress.palmRejectionPenOnly ? 'Pen-Only Palm Reject: On' : 'Pen + Touch: On'}</span>
             </StylusButton>
           </div>
         }
@@ -331,6 +335,7 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
                 ))}
               </div>
               <StylusButton variant="ghost" onClick={() => setGridStyle((g) => (g === 'jiugongge' ? 'tianzige' : 'jiugongge'))} >
+                <Grid className="w-4 h-4 shrink-0" />
                 <span>{gridStyle === 'jiugongge' ? '九宮格' : '田字格'}</span>
               </StylusButton>
             </div>
@@ -338,23 +343,23 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
               <canvas ref={canvasRef}
                 width={340}
                 height={340}
-                style={{ touchAction: 'none' }}
+                style={{ touchAction: 'none', borderColor: 'var(--fs-border-strong)' }}
                 onPointerDown={handlePointerDown}
                 onPointerMove={handlePointerMove}
                 onPointerUp={finalizeStroke}
                 onPointerCancel={finalizeStroke}
-                className="w-full max-w-[340px] aspect-square rounded-2xl border-2 border-emerald-600/40 shadow-inner cursor-crosshair select-none"
+                className="w-full max-w-[340px] aspect-square rounded-2xl border shadow-inner cursor-crosshair select-none"
               />
             </div>
             {/* Live Wacom Telemetry & Action Bar */}
-            <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 text-xs text-slate-300 flex flex-wrap items-center justify-between gap-2">
+            <div className="fs-subtle-box p-3 text-xs fs-text-secondary flex flex-wrap items-center justify-between gap-2">
               <span>
-                Stylus: <strong className="text-emerald-300">{lastPointerInfo.type}</strong> · Pressure:{' '}
-                <strong className="text-sky-300">{Math.round(lastPointerInfo.pressure * 100)}%</strong> ({lastPointerInfo.widthPx}px)
+                Stylus: <strong className="fs-text-accent">{lastPointerInfo.type}</strong> · Pressure:{' '}
+                <strong className="fs-text">{Math.round(lastPointerInfo.pressure * 100)}%</strong> ({lastPointerInfo.widthPx}px)
               </span>
               <span>
                 Strokes:{' '}
-                <strong className="text-amber-300">{drawnStrokes.length} / {charEntry.strokes.length}</strong>
+                <strong className="fs-text-warm">{drawnStrokes.length} / {charEntry.strokes.length}</strong>
               </span>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -365,7 +370,8 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
                 }}
                 disabled={drawnStrokes.length === 0}
               >
-                <span>↩️ Undo Stroke</span>
+                <Undo2 className="w-4 h-4" />
+                <span>Undo</span>
               </StylusButton>
               <StylusButton variant="danger"
                 onClick={() => {
@@ -373,26 +379,29 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
                   setGradeReport(null);
                 }}
               >
-                <span>🧹 Clear Canvas</span>
+                <Eraser className="w-4 h-4" />
+                <span>Clear</span>
               </StylusButton>
               <StylusButton variant="amber" onClick={handleSimulateMoeStroke}>
-                <span>✨ Demo Next MOE Stroke</span>
+                <Sparkles className="w-4 h-4" />
+                <span>Demo Stroke</span>
               </StylusButton>
               {practiceMode === 'dictation' && (
                 <StylusButton variant="ghost" onClick={() => setRevealDictationGlyph((r) => !r)} >
-                  <span>👁️ {revealDictationGlyph ? 'Hide Hint' : 'Peek Glyph'}</span>
+                  <Eye className="w-4 h-4" />
+                  <span>{revealDictationGlyph ? 'Hide Hint' : 'Peek'}</span>
                 </StylusButton>
               )}
             </div>
           </div>
           {/* Character Bank & Taiwan MOE Orthography Inspector Column */}
           <div className="flex-1 space-y-4 w-full">
-            <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 space-y-3">
+            <div className="fs-card p-5 space-y-3">
               <div className="flex items-center justify-between">
-                <h2 className="text-sm font-extrabold text-emerald-300 uppercase tracking-wider">
+                <h2 className="text-sm font-semibold fs-text-accent uppercase tracking-wider">
                   教育部國字標準字體筆順字庫 · Curated 20-Character Taiwan MOE Bank
                 </h2>
-                <span className="text-xs text-slate-400">Docking: <strong>{progress.handedness === 'left' ? 'Left-Handed (Canvas Right)' : 'Right-Handed (Canvas Left)'}</strong></span>
+                <span className="text-xs fs-text-muted">Docking: <strong>{progress.handedness === 'left' ? 'Left-Handed (Canvas Right)' : 'Right-Handed (Canvas Left)'}</strong></span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {MOE_STROKE_CHARACTER_BANK.map((c) => {
@@ -405,16 +414,16 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
                       <span className="text-base font-black">{c.char}</span>
                       <span className="text-xs opacity-80">{c.zhuyin}</span>
                       {mastery && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">{mastery.bestAccuracy}%</span>)}</StylusButton>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded fs-surface-accent fs-text-accent">{mastery.bestAccuracy}%</span>)}</StylusButton>
                   );
                 })}
               </div>
             </div>
             {/* Active Character Orthography & Stroke-by-Stroke Feedback Card */}
-            <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 space-y-4">
+            <div className="fs-card p-5 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="px-4 py-3 rounded-2xl bg-slate-950 border border-slate-800">
+                  <div className="px-4 py-3 rounded-2xl fs-subtle-box border fs-divider">
                     <RubyText text={practiceMode === 'dictation' && !revealDictationGlyph && !gradeReport ? '？' : charEntry.char}
                       zhuyin={charEntry.zhuyin}
                       pinyin={charEntry.pinyin}
@@ -423,52 +432,53 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
                     />
                   </div>
                   <div className="space-y-1">
-                    <div className="text-lg font-extrabold text-white">
+                    <div className="text-lg font-semibold fs-text">
                       {charEntry.english}{' '}
-                      <span className="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-amber-300 font-bold">部首: {charEntry.radical} · {charEntry.totalStrokes} 畫</span>
+                      <span className="text-xs px-2.5 py-1 rounded-full fs-subtle-box fs-text-warm font-bold whitespace-nowrap inline-block">部首: {charEntry.radical} · {charEntry.totalStrokes} 畫</span>
                     </div>
-                    <div className="text-xs text-slate-300">
-                      Example: <strong className="text-emerald-300">{charEntry.exampleWord}</strong> ({charEntry.exampleZhuyin})
+                    <div className="text-xs fs-text-secondary">
+                      Example: <strong className="fs-text-accent">{charEntry.exampleWord}</strong> ({charEntry.exampleZhuyin})
                     </div>
                   </div>
                 </div>
                 {onSpeak && (
                   <StylusButton variant="secondary" onClick={() => onSpeak(charEntry.exampleWord)}>
-                    <span>🔊 Speak 「{charEntry.exampleWord}」</span>
+                    <Volume2 className="w-4 h-4" />
+                    <span>Speak 「{charEntry.exampleWord}」</span>
                   </StylusButton>
                 )}
               </div>
-              <div className="bg-amber-950/40 border border-amber-500/40 rounded-2xl p-3.5 text-xs sm:text-sm text-amber-100 space-y-1">
-                <div className="font-extrabold text-amber-300">🇹🇼 Taiwan MOE Standard Orthography Note (國字標準字體筆順):</div>
+              <div className="border fs-surface-warm rounded-2xl p-3.5 text-xs sm:text-sm fs-text-warm space-y-1">
+                <div className="font-semibold fs-text-warm">Taiwan MOE Standard Orthography Note (國字標準字體筆順):</div>
                 <p>{charEntry.taiwanMoeOrthographyNote}</p>
                 {charEntry.mainlandComparisonNote && (
-                  <p className="text-xs text-slate-300 pt-1">
+                  <p className="text-xs fs-text-secondary pt-1">
                     <strong>Cross-Strait Contrast:</strong> {charEntry.mainlandComparisonNote}
                   </p>
                 )}
               </div>
               {nextRefStroke && (
-                <div className="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 text-xs sm:text-sm flex items-center justify-between">
+                <div className="fs-subtle-box p-3.5 text-xs sm:text-sm flex items-center justify-between">
                   <div>
-                    <span className="text-emerald-300 font-extrabold">Next Stroke #{nextRefStroke.index} ({nextRefStroke.nameZh}):</span>{' '}
-                    <span className="text-slate-200">{nextRefStroke.tipEn}</span>
+                    <span className="fs-text-accent font-semibold">Next Stroke #{nextRefStroke.index} ({nextRefStroke.nameZh}):</span>{' '}
+                    <span className="fs-text">{nextRefStroke.tipEn}</span>
                   </div>
-                  <span className="text-xs text-slate-400">Type: {nextRefStroke.type}</span>
+                  <span className="text-xs fs-text-muted">Type: {nextRefStroke.type}</span>
                 </div>
               )}
               {latestStrokeGrade && !gradeReport && (
                 <div className={`rounded-2xl p-3 text-xs sm:text-sm border ${
-                    latestStrokeGrade.passed ? 'bg-emerald-950/50 border-emerald-500/50 text-emerald-200'
-                      : 'bg-rose-950/60 border-rose-500/60 text-rose-200' }`}
+                    latestStrokeGrade.passed ? 'fs-surface-accent fs-divider fs-text-accent'
+                      : 'fs-surface-danger fs-divider fs-text-danger' }`}
                 >
                   <strong>{latestStrokeGrade.feedbackEn}</strong> (Start: {latestStrokeGrade.startPointScore}%, Direction:{' '}
                   {latestStrokeGrade.directionScore}%)
                 </div>
               )}
               {gradeReport && (
-                <div className="bg-emerald-950/60 border border-emerald-400/60 rounded-2xl p-4 space-y-2">
+                <div className="border fs-surface-accent rounded-2xl p-4 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-base font-extrabold text-emerald-300">MOE Grading Report: {gradeReport.overallAccuracy}% (FSRS Rating {gradeReport.fsrsRating})</span>
+                    <span className="text-base font-semibold fs-text-accent">MOE Grading Report: {gradeReport.overallAccuracy}% (FSRS Rating {gradeReport.fsrsRating})</span>
                     <StylusButton variant="primary"
                       onClick={() => {
                         setDrawnStrokes([]);
@@ -478,7 +488,7 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
                       <span>Practice Again</span>
                     </StylusButton>
                   </div>
-                  <p className="text-xs sm:text-sm text-slate-100">{gradeReport.summaryFeedbackEn}</p>
+                  <p className="text-xs sm:text-sm fs-text">{gradeReport.summaryFeedbackEn}</p>
                 </div>
               )}
               <CrossStudioActionPills targetText={charEntry.char}
@@ -491,8 +501,8 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
         </div>
       ) : ( /* 形聲字 Semantic-Phonetic Radical & Sound-Component Workbench (FORM-REQ-0014) */
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          <div className="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-3xl p-5 space-y-4">
-            <h2 className="text-sm font-extrabold text-emerald-300 uppercase tracking-wider">10 Core Semantic Radicals (部首意義分類)</h2>
+          <div className="lg:col-span-5 fs-card p-5 space-y-4">
+            <h2 className="text-sm font-semibold fs-text-accent uppercase tracking-wider">10 Core Semantic Radicals (部首意義分類)</h2>
             <div className="flex flex-wrap gap-2">
               <StylusButton variant={selectedRadical === 'ALL' ? 'primary' : 'secondary'} onClick={() => setSelectedRadical('ALL')} >
                 <span>All Radicals (全部部首)</span>
@@ -507,7 +517,7 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
                 </StylusButton>
               ))}
             </div>
-            <h3 className="text-sm font-extrabold text-amber-300 uppercase tracking-wider pt-2">
+            <h3 className="text-sm font-semibold fs-text-warm uppercase tracking-wider pt-2">
               10 High-Yield Phonetic Series (聲符字族 · 46 Traditional Characters)
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -525,26 +535,26 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
               ))}
             </div>
           </div>
-          <div className="lg:col-span-7 bg-slate-900/90 border border-slate-800 rounded-3xl p-5 space-y-4">
-            <div className="border-b border-slate-800 pb-3">
-              <div className="text-lg font-extrabold text-white">
+          <div className="lg:col-span-7 fs-card p-5 space-y-4">
+            <div className="border-b fs-divider pb-3">
+              <div className="text-lg font-semibold fs-text">
                 聲符 「{activeSeries.phoneticComponent}」 ({activeSeries.baseZhuyin} · {activeSeries.basePinyin}) —{' '}
-                <span className="text-emerald-300">{activeSeries.baseMeaningEn}</span>
+                <span className="fs-text-accent">{activeSeries.baseMeaningEn}</span>
               </div>
-              <p className="text-xs sm:text-sm text-slate-300 mt-1">{activeSeries.soundPatternSummary}</p>
+              <p className="text-xs sm:text-sm fs-text-secondary mt-1">{activeSeries.soundPatternSummary}</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {filteredDerivatives.map((d) => (
                 <div key={d.char}
-                  className="bg-slate-950/90 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between gap-3" >
+                  className="fs-subtle-box p-4 flex flex-col justify-between gap-3" >
                   <div className="flex items-start justify-between gap-3">
                     <RubyText text={d.char} zhuyin={d.zhuyin} pinyin={d.pinyin} size="lg" zhuyinDisplayMode="always" />
-                    <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold">部首 {d.semanticRadical} + 聲符 {activeSeries.phoneticComponent}</span>
+                    <span className="px-2.5 py-1 rounded-full border fs-surface-accent fs-text-accent text-xs font-bold">部首 {d.semanticRadical} + 聲符 {activeSeries.phoneticComponent}</span>
                   </div>
-                  <div className="text-xs text-slate-300 space-y-1">
-                    <div className="font-bold text-white">{d.english} · 例詞: {d.exampleCompound}</div>
+                  <div className="text-xs fs-text-secondary space-y-1">
+                    <div className="font-bold fs-text">{d.english} · 例詞: {d.exampleCompound}</div>
                     <div>{d.semanticRoleEn}</div>
-                    <div className="text-amber-300">{d.phoneticRelationNote}</div>
+                    <div className="fs-text-warm">{d.phoneticRelationNote}</div>
                   </div>
                   <div className="flex items-center gap-2 pt-1">
                     {MOE_STROKE_CHARACTER_BANK.some((c) => c.char === d.char) ? (
@@ -555,10 +565,11 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
                           setSubTab('calligraphy');
                         }}
                       >
-                        <span>✒️ Practice on Canvas</span>
+                        <PenTool className="w-4 h-4" />
+                        <span>Practice on Canvas</span>
                       </StylusButton>
                     ) : (
-                      <span className="text-xs px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400">
+                      <span className="text-xs px-2.5 py-1 rounded-lg fs-card border fs-divider fs-text-muted">
                         Reference Only (Not in 20-char MOE stroke bank)
                       </span>
                     )}

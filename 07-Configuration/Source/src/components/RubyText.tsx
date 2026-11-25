@@ -39,10 +39,10 @@ export const RubyText: React.FC<RubyTextProps> = ({
   const tokens = annotated.chars;
 
   const sizeMap = {
-    sm: { hanzi: 'text-xl', ruby: 'text-[11px]', pinyin: 'text-xs', box: 'px-1 py-0.5' },
-    md: { hanzi: 'text-3xl', ruby: 'text-xs', pinyin: 'text-xs', box: 'px-1.5 py-1' },
-    lg: { hanzi: 'text-4xl', ruby: 'text-sm', pinyin: 'text-sm', box: 'px-2 py-1' },
-    xl: { hanzi: 'text-5xl sm:text-6xl', ruby: 'text-base', pinyin: 'text-sm', box: 'px-2.5 py-1.5' },
+    sm: { hanzi: 'text-xl', ruby: 'text-[12px]', pinyin: 'text-[12px]', box: 'px-1 py-0.5' },
+    md: { hanzi: 'text-3xl', ruby: 'text-[13px]', pinyin: 'text-[13px]', box: 'px-1.5 py-1' },
+    lg: { hanzi: 'text-4xl', ruby: 'text-[14.5px]', pinyin: 'text-[14px]', box: 'px-2 py-1' },
+    xl: { hanzi: 'text-5xl sm:text-6xl', ruby: 'text-[16px]', pinyin: 'text-[14px]', box: 'px-2.5 py-1.5' },
   }[size];
 
   const togglePeek = (idx: number) => {
@@ -105,10 +105,10 @@ export const RubyText: React.FC<RubyTextProps> = ({
               <span
                 className={`inline-flex items-center transition-opacity duration-200 ${rubyOpacityClass}`}
               >
-                <span className="inline-flex flex-col items-center justify-center leading-[1.05]">
+                <span className="inline-flex flex-col items-center justify-center leading-[1.15]">
                   {isNeutral && (
                     <span
-                      className="text-xs font-bold leading-none mb-0.5"
+                      className={`${sizeMap.ruby} font-bold leading-none mb-0.5`}
                       style={{ color: 'var(--fs-tone-5)' }}
                     >
                       ˙
@@ -117,7 +117,7 @@ export const RubyText: React.FC<RubyTextProps> = ({
                   {phoneticChars.map((sym, sIdx) => (
                     <span
                       key={sIdx}
-                      className={`${sizeMap.ruby} font-semibold leading-[1.08]`}
+                      className={`${sizeMap.ruby} font-semibold leading-[1.15]`}
                       style={{ color: 'var(--fs-text-secondary)' }}
                     >
                       {sym}

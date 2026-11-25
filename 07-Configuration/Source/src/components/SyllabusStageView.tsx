@@ -154,7 +154,7 @@ export const SyllabusStageView: React.FC<SyllabusStageViewProps> = ({
               style={{
                 minHeight: '44px',
                 backgroundColor: active ? 'var(--fs-accent)' : 'var(--fs-surface)',
-                color: active ? '#ffffff' : 'var(--fs-text)',
+                color: active ? 'var(--fs-on-accent)' : 'var(--fs-text)',
                 borderColor: active ? 'var(--fs-accent)' : 'var(--fs-border)',
               }}
               className="px-3.5 py-2 rounded-xl border text-xs sm:text-sm font-bold transition flex items-center gap-2"
@@ -186,7 +186,7 @@ export const SyllabusStageView: React.FC<SyllabusStageViewProps> = ({
                     Stage {stageDef.stageNumber} of 5 · {stageDef.tocflDualLabel}
                   </span>
                   {stageDetail.checkpointPassed && (
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold" style={{ backgroundColor: 'var(--fs-accent)', color: '#ffffff' }}>
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold" style={{ backgroundColor: 'var(--fs-accent)', color: 'var(--fs-on-accent)' }}>
                       ✓ Checkpoint Certified ({stageDetail.checkpointBestAccuracy}%)
                     </span>
                   )}

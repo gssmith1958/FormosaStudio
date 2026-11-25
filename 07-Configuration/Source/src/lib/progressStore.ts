@@ -7,8 +7,21 @@ export type MasteryLevel = 0 | 1 | 2 | 3;
 export type FsrsRating = 1 | 2 | 3 | 4; // 1: Again, 2: Hard, 3: Good, 4: Easy
 export type ZhuyinDisplayMode = 'adaptive' | 'always' | 'hover_only';
 export type StylusHandedness = 'right' | 'left';
-export type ThemeMode = 'light' | 'dark';
+export type ThemeMode = 'system' | 'light' | 'dark';
+export type ResolvedThemeMode = 'light' | 'dark';
 export type VoicePitchPreset = 'low' | 'mid' | 'high';
+
+/**
+ * Node-safe resolver for ThemeMode ('system' -> prefers-color-scheme, defaulting to 'light' outside browser).
+ */
+export function resolveEffectiveTheme(pref?: ThemeMode): ResolvedThemeMode {
+  if (pref === 'dark') return 'dark';
+  if (pref === 'light') return 'light';
+  if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  return 'light';
+}
 
 export interface FsrsMetrics {
   stability: number;     // Days (0.15 .. 365.0)
@@ -180,7 +193,7 @@ export function createInitialProgressState(): UserProgressState {
     showPinyinHint: true,
     handedness: 'right',
     palmRejectionPenOnly: false,
-    theme: 'light',
+    theme: 'system',
     voicePreset: 'mid',
     quietRoomMode: false,
     dailyGoalMinutes: 10,
@@ -453,7 +466,7 @@ export function importProgressJson(rawJson: string): UserProgressState {
     ...candidate,
     handedness,
     zhuyinDisplayMode,
-    theme: candidate.theme === 'dark' ? 'dark' : 'light',
+    theme: candidate.theme === 'dark' || candidate.theme === 'light' || candidate.theme === 'system' ? candidate.theme : 'system',
     voicePreset:
       candidate.voicePreset === 'low' || candidate.voicePreset === 'high'
         ? candidate.voicePreset

@@ -1,7 +1,7 @@
 // FormosaStudio Offline-First PWA Service Worker
 // Network-first for HTML (always gets latest release when online); cache-first for static assets.
 
-const CACHE_NAME = 'formosastudio-v2.0.0';
+const CACHE_NAME = 'formosastudio-v2.1.0';
 const CORE_ASSETS = [
   './',
   './index.html',

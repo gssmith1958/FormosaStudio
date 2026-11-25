@@ -169,7 +169,7 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
           {/* Story Selector Sidebar */}
           <div className="lg:col-span-4 space-y-2.5">
-            <div className="text-xs font-bold uppercase tracking-wider text-slate-400 px-1">
+            <div className="text-xs font-bold uppercase tracking-wider fs-text-muted px-1">
               TOCFL Graded Stories (Novice 1 – Band B2)
             </div>
             {GRADED_STORIES.map((story) => {
@@ -189,20 +189,20 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
                   style={{ minHeight: '56px', touchAction: 'manipulation' }}
                   className={`w-full text-left p-3.5 rounded-xl border transition-all ${
                     isSelected
-                      ? 'bg-teal-950/60 border-teal-400 text-white shadow-md'
-                      : 'bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700'
+                      ? 'fs-surface-accent border-teal-400 fs-text shadow-md'
+                      : 'fs-card fs-divider fs-text-secondary hover:fs-divider'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-slate-800 text-teal-300">
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded fs-subtle-box fs-text-accent">
                       {story.cefr} · {story.tocflBand.split(' ')[0]}
                     </span>
                     <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${rep.zoneBadgeClass}`}>
                       {rep.comprehensibilityScore}% Known
                     </span>
                   </div>
-                  <div className="font-bold text-base mt-1.5 text-white">{story.titleTraditional}</div>
-                  <div className="text-xs text-slate-400">{story.titleEnglish}</div>
+                  <div className="font-bold text-base mt-1.5 fs-text">{story.titleTraditional}</div>
+                  <div className="text-xs fs-text-muted">{story.titleEnglish}</div>
                 </button>
               );
             })}
@@ -210,11 +210,11 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
 
           {/* Story Passage & Interactive Word Inspector */}
           <div className="lg:col-span-8 space-y-4">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+            <div className="rounded-2xl border fs-divider fs-card p-5 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b fs-divider pb-3">
                 <div>
-                  <span className="text-xs font-semibold text-teal-400">{activeStory.locationTag}</span>
-                  <h3 className="text-xl font-extrabold text-white mt-0.5">
+                  <span className="text-xs font-semibold fs-text-accent">{activeStory.locationTag}</span>
+                  <h3 className="text-xl font-semibold fs-text mt-0.5">
                     {activeStory.titleTraditional} — {activeStory.titleEnglish}
                   </h3>
                 </div>
@@ -230,28 +230,28 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
                       variant="primary"
                       onClick={() => onSpeakText(storyFullText, 0.92)}
                     >
-                      🔊 Read Aloud (zh-TW)
+                      Read Aloud (zh-TW)
                     </StylusButton>
                   )}
                 </div>
               </div>
 
               {/* Live i+1 Comprehensibility Bar */}
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-slate-950/80 border border-slate-800 px-3.5 py-2.5 text-xs">
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl fs-subtle-box border fs-divider px-3.5 py-2.5 text-xs">
                 <span className={`px-2.5 py-1 rounded-full border font-bold ${storyReport.zoneBadgeClass}`}>
                   {storyReport.zoneLabel}
                 </span>
-                <div className="flex items-center gap-4 text-slate-300">
+                <div className="flex items-center gap-4 fs-text-secondary">
                   <span>
-                    <strong className="text-emerald-300">{storyReport.knownPercentage}%</strong> Known (Lv.2+)
+                    <strong className="fs-text-accent">{storyReport.knownPercentage}%</strong> Known (Lv.2+)
                   </span>
                   <span>
-                    <strong className="text-sky-300">{storyReport.familiarPercentage}%</strong> Familiar (Lv.1)
+                    <strong className="fs-text-accent">{storyReport.familiarPercentage}%</strong> Familiar (Lv.1)
                   </span>
                   <span>
-                    <strong className="text-amber-300">{storyReport.targetIPlus1Percentage}%</strong> Target i+1 ({storyReport.targetIPlus1Count} words)
+                    <strong className="fs-text-warm">{storyReport.targetIPlus1Percentage}%</strong> Target i+1 ({storyReport.targetIPlus1Count} words)
                   </span>
-                  <span className="text-slate-500">FMM: {storyReport.elapsedMs} ms</span>
+                  <span className="fs-text-muted">FMM: {storyReport.elapsedMs} ms</span>
                 </div>
               </div>
 
@@ -262,13 +262,13 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
                   return (
                     <div
                       key={pIdx}
-                      className="rounded-xl bg-slate-950/50 border border-slate-800/80 p-4 space-y-2.5"
+                      className="rounded-xl fs-subtle-box border fs-divider p-4 space-y-2.5"
                     >
                       <div className="flex flex-wrap items-center gap-1.5 leading-relaxed">
                         {paraRep.segments.map((seg, sIdx) => {
                           if (!seg.isChinese) {
                             return (
-                              <span key={sIdx} className="text-xl text-slate-400 px-0.5">
+                              <span key={sIdx} className="text-xl fs-text-muted px-0.5">
                                 {seg.text}
                               </span>
                             );
@@ -276,10 +276,10 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
                           const isSelected = selectedWord?.text === seg.text;
                           const tierBorder =
                             seg.tier === 'target_i_plus_1'
-                              ? 'border-amber-400/60 bg-amber-950/30'
+                              ? 'fs-divider fs-surface-warm'
                               : seg.isPolyphoneWord
-                              ? 'border-teal-400/50 bg-teal-950/25'
-                              : 'border-transparent hover:border-slate-700';
+                              ? 'fs-divider fs-surface-accent'
+                              : 'border-transparent hover:fs-divider';
 
                           return (
                             <button
@@ -288,7 +288,7 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
                               onClick={() => handleInspectWord(seg)}
                               style={{ touchAction: 'manipulation' }}
                               className={`rounded-lg border px-1.5 py-1 transition-all ${tierBorder} ${
-                                isSelected ? 'ring-2 ring-teal-400 bg-teal-900/40' : ''
+                                isSelected ? 'ring-2 ring-teal-400 fs-surface-accent' : ''
                               }`}
                             >
                               <RubyText
@@ -305,7 +305,7 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
                         })}
                       </div>
                       {showEnglishTranslation && (
-                        <p className="text-sm text-slate-300 border-t border-slate-800/80 pt-2">
+                        <p className="text-sm fs-text-secondary border-t fs-divider pt-2">
                           {para.english}
                         </p>
                       )}
@@ -316,15 +316,15 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
 
               {/* Word Inspector & Cross-Studio Action Pills (FORM-REQ-0006, FORM-REQ-0021) */}
               {selectedWord && (
-                <div className="rounded-xl border border-teal-500/50 bg-teal-950/30 p-4 space-y-3">
+                <div className="rounded-xl border fs-divider fs-surface-accent p-4 space-y-3">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <span className="text-2xl font-extrabold text-white">{selectedWord.text}</span>
-                      <span className="text-sm font-bold text-teal-300">
+                      <span className="text-2xl font-semibold fs-text">{selectedWord.text}</span>
+                      <span className="text-sm font-bold fs-text-accent">
                         {selectedWord.writtenZhuyin}
                         {selectedWord.spokenZhuyin &&
                           selectedWord.spokenZhuyin !== selectedWord.writtenZhuyin && (
-                            <span className="ml-2 text-amber-300">
+                            <span className="ml-2 fs-text-warm">
                               (Spoken Sandhi: {selectedWord.spokenZhuyin})
                             </span>
                           )}
@@ -337,21 +337,21 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
                           variant="secondary"
                           onClick={() => onSpeakText(selectedWord.text, 0.85)}
                         >
-                          🔊 Hear Word
+                          Hear Word
                         </StylusButton>
                       )}
                       <StylusButton
                         variant="amber"
                         onClick={() => handleBoostWordMastery(selectedWord, 4)}
                       >
-                        ⚡ Mark Known (+FSRS)
+                        Mark Known (+FSRS)
                       </StylusButton>
                     </div>
                   </div>
-                  <div className="text-sm text-slate-200">
+                  <div className="text-sm fs-text">
                     <strong>Meaning:</strong> {selectedWord.englishGloss || 'Contextual compound'}
                     {selectedWord.moeInfo && (
-                      <span className="block mt-1 text-xs text-amber-200">
+                      <span className="block mt-1 text-xs fs-text-warm">
                         <strong>Taiwan MOE Note:</strong> {selectedWord.moeInfo.moeNote}
                       </span>
                     )}
@@ -368,16 +368,16 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
               )}
 
               {/* Story Comprehension Check */}
-              <div className="border-t border-slate-800 pt-4 space-y-3">
-                <h4 className="text-sm font-bold text-teal-300">
+              <div className="border-t fs-divider pt-4 space-y-3">
+                <h4 className="text-sm font-bold fs-text-accent">
                   Comprehension & Taiwan MOE Check ({activeStory.questions.length})
                 </h4>
                 {activeStory.questions.map((q) => {
                   const chosen = storyQuizAnswers[q.id];
                   return (
-                    <div key={q.id} className="rounded-xl bg-slate-950/60 border border-slate-800 p-3.5 space-y-2">
-                      <div className="font-bold text-white text-sm">{q.questionTraditional}</div>
-                      <div className="text-xs text-slate-400">{q.questionEnglish}</div>
+                    <div key={q.id} className="rounded-xl fs-subtle-box border fs-divider p-3.5 space-y-2">
+                      <div className="font-bold fs-text text-sm">{q.questionTraditional}</div>
+                      <div className="text-xs fs-text-muted">{q.questionEnglish}</div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                         {q.options.map((opt, idx) => {
                           const isChosen = chosen === idx;
@@ -402,7 +402,7 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
                         })}
                       </div>
                       {chosen !== undefined && (
-                        <div className="text-xs text-emerald-300 pt-1">{q.explanation}</div>
+                        <div className="text-xs fs-text-accent pt-1">{q.explanation}</div>
                       )}
                     </div>
                   );
@@ -416,12 +416,12 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
       {/* SUB-MODE 2: CUSTOM TEXT IMPORTER & INSTANT CLOZE GENERATOR (FORM-REQ-0007) */}
       {subMode === 'custom_cloze' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          <div className="lg:col-span-6 rounded-2xl border border-slate-800 bg-slate-900/90 p-5 space-y-4">
+          <div className="lg:col-span-6 rounded-2xl border fs-divider fs-card p-5 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-white">
+              <h3 className="text-lg font-bold fs-text">
                 Custom Traditional Chinese Passage Importer
               </h3>
-              <span className="text-xs font-semibold text-teal-300">
+              <span className="text-xs font-semibold fs-text-accent">
                 Tokenized in {customReport.elapsedMs} ms (&lt; 50 ms budget)
               </span>
             </div>
@@ -433,7 +433,7 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
               }}
               rows={5}
               placeholder="Paste any Taiwan news, LINE message, menu, or textbook passage here..."
-              className="w-full rounded-xl bg-slate-950 border border-slate-700 p-3 text-sm text-white focus:border-teal-400 focus:outline-none"
+              className="w-full rounded-xl fs-subtle-box border fs-divider p-3 text-sm fs-text focus:border-teal-400 focus:outline-none"
             />
             <div className="flex items-center justify-between text-xs gap-2">
               <span className={`px-2.5 py-1 rounded-full border font-bold ${customReport.zoneBadgeClass}`}>{customReport.zoneLabel}</span>
@@ -442,37 +442,37 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
               </StylusButton>
             </div>
             {!hideCustomSource && (
-            <div className="rounded-xl bg-slate-950/70 border border-slate-800 p-4 flex flex-wrap items-center gap-1.5">
+            <div className="rounded-xl fs-subtle-box border fs-divider p-4 flex flex-wrap items-center gap-1.5">
               {customReport.segments.map((seg, idx) =>
                 seg.isChinese ? (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => handleInspectWord(seg)}
-                    className="rounded-lg border border-slate-800 hover:border-teal-500/60 px-1.5 py-1"
+                    className="rounded-lg border fs-divider hover:fs-divider px-1.5 py-1"
                   >
                     <RubyText text={seg.text} zhuyin={seg.writtenZhuyin} zhuyinDisplayMode="always" size="md" nonInteractive />
                   </button>
                 ) : (
-                  <span key={idx} className="text-lg text-slate-400 px-0.5">{seg.text}</span>
+                  <span key={idx} className="text-lg fs-text-muted px-0.5">{seg.text}</span>
                 )
               )}
             </div>
             )}
           </div>
 
-          <div className="lg:col-span-6 rounded-2xl border border-slate-800 bg-slate-900/90 p-5 space-y-4">
-            <h3 className="text-lg font-bold text-white">
+          <div className="lg:col-span-6 rounded-2xl border fs-divider fs-card p-5 space-y-4">
+            <h3 className="text-lg font-bold fs-text">
               Auto-Generated i+1 Sentence Cloze Drills ({customClozes.length})
             </h3>
             {customClozes.map((cloze) => {
               const selectedIdx = clozeSelections[cloze.id];
               return (
-                <div key={cloze.id} className="rounded-xl bg-slate-950/80 border border-slate-800 p-4 space-y-2.5">
-                  <div className="text-base font-bold text-white">{cloze.sentenceWithBlank}</div>
-                  <div className="text-xs text-slate-400">
-                    Target meaning: <strong className="text-teal-300">{cloze.targetEnglish}</strong>
-                    {cloze.moeNote && <span className="ml-2 text-amber-300">({cloze.moeNote})</span>}
+                <div key={cloze.id} className="rounded-xl fs-subtle-box border fs-divider p-4 space-y-2.5">
+                  <div className="text-base font-bold fs-text">{cloze.sentenceWithBlank}</div>
+                  <div className="text-xs fs-text-muted">
+                    Target meaning: <strong className="fs-text-accent">{cloze.targetEnglish}</strong>
+                    {cloze.moeNote && <span className="ml-2 fs-text-warm">({cloze.moeNote})</span>}
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     {cloze.options.map((opt, oIdx) => {
@@ -512,8 +512,8 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
       {/* SUB-MODE 3: SPOKEN (口語) VS. WRITTEN (書面語) REGISTER BRIDGE (FORM-REQ-0008) */}
       {subMode === 'register_bridge' && (
         <div className="space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-slate-900/90 border border-slate-800 p-3.5">
-            <span className="text-sm font-bold text-slate-200">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl fs-card border fs-divider p-3.5">
+            <span className="text-sm font-bold fs-text">
               Taiwan Spoken (口語) ↔ Formal Written (書面語) Register Bridge ({filteredRegisterPairs.length} pairs)
             </span>
             <div className="flex items-center gap-2">
@@ -534,28 +534,28 @@ export const ReadingGrammarStudio: React.FC<ReadingGrammarStudioProps> = ({
               const chosenAns = registerDrillAnswers[pair.id];
               const isRevealed = Boolean(chosenAns);
               return (
-                <div key={pair.id} className="rounded-2xl border border-slate-800 bg-slate-900/90 p-4 space-y-3">
+                <div key={pair.id} className="rounded-2xl border fs-divider fs-card p-4 space-y-3">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-1 rounded-lg bg-amber-950/70 border border-amber-400/50 text-amber-200 font-bold text-sm">
+                      <span className="px-2.5 py-1 rounded-lg border fs-surface-warm fs-text-warm font-bold text-sm">
                         口語: {pair.spoken} ({pair.spokenZhuyin})
                       </span>
-                      <span className="text-slate-400 font-bold">→</span>
-                      <span className="px-2.5 py-1 rounded-lg bg-teal-950/70 border border-teal-400/50 text-teal-200 font-bold text-sm">
+                      <span className="fs-text-muted font-bold">→</span>
+                      <span className="px-2.5 py-1 rounded-lg border fs-surface-accent fs-text-accent font-bold text-sm">
                         {isRevealed ? `書面語: ${pair.written} (${pair.writtenZhuyin})` : '書面語: ??? (Answer drill to reveal)'}
                       </span>
                     </div>
-                    <span className="text-xs font-semibold text-slate-400">{pair.english}</span>
+                    <span className="text-xs font-semibold fs-text-muted">{pair.english}</span>
                   </div>
 
-                  <div className="text-xs space-y-1 bg-slate-950/70 rounded-xl p-3 border border-slate-800">
-                    <div className="text-amber-200"><strong>口語例句:</strong> {pair.spokenSentence}</div>
-                    {isRevealed && <div className="text-teal-200"><strong>書面例句:</strong> {pair.writtenSentence}</div>}
-                    <div className="text-slate-400">{pair.sentenceEnglish}</div>
+                  <div className="text-xs space-y-1 fs-subtle-box rounded-xl p-3 border fs-divider">
+                    <div className="fs-text-warm"><strong>口語例句:</strong> {pair.spokenSentence}</div>
+                    {isRevealed && <div className="fs-text-accent"><strong>書面例句:</strong> {pair.writtenSentence}</div>}
+                    <div className="fs-text-muted">{pair.sentenceEnglish}</div>
                   </div>
 
                   <div className="space-y-2 pt-1">
-                    <div className="text-xs font-bold text-slate-300">
+                    <div className="text-xs font-bold fs-text-secondary">
                       Formal Register Drill: {pair.drillPromptTraditional}
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">

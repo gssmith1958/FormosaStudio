@@ -1,14 +1,36 @@
 /**
- * FormosaStudio (FORM) — 5-Section Modern Expandable Accordion Navigation Sidebar
- * Consolidates navigation into: Today's Session, Course Syllabus (Stages 0-5), Practice Labs (5),
- * Reference & Help, and standalone Administration. Adapts cleanly to Desktop and iPad mini 6 (<=1180px).
- * Traces to: FORM-ECR-001, FORM-DEC-005, FORM-WF-001, UX-1, UX-2
+ * FormosaStudio (FORM) — Flush Modern 5-Section Accordion Navigation Rail (v2.1.0 Crisp Neutral Studio)
+ * Antigravity-inspired flush rail: zero boxed menu cards, hairline dividers, 16px Lucide monoline icons,
+ * 40px desktop fine-pointer rows & >= 44px touch/iPad mini 6 targets (UX-C1..4, HW-C1).
+ * Traces to: FORM-ECR-001, FORM-DEC-005, FORM-WF-001
  */
 
 import React, { useEffect, useState } from 'react';
+import {
+  BookOpen,
+  CalendarCheck,
+  ChevronDown,
+  ChevronRight,
+  Compass,
+  FileText,
+  FlaskConical,
+  GraduationCap,
+  HelpCircle,
+  Keyboard,
+  Mic,
+  Monitor,
+  Moon,
+  PanelRight,
+  PenTool,
+  Search,
+  Settings,
+  Sun,
+  X,
+} from 'lucide-react';
 import { StudioId } from '../lib/studioContextBus.ts';
 import { SYLLABUS_STAGES, StageNumber, getStageProgressDetail } from '../lib/syllabusModel.ts';
 import {
+  ResolvedThemeMode,
   ThemeMode,
   UserProgressState,
   getTodayProgressSummary,
@@ -18,7 +40,8 @@ export interface AccordionNavSidebarProps {
   activeStudio: StudioId;
   selectedStage: StageNumber;
   progress: UserProgressState;
-  theme: ThemeMode;
+  themePref: ThemeMode;
+  resolvedTheme: ResolvedThemeMode;
   isLeftHanded: boolean;
   isCompactViewport: boolean;
   onSelectStudio: (studio: StudioId) => void;
@@ -27,18 +50,18 @@ export interface AccordionNavSidebarProps {
   onOpenHelp: () => void;
   onToggleInspector: () => void;
   inspectorOpen: boolean;
-  onToggleTheme: () => void;
+  onCycleTheme: () => void;
   onTogglePinyin: () => void;
   onCycleZhuyin: () => void;
   onCloseDrawer: () => void;
 }
 
-const PRACTICE_LABS: { id: StudioId; icon: string; nameEn: string; nameZh: string }[] = [
-  { id: 'survival', icon: '⌖', nameEn: 'Taiwan Survival', nameZh: '臺灣生存與點菜單' },
-  { id: 'reader', icon: '▤', nameEn: 'Reader & Grammar', nameZh: '分級閱讀與語法' },
-  { id: 'calligraphy', icon: '✎', nameEn: 'Wacom Strokes', nameZh: '書法筆順畫布' },
-  { id: 'speaking', icon: '◉', nameEn: 'Speaking & Pitch', nameZh: '聲調音高實驗室' },
-  { id: 'dojo', icon: '⊞', nameEn: 'Vocab & DaQian', nameZh: '詞彙與大千打字' },
+const PRACTICE_LABS: { id: StudioId; Icon: React.FC<{ className?: string }>; nameEn: string }[] = [
+  { id: 'survival', Icon: Compass, nameEn: 'Taiwan Survival' },
+  { id: 'reader', Icon: FileText, nameEn: 'Reader & Grammar' },
+  { id: 'calligraphy', Icon: PenTool, nameEn: 'Wacom Strokes' },
+  { id: 'speaking', Icon: Mic, nameEn: 'Speaking & Pitch' },
+  { id: 'dojo', Icon: Keyboard, nameEn: 'Vocab & DaQian' },
 ];
 
 const LAB_IDS = new Set<StudioId>(PRACTICE_LABS.map((l) => l.id));
@@ -47,7 +70,7 @@ export const AccordionNavSidebar: React.FC<AccordionNavSidebarProps> = ({
   activeStudio,
   selectedStage,
   progress,
-  theme,
+  themePref,
   isLeftHanded,
   isCompactViewport,
   onSelectStudio,
@@ -56,7 +79,7 @@ export const AccordionNavSidebar: React.FC<AccordionNavSidebarProps> = ({
   onOpenHelp,
   onToggleInspector,
   inspectorOpen,
-  onToggleTheme,
+  onCycleTheme,
   onTogglePinyin,
   onCycleZhuyin,
   onCloseDrawer,
@@ -77,30 +100,33 @@ export const AccordionNavSidebar: React.FC<AccordionNavSidebarProps> = ({
     if (isCompactViewport) onCloseDrawer();
   };
 
+  const ThemeIcon = themePref === 'system' ? Monitor : themePref === 'dark' ? Moon : Sun;
+  const themeLabel = themePref === 'system' ? 'Auto' : themePref === 'dark' ? 'Dark' : 'Light';
+
   return (
     <aside
-      aria-label="FormosaStudio 5-Section Navigation"
-      className={`flex flex-col w-[292px] max-w-[86vw] shrink-0 h-full overflow-y-auto px-4 py-4 justify-between gap-4 ${
+      aria-label="FormosaStudio Navigation"
+      className={`flex flex-col w-[264px] max-w-[84vw] shrink-0 h-full overflow-y-auto px-3 py-3 justify-between gap-3 ${
         isCompactViewport ? 'shadow-2xl' : isLeftHanded ? 'border-l' : 'border-r'
       }`}
       style={{ backgroundColor: 'var(--fs-sidebar)', borderColor: 'var(--fs-border)' }}
     >
-      <div className="space-y-3.5">
-        {/* Brand Header */}
-        <div className="flex items-center justify-between px-1">
-          <div className="flex items-center gap-2.5">
+      <div className="space-y-3">
+        {/* Clean Brand Header */}
+        <div className="flex items-center justify-between px-1.5 py-0.5">
+          <div className="flex items-center gap-2.5 min-w-0">
             <div
-              className="w-10 h-10 rounded-xl font-bold text-xl flex items-center justify-center shadow-sm fs-on-accent"
+              className="w-8 h-8 rounded-lg font-bold text-base flex items-center justify-center shrink-0 fs-on-accent"
               style={{ backgroundColor: 'var(--fs-accent)' }}
             >
               臺
             </div>
-            <div>
-              <div className="text-base font-bold tracking-tight" style={{ color: 'var(--fs-text)' }}>
+            <div className="min-w-0">
+              <div className="text-[14px] font-semibold tracking-tight truncate" style={{ color: 'var(--fs-text)' }}>
                 FormosaStudio
               </div>
-              <div className="text-xs" style={{ color: 'var(--fs-text-muted)' }}>
-                臺灣華語 · v2.0 Syllabus
+              <div className="text-[11.5px] truncate" style={{ color: 'var(--fs-text-muted)' }}>
+                臺灣華語 · Taiwan Mandarin
               </div>
             </div>
           </div>
@@ -108,92 +134,80 @@ export const AccordionNavSidebar: React.FC<AccordionNavSidebarProps> = ({
             type="button"
             onClick={onCloseDrawer}
             aria-label="Collapse navigation menu"
-            className="min-h-[44px] min-w-[44px] rounded-xl flex items-center justify-center text-sm font-bold border"
-            style={{ borderColor: 'var(--fs-border)', color: 'var(--fs-text-secondary)' }}
+            className="fs-nav-row w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+            style={{ color: 'var(--fs-text-muted)' }}
             title="Collapse Menu"
           >
-            ✕
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Live Today's Goal Compact Card */}
+        {/* Quiet Inline Daily Goal Progress Strip (no heavy outer box) */}
         <button
           type="button"
           onClick={() => navAndClose(() => onSelectStudio('hub'))}
-          className="w-full text-left rounded-2xl p-3 border transition"
-          style={{ backgroundColor: 'var(--fs-surface)', borderColor: 'var(--fs-border)' }}
+          className="w-full text-left px-2.5 py-2 rounded-lg transition hover:opacity-90"
+          style={{ backgroundColor: 'var(--fs-surface)', border: '1px solid var(--fs-border)' }}
         >
-          <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-            <span style={{ color: 'var(--fs-text-secondary)' }}>Today’s Adaptive Goal</span>
+          <div className="flex items-center justify-between text-xs font-medium mb-1.5">
+            <span style={{ color: 'var(--fs-text-secondary)' }}>Daily Goal</span>
             <span style={{ color: 'var(--fs-accent-text)' }}>
-              {today.minutesCompleted}/{today.goalMinutes}m
+              {today.minutesCompleted}/{today.goalMinutes} min · {progress.streak}d
             </span>
           </div>
-          <div className="w-full h-2 rounded-full overflow-hidden mb-1.5" style={{ backgroundColor: 'var(--fs-subtle)' }}>
-            <div className="h-full rounded-full transition-all duration-300" style={{ width: `${today.percentComplete}%`, backgroundColor: 'var(--fs-accent)' }} />
-          </div>
-          <div className="flex items-center justify-between text-[11px]" style={{ color: 'var(--fs-text-muted)' }}>
-            <span>{today.stepsCompleted.length}/3 daily steps</span>
-            <span>Streak {progress.streak}d</span>
+          <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--fs-hover)' }}>
+            <div
+              className="h-full rounded-full transition-all duration-300"
+              style={{ width: `${today.percentComplete}%`, backgroundColor: 'var(--fs-accent)' }}
+            />
           </div>
         </button>
 
-        {/* 5-SECTION EXPANDABLE ACCORDION MENU */}
-        <nav className="space-y-1.5">
+        {/* FLUSH 5-SECTION NAVIGATION RAIL */}
+        <nav className="space-y-0.5">
           {/* 1. Today's Session */}
           <button
             type="button"
             onClick={() => navAndClose(() => onSelectStudio('hub'))}
             style={{
-              minHeight: '44px',
-              touchAction: 'manipulation',
-              backgroundColor: activeStudio === 'hub' ? 'var(--fs-accent-soft)' : 'transparent',
+              backgroundColor: activeStudio === 'hub' ? 'var(--fs-accent-soft)' : undefined,
               color: activeStudio === 'hub' ? 'var(--fs-accent-text)' : 'var(--fs-text)',
-              borderColor: activeStudio === 'hub' ? 'var(--fs-accent-border)' : 'transparent',
             }}
-            className="w-full px-3 py-2 rounded-xl border text-left transition flex items-center justify-between gap-2"
+            className="fs-nav-row w-full px-2.5 py-1.5 rounded-lg text-left flex items-center justify-between gap-2"
           >
-            <div className="flex items-center gap-2.5 min-w-0">
-              <span className="text-base shrink-0">◎</span>
-              <div className="min-w-0">
-                <div className={`text-sm truncate ${activeStudio === 'hub' ? 'font-bold' : 'font-semibold'}`}>
-                  1. Today’s Session
-                </div>
-                <div className="text-[11px]" style={{ color: 'var(--fs-text-muted)' }}>今日自適應 10 分鐘</div>
-              </div>
-            </div>
-            <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono" style={{ backgroundColor: 'var(--fs-hover)', color: 'var(--fs-text-muted)' }}>
-              Alt+1
-            </kbd>
+            <span className="flex items-center gap-2.5 min-w-0">
+              <CalendarCheck className="w-4 h-4 shrink-0 opacity-85" />
+              <span className={`text-[13.5px] truncate ${activeStudio === 'hub' ? 'font-semibold' : 'font-medium'}`}>
+                Today’s Session
+              </span>
+            </span>
+            <kbd className="text-[11px] font-mono opacity-55 shrink-0">Alt+1</kbd>
           </button>
 
-          {/* 2. Course Syllabus (Expandable Stages 0–5) */}
-          <div className="rounded-xl border overflow-hidden" style={{ borderColor: activeStudio === 'syllabus' ? 'var(--fs-accent-border)' : 'var(--fs-border)' }}>
+          {/* 2. Course Syllabus (Flush Expandable Stages 0–5) */}
+          <div>
             <button
               type="button"
               aria-expanded={syllabusOpen}
               aria-controls="nav-syllabus-panel"
               onClick={() => setSyllabusOpen((o) => !o)}
               style={{
-                minHeight: '44px',
-                touchAction: 'manipulation',
-                backgroundColor: activeStudio === 'syllabus' ? 'var(--fs-accent-soft)' : 'var(--fs-surface)',
+                backgroundColor: activeStudio === 'syllabus' && !syllabusOpen ? 'var(--fs-accent-soft)' : undefined,
                 color: activeStudio === 'syllabus' ? 'var(--fs-accent-text)' : 'var(--fs-text)',
               }}
-              className="w-full px-3 py-2 text-left transition flex items-center justify-between gap-2"
+              className="fs-nav-row w-full px-2.5 py-1.5 rounded-lg text-left flex items-center justify-between gap-2"
             >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <span className="text-base shrink-0">▤</span>
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold truncate">2. Course Syllabus</div>
-                  <div className="text-[11px]" style={{ color: 'var(--fs-text-muted)' }}>課程大綱 · Stages 0–5</div>
-                </div>
-              </div>
-              <span className="text-xs font-bold shrink-0">{syllabusOpen ? '▾' : '▸'}</span>
+              <span className="flex items-center gap-2.5 min-w-0">
+                <GraduationCap className="w-4 h-4 shrink-0 opacity-85" />
+                <span className={`text-[13.5px] truncate ${activeStudio === 'syllabus' ? 'font-semibold' : 'font-medium'}`}>
+                  Course Syllabus
+                </span>
+              </span>
+              {syllabusOpen ? <ChevronDown className="w-4 h-4 opacity-60 shrink-0" /> : <ChevronRight className="w-4 h-4 opacity-60 shrink-0" />}
             </button>
 
             {syllabusOpen && (
-              <div id="nav-syllabus-panel" className="p-1.5 space-y-1 border-t" style={{ backgroundColor: 'var(--fs-subtle)', borderColor: 'var(--fs-border)' }}>
+              <div id="nav-syllabus-panel" className="ml-4 pl-2.5 mt-0.5 mb-1 border-l space-y-0.5" style={{ borderColor: 'var(--fs-border-strong)' }}>
                 {SYLLABUS_STAGES.map((st) => {
                   const detail = getStageProgressDetail(st.stageNumber, progress);
                   const isActiveStage = activeStudio === 'syllabus' && selectedStage === st.stageNumber;
@@ -208,22 +222,15 @@ export const AccordionNavSidebar: React.FC<AccordionNavSidebarProps> = ({
                         })
                       }
                       style={{
-                        minHeight: '44px',
-                        touchAction: 'manipulation',
-                        backgroundColor: isActiveStage ? 'var(--fs-surface)' : 'transparent',
-                        borderColor: isActiveStage ? 'var(--fs-accent-border)' : 'transparent',
+                        backgroundColor: isActiveStage ? 'var(--fs-accent-soft)' : undefined,
+                        color: isActiveStage ? 'var(--fs-accent-text)' : 'var(--fs-text-secondary)',
                       }}
-                      className="w-full px-2.5 py-1.5 rounded-lg border text-left flex items-center justify-between gap-2 transition"
+                      className="fs-nav-row w-full px-2.5 py-1 rounded-md text-left flex items-center justify-between gap-2"
                     >
-                      <div className="min-w-0">
-                        <div className={`text-xs truncate ${isActiveStage ? 'font-bold' : 'font-medium'}`} style={{ color: isActiveStage ? 'var(--fs-accent-text)' : 'var(--fs-text)' }}>
-                          Stage {st.stageNumber}: {st.stageNumber === 0 ? 'Start From Zero' : st.titleEn}
-                        </div>
-                        <div className="text-[10px] truncate" style={{ color: 'var(--fs-text-muted)' }}>
-                          {st.cefrLabel} · {detail.completedUnits}/{detail.totalUnits}
-                        </div>
-                      </div>
-                      <span className="text-[11px] font-bold shrink-0" style={{ color: detail.checkpointPassed ? 'var(--fs-accent-text)' : 'var(--fs-text-muted)' }}>
+                      <span className={`text-[13px] truncate ${isActiveStage ? 'font-semibold' : 'font-normal'}`}>
+                        Stage {st.stageNumber} · {st.stageNumber === 0 ? 'Foundations' : st.cefrLabel}
+                      </span>
+                      <span className="text-[11px] font-medium shrink-0" style={{ color: detail.checkpointPassed ? 'var(--fs-accent-text)' : 'var(--fs-text-muted)' }}>
                         {detail.checkpointPassed ? '✓' : `${detail.percent}%`}
                       </span>
                     </button>
@@ -233,55 +240,45 @@ export const AccordionNavSidebar: React.FC<AccordionNavSidebarProps> = ({
             )}
           </div>
 
-          {/* 3. Practice Labs (Expandable 5 Labs) */}
-          <div className="rounded-xl border overflow-hidden" style={{ borderColor: LAB_IDS.has(activeStudio) ? 'var(--fs-accent-border)' : 'var(--fs-border)' }}>
+          {/* 3. Practice Labs (Flush Expandable 5 Labs) */}
+          <div>
             <button
               type="button"
               aria-expanded={labsOpen}
               aria-controls="nav-labs-panel"
               onClick={() => setLabsOpen((o) => !o)}
               style={{
-                minHeight: '44px',
-                touchAction: 'manipulation',
-                backgroundColor: LAB_IDS.has(activeStudio) ? 'var(--fs-accent-soft)' : 'var(--fs-surface)',
+                backgroundColor: LAB_IDS.has(activeStudio) && !labsOpen ? 'var(--fs-accent-soft)' : undefined,
                 color: LAB_IDS.has(activeStudio) ? 'var(--fs-accent-text)' : 'var(--fs-text)',
               }}
-              className="w-full px-3 py-2 text-left transition flex items-center justify-between gap-2"
+              className="fs-nav-row w-full px-2.5 py-1.5 rounded-lg text-left flex items-center justify-between gap-2"
             >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <span className="text-base shrink-0">✎</span>
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold truncate">3. Practice Labs</div>
-                  <div className="text-[11px]" style={{ color: 'var(--fs-text-muted)' }}>專項練習室 · 5 Tools</div>
-                </div>
-              </div>
-              <span className="text-xs font-bold shrink-0">{labsOpen ? '▾' : '▸'}</span>
+              <span className="flex items-center gap-2.5 min-w-0">
+                <FlaskConical className="w-4 h-4 shrink-0 opacity-85" />
+                <span className={`text-[13.5px] truncate ${LAB_IDS.has(activeStudio) ? 'font-semibold' : 'font-medium'}`}>
+                  Practice Labs
+                </span>
+              </span>
+              {labsOpen ? <ChevronDown className="w-4 h-4 opacity-60 shrink-0" /> : <ChevronRight className="w-4 h-4 opacity-60 shrink-0" />}
             </button>
 
             {labsOpen && (
-              <div id="nav-labs-panel" className="p-1.5 space-y-1 border-t" style={{ backgroundColor: 'var(--fs-subtle)', borderColor: 'var(--fs-border)' }}>
-                {PRACTICE_LABS.map((lab) => {
-                  const active = activeStudio === lab.id;
+              <div id="nav-labs-panel" className="ml-4 pl-2.5 mt-0.5 mb-1 border-l space-y-0.5" style={{ borderColor: 'var(--fs-border-strong)' }}>
+                {PRACTICE_LABS.map(({ id, Icon, nameEn }) => {
+                  const active = activeStudio === id;
                   return (
                     <button
-                      key={lab.id}
+                      key={id}
                       type="button"
-                      onClick={() => navAndClose(() => onSelectStudio(lab.id))}
+                      onClick={() => navAndClose(() => onSelectStudio(id))}
                       style={{
-                        minHeight: '44px',
-                        touchAction: 'manipulation',
-                        backgroundColor: active ? 'var(--fs-surface)' : 'transparent',
-                        borderColor: active ? 'var(--fs-accent-border)' : 'transparent',
+                        backgroundColor: active ? 'var(--fs-accent-soft)' : undefined,
+                        color: active ? 'var(--fs-accent-text)' : 'var(--fs-text-secondary)',
                       }}
-                      className="w-full px-2.5 py-1.5 rounded-lg border text-left flex items-center gap-2.5 transition"
+                      className="fs-nav-row w-full px-2.5 py-1 rounded-md text-left flex items-center gap-2"
                     >
-                      <span className="text-sm shrink-0 opacity-80">{lab.icon}</span>
-                      <div className="min-w-0">
-                        <div className={`text-xs truncate ${active ? 'font-bold' : 'font-medium'}`} style={{ color: active ? 'var(--fs-accent-text)' : 'var(--fs-text)' }}>
-                          {lab.nameEn}
-                        </div>
-                        <div className="text-[10px] truncate" style={{ color: 'var(--fs-text-muted)' }}>{lab.nameZh}</div>
-                      </div>
+                      <Icon className="w-3.5 h-3.5 shrink-0 opacity-80" />
+                      <span className={`text-[13px] truncate ${active ? 'font-semibold' : 'font-normal'}`}>{nameEn}</span>
                     </button>
                   );
                 })}
@@ -289,123 +286,110 @@ export const AccordionNavSidebar: React.FC<AccordionNavSidebarProps> = ({
             )}
           </div>
 
-          {/* 4. Reference & Help (Expandable Utilities) */}
-          <div className="rounded-xl border overflow-hidden" style={{ borderColor: 'var(--fs-border)' }}>
+          {/* 4. Reference & Help */}
+          <div>
             <button
               type="button"
               aria-expanded={refOpen}
               aria-controls="nav-reference-panel"
               onClick={() => setRefOpen((o) => !o)}
-              style={{
-                minHeight: '44px',
-                touchAction: 'manipulation',
-                backgroundColor: 'var(--fs-surface)',
-                color: 'var(--fs-text)',
-              }}
-              className="w-full px-3 py-2 text-left transition flex items-center justify-between gap-2"
+              style={{ color: 'var(--fs-text)' }}
+              className="fs-nav-row w-full px-2.5 py-1.5 rounded-lg text-left flex items-center justify-between gap-2"
             >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <span className="text-base shrink-0">?</span>
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold truncate">4. Reference &amp; Help</div>
-                  <div className="text-[11px]" style={{ color: 'var(--fs-text-muted)' }}>辭典檢索與操作手冊</div>
-                </div>
-              </div>
-              <span className="text-xs font-bold shrink-0">{refOpen ? '▾' : '▸'}</span>
+              <span className="flex items-center gap-2.5 min-w-0">
+                <BookOpen className="w-4 h-4 shrink-0 opacity-85" />
+                <span className="text-[13.5px] font-medium truncate">Reference &amp; Help</span>
+              </span>
+              {refOpen ? <ChevronDown className="w-4 h-4 opacity-60 shrink-0" /> : <ChevronRight className="w-4 h-4 opacity-60 shrink-0" />}
             </button>
             {refOpen && (
-              <div id="nav-reference-panel" className="p-1.5 space-y-1 border-t" style={{ backgroundColor: 'var(--fs-subtle)', borderColor: 'var(--fs-border)' }}>
+              <div id="nav-reference-panel" className="ml-4 pl-2.5 mt-0.5 mb-1 border-l space-y-0.5" style={{ borderColor: 'var(--fs-border-strong)' }}>
                 <button
                   type="button"
                   onClick={() => navAndClose(onOpenOmnibar)}
-                  style={{ minHeight: '44px', color: 'var(--fs-text)' }}
-                  className="w-full px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center justify-between hover:opacity-80"
+                  style={{ color: 'var(--fs-text-secondary)' }}
+                  className="fs-nav-row w-full px-2.5 py-1 rounded-md text-[13px] flex items-center justify-between"
                 >
-                  <span>Search Lexicon</span>
-                  <kbd className="font-mono text-[10px] opacity-70">Ctrl+K</kbd>
+                  <span className="flex items-center gap-2"><Search className="w-3.5 h-3.5" />Search Lexicon</span>
+                  <kbd className="font-mono text-[11px] opacity-60">Ctrl+K</kbd>
                 </button>
                 <button
                   type="button"
                   onClick={() => navAndClose(onToggleInspector)}
-                  style={{ minHeight: '44px', color: 'var(--fs-text)' }}
-                  className="w-full px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center justify-between hover:opacity-80"
+                  style={{ color: 'var(--fs-text-secondary)' }}
+                  className="fs-nav-row w-full px-2.5 py-1 rounded-md text-[13px] flex items-center justify-between"
                 >
-                  <span>Word Inspector Dock</span>
-                  <span className="text-[10px] font-bold">{inspectorOpen ? 'ON' : 'OFF'}</span>
+                  <span className="flex items-center gap-2"><PanelRight className="w-3.5 h-3.5" />Inspector Dock</span>
+                  <span className="text-[11px] font-medium opacity-75">{inspectorOpen ? 'On' : 'Off'}</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => navAndClose(onOpenHelp)}
-                  style={{ minHeight: '44px', color: 'var(--fs-text)' }}
-                  className="w-full px-2.5 py-1.5 rounded-lg text-xs font-medium flex items-center justify-between hover:opacity-80"
+                  style={{ color: 'var(--fs-text-secondary)' }}
+                  className="fs-nav-row w-full px-2.5 py-1 rounded-md text-[13px] flex items-center justify-between"
                 >
-                  <span>User’s Manual</span>
-                  <kbd className="font-mono text-[10px] opacity-70">?</kbd>
+                  <span className="flex items-center gap-2"><HelpCircle className="w-3.5 h-3.5" />User’s Manual</span>
+                  <kbd className="font-mono text-[11px] opacity-60">?</kbd>
                 </button>
               </div>
             )}
           </div>
 
-          {/* 5. Standalone Administration Menu Item (Separated) */}
-          <div className="pt-2 mt-2 border-t" style={{ borderColor: 'var(--fs-border)' }}>
+          {/* 5. Standalone Administration (Separated by Hairline) */}
+          <div className="pt-2 mt-2 border-t fs-divider">
             <button
               type="button"
               onClick={() => navAndClose(() => onSelectStudio('admin'))}
               style={{
-                minHeight: '46px',
-                touchAction: 'manipulation',
-                backgroundColor: activeStudio === 'admin' ? 'var(--fs-accent-soft)' : 'transparent',
+                backgroundColor: activeStudio === 'admin' ? 'var(--fs-accent-soft)' : undefined,
                 color: activeStudio === 'admin' ? 'var(--fs-accent-text)' : 'var(--fs-text)',
-                borderColor: activeStudio === 'admin' ? 'var(--fs-accent-border)' : 'var(--fs-border)',
               }}
-              className="w-full px-3 py-2 rounded-xl border text-left transition flex items-center justify-between gap-2"
+              className="fs-nav-row w-full px-2.5 py-1.5 rounded-lg text-left flex items-center justify-between gap-2"
             >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <span className="text-base shrink-0">⚙</span>
-                <div className="min-w-0">
-                  <div className={`text-sm truncate ${activeStudio === 'admin' ? 'font-bold' : 'font-semibold'}`}>
-                    5. Administration
-                  </div>
-                  <div className="text-[11px]" style={{ color: 'var(--fs-text-muted)' }}>教材管理 · iPad音訊 · 備份</div>
-                </div>
-              </div>
-              <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono" style={{ backgroundColor: 'var(--fs-hover)', color: 'var(--fs-text-muted)' }}>
-                Alt+5
-              </kbd>
+              <span className="flex items-center gap-2.5 min-w-0">
+                <Settings className="w-4 h-4 shrink-0 opacity-85" />
+                <span className={`text-[13.5px] truncate ${activeStudio === 'admin' ? 'font-semibold' : 'font-medium'}`}>
+                  Administration
+                </span>
+              </span>
+              <kbd className="text-[11px] font-mono opacity-55 shrink-0">Alt+5</kbd>
             </button>
           </div>
         </nav>
       </div>
 
-      {/* Compact Quick Display Toggles */}
-      <div className="rounded-xl p-2 border grid grid-cols-3 gap-1.5" style={{ backgroundColor: 'var(--fs-surface)', borderColor: 'var(--fs-border)' }}>
+      {/* Flush Quick Footer Toggles (strictly >= 44px on touch/compact per HW-C1) */}
+      <div className="pt-2 border-t fs-divider grid grid-cols-3 gap-1">
         <button
           type="button"
-          onClick={onToggleTheme}
-          style={{ minHeight: '38px', backgroundColor: 'var(--fs-subtle)', color: 'var(--fs-text)' }}
-          className="px-1.5 py-1 rounded-lg text-[11px] font-semibold"
+          onClick={onCycleTheme}
+          className="fs-nav-row px-1.5 rounded-lg text-xs font-medium inline-flex items-center justify-center gap-1"
+          style={{ color: 'var(--fs-text-secondary)' }}
+          title={`Theme: ${themePref} (click to cycle Auto / Light / Dark)`}
         >
-          {theme === 'light' ? '☀ Paper' : '☾ Dark'}
+          <ThemeIcon className="w-3.5 h-3.5 shrink-0" />
+          <span>{themeLabel}</span>
         </button>
         <button
           type="button"
           onClick={onCycleZhuyin}
-          style={{ minHeight: '38px', backgroundColor: 'var(--fs-subtle)', color: 'var(--fs-text-secondary)' }}
-          className="px-1.5 py-1 rounded-lg text-[11px] font-semibold truncate"
+          className="fs-nav-row px-1.5 rounded-lg text-xs font-medium truncate"
+          style={{ color: 'var(--fs-text-secondary)' }}
+          title="Cycle Zhuyin display mode"
         >
-          {progress.zhuyinDisplayMode === 'adaptive' ? '注音:Auto' : progress.zhuyinDisplayMode === 'always' ? '注音:On' : '注音:Peek'}
+          {progress.zhuyinDisplayMode === 'adaptive' ? '注音 Auto' : progress.zhuyinDisplayMode === 'always' ? '注音 On' : '注音 Peek'}
         </button>
         <button
           type="button"
           onClick={onTogglePinyin}
+          className="fs-nav-row px-1.5 rounded-lg text-xs font-medium"
           style={{
-            minHeight: '38px',
-            backgroundColor: progress.showPinyinHint ? 'var(--fs-accent-soft)' : 'var(--fs-subtle)',
+            backgroundColor: progress.showPinyinHint ? 'var(--fs-accent-soft)' : undefined,
             color: progress.showPinyinHint ? 'var(--fs-accent-text)' : 'var(--fs-text-secondary)',
           }}
-          className="px-1.5 py-1 rounded-lg text-[11px] font-semibold"
+          title="Toggle Pinyin hints"
         >
-          Pin:{progress.showPinyinHint ? 'ON' : 'OFF'}
+          Pin {progress.showPinyinHint ? 'On' : 'Off'}
         </button>
       </div>
     </aside>

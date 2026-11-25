@@ -77,6 +77,7 @@ import {
   recordStageCheckpointResult,
   recordStrokePractice,
   recordWordPractice,
+  resolveEffectiveTheme,
   setStage0Skipped,
   toggleNtnuLessonComplete,
   togglePimsleurUnitComplete,
@@ -506,6 +507,62 @@ describe('Phase 4 Suite 8: FORM-ECR-001 (v2.0.0 Milestone A) — 5-Section Menu,
     // Deleting pack cleans DYNAMIC_LEXICON so deleted custom words do not linger
     removeCustomCurriculumPack(created.id);
     expect(lookupLexiconWord('蚵仔煎')).toBe(undefined);
+  });
+});
+
+describe('Phase 4 Suite 9: v2.1.0 Crisp Neutral Studio — Programmatic WCAG 2.1 AA Luminance & System Theme Sync', () => {
+  const hexToRgb = (hex: string): [number, number, number] => {
+    const clean = hex.replace('#', '');
+    return [
+      parseInt(clean.slice(0, 2), 16),
+      parseInt(clean.slice(2, 4), 16),
+      parseInt(clean.slice(4, 6), 16),
+    ];
+  };
+  const relLum = (hex: string): number => {
+    const [r, g, b] = hexToRgb(hex).map((v) => {
+      const s = v / 255;
+      return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const contrast = (fg: string, bg: string): number => {
+    const l1 = Math.max(relLum(fg), relLum(bg));
+    const l2 = Math.min(relLum(fg), relLum(bg));
+    return (l1 + 0.05) / (l2 + 0.05);
+  };
+
+  it('verifies real WCAG 2.1 AA >= 4.5:1 contrast across Light & Dark primary accents, muted text, and all 5 tones (UX-C1, UX-C2, LING-C2)', () => {
+    // Primary buttons in Light (#FFFFFF on #0F766E) & Dark (#041412 on #14B8A6)
+    expect(contrast('#FFFFFF', '#0F766E')).toBeGreaterThanOrEqual(4.5);
+    expect(contrast('#041412', '#14B8A6')).toBeGreaterThanOrEqual(4.5);
+    // Light muted text on subtle neutral card (#52525B on #F4F4F5)
+    expect(contrast('#52525B', '#F4F4F5')).toBeGreaterThanOrEqual(4.5);
+    // Light Tone 3 / warm text on amber soft tint (#92400E on #FEF3C7)
+    expect(contrast('#92400E', '#FEF3C7')).toBeGreaterThanOrEqual(4.5);
+
+    // All 5 Mandarin tones on Light (#FFFFFF & #F4F4F5) and Dark (#0F1115 & #161920)
+    for (const tone of [1, 2, 3, 4, 5] as const) {
+      const tok = WCAG_TONE_PALETTE[tone];
+      expect(contrast(tok.lightTextHex, '#FFFFFF')).toBeGreaterThanOrEqual(4.5);
+      expect(contrast(tok.lightTextHex, '#F4F4F5')).toBeGreaterThanOrEqual(4.5);
+      expect(contrast(tok.textHex, '#0F1115')).toBeGreaterThanOrEqual(4.5);
+      expect(contrast(tok.textHex, '#161920')).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it('supports ThemeMode = system | light | dark with Node-safe resolution and lossless JSON backup round-trip (ARCH-C2)', () => {
+    const initial = createInitialProgressState();
+    expect(initial.theme).toBe('system');
+    expect(resolveEffectiveTheme('system')).toBe('light');
+    expect(resolveEffectiveTheme('dark')).toBe('dark');
+    expect(resolveEffectiveTheme('light')).toBe('light');
+
+    for (const mode of ['system', 'light', 'dark'] as const) {
+      const json = exportProgressJson({ ...initial, theme: mode });
+      const restored = importProgressJson(json);
+      expect(restored.theme).toBe(mode);
+    }
   });
 });
 

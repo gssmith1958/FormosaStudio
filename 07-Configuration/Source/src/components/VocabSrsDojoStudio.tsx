@@ -188,9 +188,9 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
         titleEn="Vocab Catalog, FSRS-Lite SRS & 8-Stage DaQian Dojo"
         subtitle="Master Taiwan's standard DaQian (大千式) Zhuyin layout across 8 progressive touch-typing stages, review TOCFL Novice 1 – Band B2 vocabulary with FSRS-Lite Stability/Difficulty scheduling, and conquer the 5-World Skill Tree."
         rightSlot={
-          <div className="flex flex-wrap items-center gap-2 text-xs font-extrabold">
-            <span className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-emerald-300">⌨️ Best WPM: {progress.daqianBestWpm}</span>
-            <span className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-amber-300">🃏 Due SRS: {dueWords.length}</span>
+          <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+            <span className="px-3 py-1.5 rounded-xl fs-subtle-box border fs-divider fs-text-accent">Best WPM: {progress.daqianBestWpm}</span>
+            <span className="px-3 py-1.5 rounded-xl fs-subtle-box border fs-divider fs-text-warm">Due SRS: {dueWords.length}</span>
           </div>
         }
       />
@@ -198,7 +198,7 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
       {subTab === 'dojo' && (
         <div className="space-y-5">
           {/* 8-Stage Selector Strip */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-4 space-y-3">
+          <div className="fs-card p-4 space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex flex-wrap gap-1.5">
                 {DAQIAN_DOJO_STAGES.map((st, idx) => (
@@ -217,19 +217,19 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
                 ))}
               </div>
               <StylusButton variant={blindKeycaps ? 'amber' : 'secondary'} onClick={() => setBlindKeycaps((b) => !b)} >
-                <span>🙈 {blindKeycaps ? 'Blind Keycaps: ON (盲打)' : 'Show Keycap Labels'}</span>
+                <span>{blindKeycaps ? 'Blind Keycaps: ON (盲打)' : 'Show Keycap Labels'}</span>
               </StylusButton>
             </div>
-            <div className="text-xs sm:text-sm text-slate-300">
-              <strong className="text-emerald-300">{activeStage.titleZh}</strong> ({activeStage.titleEn}) —{' '}
+            <div className="text-xs sm:text-sm fs-text-secondary">
+              <strong className="fs-text-accent">{activeStage.titleZh}</strong> ({activeStage.titleEn}) —{' '}
               {activeStage.focusDescription}
             </div>
           </div>
           {/* Active Prompt & Keystroke Sequence Display */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 space-y-4">
+          <div className="fs-card p-6 space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="px-5 py-3 rounded-2xl bg-slate-950 border border-slate-800">
+                <div className="px-5 py-3 rounded-2xl fs-subtle-box border fs-divider">
                   <RubyText
                     text={activePrompt.hanzi}
                     zhuyin={activePrompt.zhuyin}
@@ -238,10 +238,10 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
                   />
                 </div>
                 <div>
-                  <div className="text-lg font-extrabold text-white">{activePrompt.english}</div>
-                  <div className="text-xs text-slate-400">
+                  <div className="text-lg font-semibold fs-text">{activePrompt.english}</div>
+                  <div className="text-xs fs-text-muted">
                     Taiwan DaQian Key Sequence ({activePrompt.expectedKeys.length} keys):{' '}
-                    <span className="font-mono text-emerald-300">
+                    <span className="font-mono fs-text-accent">
                       {Array.from(activePrompt.expectedKeys)
                         .map((k) => (k === ' ' ? '[Space=Tone1]' : k.toUpperCase()))
                         .join(' → ')}
@@ -251,7 +251,7 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
               </div>
               <div className="flex items-center gap-2">
                 <StylusButton variant="amber" onClick={() => handleDaqianKeyPress(expectedNextKey, true)} >
-                  <span>⚡ Hint Key ({expectedNextKey === ' ' ? 'Space' : expectedNextKey.toUpperCase()})</span>
+                  <span>Hint Key ({expectedNextKey === ' ' ? 'Space' : expectedNextKey.toUpperCase()})</span>
                 </StylusButton>
                 <StylusButton
                   variant="secondary"
@@ -266,7 +266,7 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
               </div>
             </div>
             {/* Interactive 4-Row Taiwan DaQian Virtual Keyboard + Per-Key Error Heatmap */}
-            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2 overflow-x-auto">
+            <div className="fs-subtle-box p-4 space-y-2 overflow-x-auto">
               {DAQIAN_KEYBOARD_ROWS.map((row, rIdx) => (
                 <div
                   key={rIdx}
@@ -284,14 +284,14 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
                         style={{ minHeight: '46px', minWidth: '46px', touchAction: 'manipulation' }}
                         className={`px-2.5 py-1.5 rounded-xl border text-left transition flex flex-col justify-between ${
                           isNext
-                            ? 'bg-emerald-500 text-slate-950 border-emerald-300 font-black scale-105 shadow-lg'
+                            ? 'fs-btn-primary font-black scale-105 shadow-lg'
                             : errCount > 0
-                            ? 'bg-rose-950/80 text-rose-200 border-rose-500/60'
-                            : 'bg-slate-900 hover:bg-slate-800 text-slate-200 border-slate-700'
+                            ? 'fs-surface-danger fs-text-danger fs-divider'
+                            : 'fs-btn-secondary'
                         }`}
                       >
                         <span className="text-[10px] font-mono opacity-75">{cap.displayKey}</span>
-                        <span className="text-base font-extrabold self-center">{blindKeycaps && !isNext ? '•' : cap.zhuyin}</span>
+                        <span className="text-base font-semibold self-center">{blindKeycaps && !isNext ? '•' : cap.zhuyin}</span>
                       </button>
                     );
                   })}
@@ -303,10 +303,10 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
                   type="button"
                   onClick={() => handleDaqianKeyPress(' ')}
                   style={{ minHeight: '44px', touchAction: 'manipulation' }}
-                  className={`w-72 rounded-xl border text-xs font-extrabold transition ${
+                  className={`w-72 rounded-xl border text-xs font-semibold transition ${
                     expectedNextKey === ' '
-                      ? 'bg-emerald-500 text-slate-950 border-emerald-300 shadow-lg'
-                      : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-700'
+                      ? 'fs-btn-primary shadow-lg'
+                      : 'fs-btn-secondary'
                   }`}
                 >
                   SPACEBAR · 一聲 (Tone 1 Default Termination)
@@ -318,15 +318,15 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
       )}
       {subTab === 'srs' && activeDueCard && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          <div className="lg:col-span-7 bg-slate-900/90 border border-slate-800 rounded-3xl p-6 space-y-5">
-            <div className="flex items-center justify-between text-xs text-slate-400">
+          <div className="lg:col-span-7 fs-card p-6 space-y-5">
+            <div className="flex items-center justify-between text-xs fs-text-muted">
               <span>FSRS-Lite Power-Law Forgetting Curve Scheduler</span>
               <span>
-                Stability S: <strong className="text-emerald-300">{activeDueCard.stability}d</strong> · Difficulty D:{' '}
-                <strong className="text-amber-300">{activeDueCard.difficulty}</strong>
+                Stability S: <strong className="fs-text-accent">{activeDueCard.stability}d</strong> · Difficulty D:{' '}
+                <strong className="fs-text-warm">{activeDueCard.difficulty}</strong>
               </span>
             </div>
-            <div className="bg-slate-950 border border-slate-800 rounded-3xl p-8 text-center space-y-4">
+            <div className="fs-subtle-box p-8 text-center space-y-4">
               <div className="flex justify-center">
                 <RubyText
                   text={activeDueCard.word}
@@ -339,19 +339,19 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
               <div className="flex justify-center gap-2">
                 {onSpeak && (
                   <StylusButton variant="secondary" onClick={() => onSpeak(activeDueCard.word)}>
-                    <span>🔊 Listen</span>
+                    <span>Listen</span>
                   </StylusButton>
                 )}
                 {!srsRevealed && (
                   <StylusButton variant="primary" onClick={() => setSrsRevealed(true)}>
-                    <span>👁️ Reveal Answer &amp; Zhuyin</span>
+                    <span>Reveal Answer &amp; Zhuyin</span>
                   </StylusButton>
                 )}
               </div>
               {srsRevealed && (
                 <div className="space-y-2 pt-1">
-                  <div className="text-xl font-extrabold text-emerald-300">{activeDueCard.english}</div>
-                  <div className="text-sm text-slate-300">Taiwan MOE Zhuyin: {activeDueCard.zhuyin}</div>
+                  <div className="text-xl font-semibold fs-text-accent">{activeDueCard.english}</div>
+                  <div className="text-sm fs-text-secondary">Taiwan MOE Zhuyin: {activeDueCard.zhuyin}</div>
                 </div>
               )}
             </div>
@@ -387,13 +387,13 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
       )}
       {subTab === 'wordbank' && (
         <div className="space-y-4">
-          <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="fs-card p-4 flex flex-wrap items-center justify-between gap-3">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search Traditional Hanzi, Zhuyin (ㄅㄆㄇ), Pinyin, or English..."
-              className="flex-1 min-w-[240px] min-h-[44px] px-4 py-2 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white"
+              className="flex-1 min-w-[240px] min-h-[44px] px-4 py-2 rounded-xl fs-subtle-box border fs-divider text-sm fs-text"
             />
             <div className="flex flex-wrap gap-1.5">
               {['ALL', 'Novice 1', 'Novice 2', 'Band A · Level 1', 'Band A · Level 2', 'Band B · Level 1', 'Band B · Level 2'].map((b) => (
@@ -404,7 +404,7 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
             </div>
           </div>
           {selectedVocab && (
-            <div className="bg-slate-900/95 border border-emerald-500/50 rounded-3xl p-5 space-y-3">
+            <div className="fs-card p-5 space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <RubyText
                   text={selectedVocab.traditional}
@@ -414,8 +414,8 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
                   zhuyinDisplayMode="always"
                 />
                 <div className="text-right">
-                  <div className="text-lg font-extrabold text-white">{selectedVocab.english}</div>
-                  <div className="text-xs text-emerald-300">{selectedVocab.tocflBand} · {selectedVocab.sourceLabel}</div>
+                  <div className="text-lg font-semibold fs-text">{selectedVocab.english}</div>
+                  <div className="text-xs fs-text-accent">{selectedVocab.tocflBand} · {selectedVocab.sourceLabel}</div>
                 </div>
               </div>
               <CrossStudioActionPills
@@ -432,12 +432,12 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
               <div
                 key={item.id}
                 onClick={() => setSelectedVocab(item)}
-                className="bg-slate-900/90 hover:bg-slate-800/90 border border-slate-800 rounded-2xl p-4 cursor-pointer transition flex items-center justify-between gap-3"
+                className="fs-card hover:opacity-95 p-4 cursor-pointer transition flex items-center justify-between gap-3"
               >
                 <RubyText text={item.traditional} zhuyin={item.zhuyin} size="md" zhuyinDisplayMode="always" />
                 <div className="text-right text-xs">
-                  <div className="font-bold text-white">{item.english}</div>
-                  <div className="text-slate-400">{item.sourceLabel}</div>
+                  <div className="font-bold fs-text">{item.english}</div>
+                  <div className="fs-text-muted">{item.sourceLabel}</div>
                 </div>
               </div>
             ))}

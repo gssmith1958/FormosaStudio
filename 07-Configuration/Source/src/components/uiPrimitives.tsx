@@ -1,10 +1,11 @@
 /**
- * FormosaStudio (FORM) — Phase 1 Shared UI Primitive Kit & Ergonomic Controls
- * Enforces FORM-DESCHAR-001 Night-Slate WCAG 2.1 AA Palette (>= 4.5:1) & >= 44x44 px Wacom Stylus Hit Targets.
+ * FormosaStudio (FORM) — Shared UI Primitive Kit & Ergonomic Controls (v2.1.0 Crisp Neutral Studio)
+ * Enforces WCAG 2.1 AA (>= 4.5:1) Light + Dark palettes, >= 44x44 px Wacom/iPad hit targets, and Lucide monoline icons.
  * Traces to: FORM-REQ-0021, FORM-REQ-0018, FORM-DEC-004, FORM-DEP-UX-001
  */
 
 import React from 'react';
+import { ArrowLeft, BookOpen, Brain, Hand, Mic, PenTool } from 'lucide-react';
 import {
   STUDIO_BY_ID,
   STUDIO_DEFINITIONS,
@@ -23,15 +24,16 @@ export interface TonePaletteToken {
   contour: string;
   mark: string;
   textHex: string;
+  lightTextHex: string;
   borderHex: string;
   bgRgba: string;
-  contrastRatioOnSlate: number; // Verified >= 4.5:1 on #0F172A
+  contrastRatioOnSlate: number; // Verified >= 4.5:1 on Dark #0F1115 / #0F172A
+  contrastRatioOnLight: number; // Verified >= 4.5:1 on Light #FFFFFF / #FAFAFA
   tailwindBadgeClass: string;
 }
 
 /**
- * WCAG 2.1 Level AA Verified Tone Palette on #0F172A Night-Slate (FORM-DESCHAR-001 §2.5).
- * Explicitly avoids pure #EF4444 (4.43:1 fail) for Tone 4 in favor of #FCA5A5 / #F87171 (>= 6.8:1).
+ * WCAG 2.1 Level AA Verified Tone Palette for both Dark (#0F1115) & Light (#FFFFFF/#FAFAFA) Neutral Studio (DEP-01 & DEP-04).
  */
 export const WCAG_TONE_PALETTE: Record<1 | 2 | 3 | 4 | 5, TonePaletteToken> = {
   1: {
@@ -41,10 +43,12 @@ export const WCAG_TONE_PALETTE: Record<1 | 2 | 3 | 4 | 5, TonePaletteToken> = {
     contour: '55',
     mark: 'ˉ',
     textHex: '#7DD3FC',
+    lightTextHex: '#0369A1',
     borderHex: '#38BDF8',
-    bgRgba: 'rgba(14, 116, 144, 0.35)',
-    contrastRatioOnSlate: 11.4,
-    tailwindBadgeClass: 'bg-sky-950/80 text-sky-300 border-sky-400/60',
+    bgRgba: 'rgba(14, 116, 144, 0.25)',
+    contrastRatioOnSlate: 11.3,
+    contrastRatioOnLight: 5.93,
+    tailwindBadgeClass: 'fs-subtle-box',
   },
   2: {
     tone: 2,
@@ -53,10 +57,12 @@ export const WCAG_TONE_PALETTE: Record<1 | 2 | 3 | 4 | 5, TonePaletteToken> = {
     contour: '35',
     mark: 'ˊ',
     textHex: '#6EE7B7',
+    lightTextHex: '#047857',
     borderHex: '#34D399',
-    bgRgba: 'rgba(4, 120, 87, 0.35)',
-    contrastRatioOnSlate: 12.1,
-    tailwindBadgeClass: 'bg-emerald-950/80 text-emerald-300 border-emerald-400/60',
+    bgRgba: 'rgba(4, 120, 87, 0.25)',
+    contrastRatioOnSlate: 12.4,
+    contrastRatioOnLight: 5.48,
+    tailwindBadgeClass: 'fs-subtle-box',
   },
   3: {
     tone: 3,
@@ -64,11 +70,13 @@ export const WCAG_TONE_PALETTE: Record<1 | 2 | 3 | 4 | 5, TonePaletteToken> = {
     labelEn: 'Tone 3 · Dipping',
     contour: '214',
     mark: 'ˇ',
-    textHex: '#FDE68A',
+    textHex: '#FBBF24',
+    lightTextHex: '#92400E',
     borderHex: '#FBBF24',
-    bgRgba: 'rgba(180, 83, 9, 0.35)',
-    contrastRatioOnSlate: 14.2,
-    tailwindBadgeClass: 'bg-amber-950/80 text-amber-200 border-amber-400/60',
+    bgRgba: 'rgba(180, 83, 9, 0.25)',
+    contrastRatioOnSlate: 11.3,
+    contrastRatioOnLight: 7.09,
+    tailwindBadgeClass: 'fs-subtle-box',
   },
   4: {
     tone: 4,
@@ -77,10 +85,12 @@ export const WCAG_TONE_PALETTE: Record<1 | 2 | 3 | 4 | 5, TonePaletteToken> = {
     contour: '51',
     mark: 'ˋ',
     textHex: '#FCA5A5',
+    lightTextHex: '#BE123C',
     borderHex: '#F87171',
-    bgRgba: 'rgba(185, 28, 28, 0.35)',
-    contrastRatioOnSlate: 9.3,
-    tailwindBadgeClass: 'bg-rose-950/80 text-rose-300 border-rose-400/60',
+    bgRgba: 'rgba(185, 28, 28, 0.25)',
+    contrastRatioOnSlate: 9.9,
+    contrastRatioOnLight: 6.29,
+    tailwindBadgeClass: 'fs-subtle-box',
   },
   5: {
     tone: 5,
@@ -88,11 +98,13 @@ export const WCAG_TONE_PALETTE: Record<1 | 2 | 3 | 4 | 5, TonePaletteToken> = {
     labelEn: 'Tone 5 · Neutral',
     contour: '·',
     mark: '˙',
-    textHex: '#E9D5FF',
+    textHex: '#D8B4FE',
+    lightTextHex: '#6D28D9',
     borderHex: '#C084FC',
-    bgRgba: 'rgba(109, 40, 217, 0.35)',
-    contrastRatioOnSlate: 12.8,
-    tailwindBadgeClass: 'bg-purple-950/80 text-purple-200 border-purple-400/60',
+    bgRgba: 'rgba(109, 40, 217, 0.25)',
+    contrastRatioOnSlate: 10.7,
+    contrastRatioOnLight: 7.1,
+    tailwindBadgeClass: 'fs-subtle-box',
   },
 };
 
@@ -105,17 +117,17 @@ export const ToneBadge: React.FC<{
   const cssColor = `var(--fs-tone-${tone})`;
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full border font-semibold ${
-        compact ? 'px-2.5 py-0.5 text-xs' : 'px-3 py-1 text-sm'
+      className={`inline-flex items-center gap-1 rounded-full border font-medium ${
+        compact ? 'px-2 py-0.5 text-xs' : 'px-2.5 py-0.5 text-xs'
       }`}
       style={{
         color: cssColor,
-        borderColor: cssColor,
+        borderColor: 'var(--fs-border-strong)',
         backgroundColor: 'var(--fs-subtle)',
       }}
     >
       <span>{token.labelZh.split(' ')[0]}</span>
-      {showContour && <span className="opacity-85">({token.contour})</span>}
+      {showContour && <span className="opacity-80">({token.contour})</span>}
     </span>
   );
 };
@@ -127,7 +139,7 @@ export interface StylusButtonProps extends React.ButtonHTMLAttributes<HTMLButton
 }
 
 /**
- * Wacom Stylus-First Button Primitive enforcing >= 44x44 px hit target and calm Warm-Paper / Calm-Dark styling.
+ * Wacom & iPad Stylus-First Button enforcing >= 44x44 px hit target (FORM-REQ-0018).
  */
 export const StylusButton: React.FC<StylusButtonProps> = ({
   variant = 'secondary',
@@ -138,7 +150,7 @@ export const StylusButton: React.FC<StylusButtonProps> = ({
   ...rest
 }) => {
   const variantClasses: Record<NonNullable<StylusButtonProps['variant']>, string> = {
-    primary: 'fs-btn-primary shadow-sm',
+    primary: 'fs-btn-primary',
     secondary: active ? 'fs-btn-active' : 'fs-btn-secondary',
     amber: 'fs-btn-warm',
     ghost: 'fs-btn-ghost',
@@ -149,14 +161,14 @@ export const StylusButton: React.FC<StylusButtonProps> = ({
     <button
       type="button"
       style={{ minHeight: '44px', minWidth: '44px', touchAction: 'manipulation' }}
-      className={`min-h-[44px] min-w-[44px] px-4 py-2 rounded-xl border text-sm whitespace-nowrap shrink-0 inline-flex items-center justify-center gap-2 transition select-none ${variantClasses[variant]} ${className}`}
+      className={`min-h-[44px] min-w-[44px] px-3.5 py-2 rounded-lg border text-[13.5px] whitespace-nowrap shrink-0 inline-flex items-center justify-center gap-2 transition-colors duration-150 select-none disabled:opacity-45 disabled:pointer-events-none ${variantClasses[variant]} ${className}`}
       {...rest}
     >
       {children}
       {shortcutHint && (
         <kbd
-          className="px-1.5 py-0.5 rounded text-xs font-mono opacity-80"
-          style={{ backgroundColor: 'rgba(128, 128, 128, 0.16)' }}
+          className="px-1.5 py-0.5 rounded text-[11px] font-mono opacity-75"
+          style={{ backgroundColor: 'rgba(128, 128, 128, 0.14)' }}
         >
           {shortcutHint}
         </kbd>
@@ -187,7 +199,7 @@ export function StudioModeSwitcher<T extends string>({
   return (
     <div
       role="tablist"
-      className="rounded-2xl p-1.5 flex flex-wrap items-center gap-1.5 border"
+      className="rounded-xl p-1 inline-flex flex-wrap items-center gap-1 border"
       style={{ backgroundColor: 'var(--fs-subtle)', borderColor: 'var(--fs-border)' }}
     >
       {modes.map((m) => {
@@ -204,21 +216,21 @@ export function StudioModeSwitcher<T extends string>({
               minWidth: '44px',
               touchAction: 'manipulation',
               backgroundColor: isSelected ? 'var(--fs-surface)' : 'transparent',
-              color: isSelected ? 'var(--fs-accent-text)' : 'var(--fs-text-secondary)',
-              borderColor: isSelected ? 'var(--fs-accent-border)' : 'transparent',
+              color: isSelected ? 'var(--fs-text)' : 'var(--fs-text-secondary)',
+              borderColor: isSelected ? 'var(--fs-border-strong)' : 'transparent',
               boxShadow: isSelected ? 'var(--fs-shadow)' : 'none',
             }}
-            className="min-h-[44px] px-3.5 py-2 rounded-xl border text-sm font-semibold whitespace-nowrap transition flex items-center gap-2"
+            className="min-h-[44px] px-3 py-1.5 rounded-lg border text-[13.5px] font-medium whitespace-nowrap transition-colors flex items-center gap-1.5"
             title={`${m.labelEn} · ${m.labelZh}`}
           >
-            <span className={isSelected ? 'font-bold' : ''}>{m.labelEn}</span>
-            {modes.length <= 3 && <span className="opacity-70 text-xs hidden sm:inline">{m.labelZh}</span>}
+            <span className={isSelected ? 'font-semibold' : ''}>{m.labelEn}</span>
+            {modes.length <= 3 && <span className="opacity-60 text-xs hidden sm:inline">{m.labelZh}</span>}
             {m.badge !== undefined && (
               <span
-                className="px-2 py-0.5 rounded-full text-xs font-semibold"
+                className="px-1.5 py-0.5 rounded-md text-[11px] font-medium"
                 style={{
                   backgroundColor: isSelected ? 'var(--fs-accent-soft)' : 'var(--fs-hover)',
-                  color: isSelected ? 'var(--fs-accent-text)' : 'var(--fs-text-secondary)',
+                  color: isSelected ? 'var(--fs-accent-text)' : 'var(--fs-text-muted)',
                 }}
               >
                 {m.badge}
@@ -232,7 +244,7 @@ export function StudioModeSwitcher<T extends string>({
 }
 
 /**
- * Clean Studio Header Banner used across studios.
+ * Calm Studio Header — flat header strip with hairline divider (zero heavy boxed clutter).
  */
 export const StudioHeaderBanner: React.FC<{
   studioId: StudioId;
@@ -243,28 +255,17 @@ export const StudioHeaderBanner: React.FC<{
 }> = ({ studioId, titleZh, titleEn, subtitle, rightSlot }) => {
   const studio = STUDIO_BY_ID[studioId];
   return (
-    <div className="fs-card px-6 py-5">
-      <div className="flex flex-col gap-4">
-        <div className="space-y-1.5 min-w-0">
-          <div
-            className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide uppercase"
-            style={{ color: 'var(--fs-accent-text)' }}
-          >
-            <span>{studio.shortLabel}</span>
-            <span>·</span>
-            <span>{studio.titleZh}</span>
+    <div className="pb-4 border-b flex flex-col gap-3" style={{ borderColor: 'var(--fs-border)' }}>
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-3">
+        <div className="space-y-1 min-w-0">
+          <div className="text-xs font-medium tracking-wide" style={{ color: 'var(--fs-accent-text)' }}>
+            {studio.titleEn} · {studio.titleZh}
           </div>
-          <h1
-            className="text-2xl sm:text-[26px] font-bold tracking-tight"
-            style={{ color: 'var(--fs-text)' }}
-          >
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight" style={{ color: 'var(--fs-text)' }}>
             {titleEn}{' '}
-            <span className="font-semibold opacity-70 text-xl">· {titleZh}</span>
+            <span className="font-normal opacity-60 text-base sm:text-lg">· {titleZh}</span>
           </h1>
-          <p
-            className="text-sm sm:text-[15px] max-w-3xl leading-relaxed"
-            style={{ color: 'var(--fs-text-secondary)' }}
-          >
+          <p className="text-sm max-w-3xl leading-relaxed" style={{ color: 'var(--fs-text-secondary)' }}>
             {subtitle}
           </p>
         </div>
@@ -288,6 +289,7 @@ export const HandednessToggle: React.FC<{
       onClick={() => onToggle(next)}
       title="Swap sidebar and canvas docking edge so your Wacom drawing hand never covers buttons"
     >
+      <Hand className="w-4 h-4 shrink-0 opacity-80" />
       <span>{handedness === 'right' ? 'Right-Handed' : 'Left-Handed'}</span>
     </StylusButton>
   );
@@ -305,21 +307,21 @@ export const ReturnBreadcrumbBar: React.FC<{
   const originStudio = STUDIO_BY_ID[handoff.fromStudio];
   return (
     <div
-      className="rounded-2xl px-5 py-3 flex flex-wrap items-center justify-between gap-3 border"
+      className="rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 border"
       style={{
         backgroundColor: 'var(--fs-accent-soft)',
         borderColor: 'var(--fs-accent-border)',
       }}
     >
-      <div className="flex items-center gap-2.5 text-sm" style={{ color: 'var(--fs-text)' }}>
+      <div className="flex items-center gap-2 text-sm" style={{ color: 'var(--fs-text)' }}>
         <span
-          className="px-2.5 py-0.5 rounded-full text-xs font-semibold"
+          className="px-2 py-0.5 rounded-md text-xs font-medium"
           style={{ backgroundColor: 'var(--fs-surface)', color: 'var(--fs-accent-text)' }}
         >
           Focused Practice
         </span>
         <span>
-          Practicing <strong className="font-bold">「{handoff.targetText}」</strong> from{' '}
+          Practicing <strong className="font-semibold">「{handoff.targetText}」</strong> from{' '}
           <strong style={{ color: 'var(--fs-accent-text)' }}>
             {originStudio?.titleEn || handoff.fromLabel}
           </strong>
@@ -327,7 +329,8 @@ export const ReturnBreadcrumbBar: React.FC<{
       </div>
       <div className="flex items-center gap-2">
         <StylusButton variant="primary" onClick={onReturn}>
-          <span>← Return to {handoff.fromLabel || originStudio?.shortLabel}</span>
+          <ArrowLeft className="w-4 h-4 shrink-0" />
+          <span>Return to {handoff.fromLabel || originStudio?.shortLabel}</span>
         </StylusButton>
         {onDismiss && (
           <StylusButton variant="ghost" onClick={onDismiss}>
@@ -374,34 +377,22 @@ export const CrossStudioActionPills: React.FC<{
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <StylusButton
-        variant="secondary"
-        onClick={() => trigger('calligraphy', 'trace')}
-        title="Practice writing this character/word on the Wacom 九宮格 canvas"
-      >
-        <span>✒️ Write on Wacom (描紅)</span>
+      <StylusButton variant="secondary" onClick={() => trigger('calligraphy', 'trace')} title="Practice stroke order on Wacom canvas">
+        <PenTool className="w-4 h-4 shrink-0 opacity-80" />
+        <span>Write Strokes</span>
       </StylusButton>
-      <StylusButton
-        variant="secondary"
-        onClick={() => trigger('speaking', 'pitch_coach')}
-        title="Overlay your spoken F0 pitch contour for this phrase"
-      >
-        <span>🎤 Coach Pitch (F0)</span>
+      <StylusButton variant="secondary" onClick={() => trigger('speaking', 'pitch_coach')} title="Compare your pitch contour">
+        <Mic className="w-4 h-4 shrink-0 opacity-80" />
+        <span>Pitch Coach</span>
       </StylusButton>
-      <StylusButton
-        variant="secondary"
-        onClick={() => trigger('reader', 'custom_cloze')}
-        title="Inspect in Adaptive i+1 Reader & Cloze Studio"
-      >
-        <span>📖 Open in Reader</span>
+      <StylusButton variant="secondary" onClick={() => trigger('reader', 'custom_cloze')} title="Open in Reader & Cloze">
+        <BookOpen className="w-4 h-4 shrink-0 opacity-80" />
+        <span>Open in Reader</span>
       </StylusButton>
       {onBoostSrs && (
-        <StylusButton
-          variant="amber"
-          onClick={onBoostSrs}
-          title="Schedule or boost this item in your FSRS review queue"
-        >
-          <span>🧠 Boost in FSRS</span>
+        <StylusButton variant="amber" onClick={onBoostSrs} title="Add or boost in FSRS review queue">
+          <Brain className="w-4 h-4 shrink-0 opacity-80" />
+          <span>Boost FSRS</span>
         </StylusButton>
       )}
     </div>

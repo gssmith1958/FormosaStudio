@@ -519,11 +519,15 @@ export const AdministrationStudio: React.FC<AdministrationStudioProps> = ({
       {tab === 'preferences' && (
         <section className="fs-card p-5 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="fs-subtle-box p-4 space-y-2">
-            <div className="text-sm font-bold" style={{ color: 'var(--fs-text)' }}>Appearance &amp; Theme</div>
-            <div className="flex gap-2">
-              {(['light', 'dark'] as ThemeMode[]).map((m) => (
-                <StylusButton key={m} variant={(progress.theme || 'light') === m ? 'primary' : 'secondary'} onClick={() => onUpdateProgress({ ...progress, theme: m })}>
-                  <span>{m === 'light' ? '☀ Warm Paper' : '☾ Calm Dark'}</span>
+            <div className="text-sm font-semibold" style={{ color: 'var(--fs-text)' }}>Appearance &amp; Theme</div>
+            <div className="flex flex-wrap gap-2">
+              {([
+                { id: 'system', label: 'Match System' },
+                { id: 'light', label: 'Light' },
+                { id: 'dark', label: 'Dark' },
+              ] as { id: ThemeMode; label: string }[]).map((m) => (
+                <StylusButton key={m.id} variant={(progress.theme || 'system') === m.id ? 'primary' : 'secondary'} onClick={() => onUpdateProgress({ ...progress, theme: m.id })}>
+                  <span>{m.label}</span>
                 </StylusButton>
               ))}
             </div>

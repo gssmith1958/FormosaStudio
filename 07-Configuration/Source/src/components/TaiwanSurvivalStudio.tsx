@@ -106,7 +106,7 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
       {/* SUB-MODE 1: 6 VISUAL SURVIVAL STICKY-LABEL MODULES & PRINTABLE SHEET MODE (FORM-REQ-0009) */}
       {subMode === 'sticky_labels' && (
         <div className="space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-slate-900/90 border border-slate-800 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl fs-card border fs-divider p-4">
             <div className="flex flex-wrap gap-2">
               {SURVIVAL_MODULES.map((mod) => (
                 <StylusButton
@@ -125,20 +125,20 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
               variant={printableSheetMode ? 'amber' : 'secondary'}
               onClick={() => setPrintableSheetMode((v) => !v)}
             >
-              {printableSheetMode ? '✓ Printable Sticky-Label Sheet Active' : '🖨️ Printable Sticky-Label Sheet Mode'}
+              {printableSheetMode ? '✓ Printable Sticky-Label Sheet Active' : 'Printable Sticky-Label Sheet Mode'}
             </StylusButton>
           </div>
 
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+          <div className="rounded-2xl border fs-divider fs-card p-5 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b fs-divider pb-3">
               <div>
-                <span className="text-xs font-bold text-teal-400">
+                <span className="text-xs font-bold fs-text-accent">
                   10-Minute Survival Module {activeModule.moduleNumber}
                 </span>
-                <h3 className="text-xl font-extrabold text-white">
+                <h3 className="text-xl font-semibold fs-text">
                   {activeModule.titleTraditional} — {activeModule.titleEnglish}
                 </h3>
-                <p className="text-xs text-slate-300 mt-0.5">{activeModule.keyTakeaway}</p>
+                <p className="text-xs fs-text-secondary mt-0.5">{activeModule.keyTakeaway}</p>
               </div>
             </div>
 
@@ -158,15 +158,15 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
                     onClick={() => setActiveLabel(lbl)}
                     className={`cursor-pointer rounded-2xl border-2 p-4 transition-all space-y-3 ${
                       printableSheetMode
-                        ? 'border-dashed border-amber-400/80 bg-slate-950 shadow-lg'
+                        ? 'border-dashed fs-divider fs-subtle-box shadow-lg'
                         : isSelected
-                        ? 'border-teal-400 bg-teal-950/30 shadow-md'
-                        : 'border-slate-800 bg-slate-950/70 hover:border-slate-700'
+                        ? 'border-teal-400 fs-surface-accent shadow-md'
+                        : 'fs-divider fs-subtle-box hover:fs-divider'
                     }`}
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-950/80 text-amber-200 border border-amber-400/50">
-                        📌 {lbl.placementHint}
+                      <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full fs-surface-warm fs-text-warm border fs-divider">
+                        {lbl.placementHint}
                       </span>
                       {onSpeakText && (
                         <StylusButton
@@ -191,9 +191,9 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
                       />
                     </div>
 
-                    <div className="border-t border-slate-800/80 pt-2">
-                      <div className="font-bold text-white text-sm">{lbl.english}</div>
-                      <div className="text-xs text-slate-400 mt-0.5">{lbl.usageTip}</div>
+                    <div className="border-t fs-divider pt-2">
+                      <div className="font-bold fs-text text-sm">{lbl.english}</div>
+                      <div className="text-xs fs-text-muted mt-0.5">{lbl.usageTip}</div>
                     </div>
                   </div>
                 );
@@ -201,12 +201,12 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
             </div>
 
             {activeLabel && (
-              <div className="rounded-xl bg-slate-950/90 border border-teal-500/40 p-4 flex flex-wrap items-center justify-between gap-3">
+              <div className="rounded-xl fs-subtle-box border fs-divider p-4 flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <div className="text-sm font-bold text-white">
-                    Active Sticky Label: <span className="text-teal-300">{activeLabel.traditional}</span> ({activeLabel.english})
+                  <div className="text-sm font-bold fs-text">
+                    Active Sticky Label: <span className="fs-text-accent">{activeLabel.traditional}</span> ({activeLabel.english})
                   </div>
-                  <div className="text-xs text-slate-400">{activeLabel.usageTip}</div>
+                  <div className="text-xs fs-text-muted">{activeLabel.usageTip}</div>
                 </div>
                 <CrossStudioActionPills
                   sourceStudio="survival"
@@ -241,10 +241,10 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
           {SWISS_ARMY_FRAMES.map((frame) => (
             <div
               key={frame.id}
-              className="rounded-2xl border border-slate-800 bg-slate-900/90 p-4 space-y-3"
+              className="rounded-2xl border fs-divider fs-card p-4 space-y-3"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-teal-950 text-teal-300 border border-teal-500/50">
+                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full fs-surface-accent fs-text-accent border fs-divider">
                   Frame #{frame.frameNumber} · {frame.scenarioTag}
                 </span>
                 {onSpeakText && (
@@ -252,22 +252,22 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
                     variant="secondary"
                     onClick={() => onSpeakText(frame.exampleTraditional, 0.9)}
                   >
-                    🔊 Speak Frame
+                    Speak Frame
                   </StylusButton>
                 )}
               </div>
-              <div className="text-base font-extrabold text-amber-300">
+              <div className="text-base font-semibold fs-text-warm">
                 {frame.patternTraditional}
               </div>
-              <div className="text-xs text-slate-300">{frame.englishTemplate}</div>
-              <div className="rounded-xl bg-slate-950/80 border border-slate-800 p-3 space-y-1.5">
+              <div className="text-xs fs-text-secondary">{frame.englishTemplate}</div>
+              <div className="rounded-xl fs-subtle-box border fs-divider p-3 space-y-1.5">
                 <RubyText
                   text={frame.exampleTraditional}
                   zhuyin={frame.exampleZhuyin}
                   zhuyinDisplayMode="always"
                   size="md"
                 />
-                <div className="text-xs text-slate-300">{frame.exampleEnglish}</div>
+                <div className="text-xs fs-text-secondary">{frame.exampleEnglish}</div>
               </div>
               <CrossStudioActionPills
                 sourceStudio="survival"
@@ -294,7 +294,7 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
       {subMode === 'listening_gym' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
           <div className="lg:col-span-4 space-y-2.5">
-            <div className="text-xs font-bold uppercase tracking-wider text-slate-400 px-1">
+            <div className="text-xs font-bold uppercase tracking-wider fs-text-muted px-1">
               5 Taiwan Functional Listening Tracks
             </div>
             {LISTENING_GYM_CATEGORIES.map((cat) => (
@@ -311,22 +311,22 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
                 style={{ minHeight: '54px', touchAction: 'manipulation' }}
                 className={`w-full text-left p-3.5 rounded-xl border transition-all ${
                   gymCategory === cat.id
-                    ? 'bg-teal-950/60 border-teal-400 text-white'
-                    : 'bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700'
+                    ? 'fs-surface-accent border-teal-400 fs-text'
+                    : 'fs-card fs-divider fs-text-secondary hover:fs-divider'
                 }`}
               >
-                <div className="font-bold text-sm text-white">{cat.labelZh}</div>
-                <div className="text-xs text-teal-300">{cat.labelEn}</div>
-                <div className="text-[11px] text-slate-400 mt-1">{cat.ruleSummary}</div>
+                <div className="font-bold text-sm fs-text">{cat.labelZh}</div>
+                <div className="text-xs fs-text-accent">{cat.labelEn}</div>
+                <div className="text-[11px] fs-text-muted mt-1">{cat.ruleSummary}</div>
               </button>
             ))}
           </div>
 
-          <div className="lg:col-span-8 rounded-2xl border border-slate-800 bg-slate-900/90 p-5 space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+          <div className="lg:col-span-8 rounded-2xl border fs-divider fs-card p-5 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b fs-divider pb-3">
               <div>
-                <span className="text-xs font-bold text-teal-400">{activeDrill.categoryLabel}</span>
-                <h3 className="text-lg font-extrabold text-white">
+                <span className="text-xs font-bold fs-text-accent">{activeDrill.categoryLabel}</span>
+                <h3 className="text-lg font-semibold fs-text">
                   Rapid Auditory Comprehension Drill #{drillIdx + 1}
                 </h3>
               </div>
@@ -336,7 +336,7 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
                     variant="primary"
                     onClick={() => onSpeakText(activeDrill.spokenTranscriptTraditional, 0.92)}
                   >
-                    🔊 Play Audio Prompt (zh-TW)
+                    Play Audio Prompt (zh-TW)
                   </StylusButton>
                 )}
                 <StylusButton
@@ -360,7 +360,7 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
             </div>
 
             {showTranscript && (
-              <div className="rounded-xl bg-slate-950 border border-slate-800 p-4">
+              <div className="rounded-xl fs-subtle-box border fs-divider p-4">
                 <RubyText
                   text={activeDrill.spokenTranscriptTraditional}
                   zhuyin={activeDrill.spokenTranscriptZhuyin}
@@ -371,7 +371,7 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
             )}
 
             <div className="space-y-3">
-              <label className="block text-sm font-bold text-slate-200">
+              <label className="block text-sm font-bold fs-text">
                 {activeDrill.questionPrompt}
               </label>
               <div className="flex flex-wrap items-center gap-2">
@@ -383,7 +383,7 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
                     setGymSubmitted(false);
                   }}
                   placeholder={activeDrill.inputPlaceholder}
-                  className="flex-1 min-w-[200px] rounded-xl bg-slate-950 border border-slate-700 px-3.5 py-2.5 text-base font-bold text-white focus:border-teal-400 focus:outline-none"
+                  className="flex-1 min-w-[200px] rounded-xl fs-subtle-box border fs-divider px-3.5 py-2.5 text-base font-bold fs-text focus:border-teal-400 focus:outline-none"
                 />
                 <StylusButton
                   variant="primary"
@@ -413,11 +413,11 @@ export const TaiwanSurvivalStudio: React.FC<TaiwanSurvivalStudioProps> = ({
               <div
                 className={`rounded-xl border p-4 space-y-1.5 ${
                   gymEval.isCorrect
-                    ? 'bg-emerald-950/50 border-emerald-400/70 text-emerald-200'
-                    : 'bg-rose-950/50 border-rose-400/70 text-rose-200'
+                    ? 'fs-surface-accent fs-divider fs-text-accent'
+                    : 'fs-surface-danger fs-divider fs-text-danger'
                 }`}
               >
-                <div className="font-extrabold text-sm">
+                <div className="font-semibold text-sm">
                   {gymEval.isCorrect
                     ? `✓ Correct! (${gymEval.expectedAnswer})`
                     : `✗ Expected "${gymEval.expectedAnswer}", got "${gymEval.normalizedUserAnswer}".`}

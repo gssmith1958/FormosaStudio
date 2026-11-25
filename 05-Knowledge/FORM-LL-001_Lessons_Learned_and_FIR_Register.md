@@ -204,3 +204,34 @@ proposed_change: "Introduce 'Touchpoint 0 (Pre-Baseline Domain & Cold-Start Chal
 adversarial_counter_review: "ASEF Framework Repository FIR_Counter_Review_Log.md (2026-11-25, cold-context Reviewer 2, subagent fa189cd9)"
 counter_review_disposition: "Approved with Modification -> Incorporated in ASEF Guide 002 v0.9.11, Volume 4 v0.9.18, and Volume 6 v0.9.19 (rejected Touchpoint 0, mandatory R2 5-min checkpoint, and new Guide 006 pattern; kept 3 zero-ceremony clarifications: Prototype Anchoring Bias warning in Guide 002, pre-baseline Touchpoint A timing clarification in Volume 6 §14.3.2 & Volume 4 §7.8, and shared-constant/hardware-validation clarification in Volume 4 §12.7; Principal Engineer approved 2026-11-25)."
 ```
+
+```yaml
+id: FORM-LL-010
+type: LessonLearned
+title: Presenting Single-Author AI Proposals Before Specialist Review Forces the Decision Maker to Police Team Alignment and Hides Dissenting Opinions
+status: Approved
+version: 1.0.0
+phase_discovered: Post-v1.3.0 ECR & v2.0.0->v2.1.0 UI/UX Design Review
+category: Domain Expert Governance & Decision Hygiene (Volume 6 §14.3, Guide 006 Pattern 15 & 17)
+disposition: Mitigated in FormosaStudio GEMINI.md (Standing Rule 3 Pre-Decision Specialist Review & Dissent Mandate) and promoted to FORM-FIR-004
+created_date: 2026-11-25
+description: "Twice during post-release evolution of FormosaStudio (once on FORM-ECR-001 Milestone A scope and again on the v2.1.0 Crisp Neutral Studio UI/UX overhaul), the AI drafted a single-author recommendation and asked the Principal Engineer (decision maker) for approval before convening the triggered Domain Expert Panel roles. Both times the PE had to explicitly ask 'Does the team agree?', and both times convening the independent specialists immediately uncovered concrete defects and legitimate dissents (e.g., 12 ECR conditions; Dark Mode 2.49:1 primary-button contrast fail; RubyText 11px Zhuyin collapse; DEP-02 Wacom 38px sidebar dissent; 2 missing dark-slate files). ASEF Volume 6 §14.3.2/§14.3.4 pins Touchpoint A to 'before Application Construction' and 'before BOE approval', leaving interactive design/ECR proposals unprotected and providing no dissent-preservation obligation."
+preventive_action: "Codified in FormosaStudio GEMINI.md Rule 3: every substantive recommendation presented to the decision maker MUST first undergo triggered Specialist Panel review and include a structured Specialist Team View with per-role verdicts and explicit dissenting opinions preserved verbatim. Promoted to `FORM FIR-004`."
+```
+
+```yaml
+id: FORM-FIR-004
+type: FrameworkImprovementRequest
+project_qualified_citation: "FORM FIR-004"
+title: Mandate Pre-Decision Multi-Specialist Review and Explicit Dissent Preservation in Decision-Bearing AI Proposals (Volume 6 §14.3 & Guide 006)
+status: Proposed
+version: 1.0.0
+originating_lesson: FORM-LL-010
+target_documents:
+  - Volume 6 — AI Collaboration Architecture.md
+  - ASEF Guide 006 AI Collaboration Patterns.md
+created_date: 2026-11-25
+updated_date: 2026-11-25
+problem_statement: "Volume 6 §14.3.2 (Touchpoint A) and §14.3.4 (Trigger-Table Coverage) bind Domain Expert consultation to 'before Application Construction' and 'before BOE approval', leaving substantive mid-project proposals (ECRs, architecture trade-offs, UI/UX redesigns, pedagogical pivots) presented as unreviewed single-author AI recommendations. Furthermore, §14.3.3 defines subagent authority positioning without prohibiting AI synthesis from averaging away or omitting specialist dissents before human decision-making."
+proposed_change: "Add a zero-ceremony clause to Volume 6 §14.3.2 (and cross-reference in Guide 006 Pattern 15/17): (1) Any substantive technical, domain, hardware, or UI/UX recommendation requiring Principal Engineer / decision-maker approval MUST be pre-reviewed by the relevant triggered Domain Expert Panel roles prior to presentation; and (2) the decision brief MUST include a structured Specialist Team View displaying each role's verdict (Approve / Approve with Conditions / Object) and explicitly preserving any dissenting opinions and unresolved trade-offs rather than flattening them into a single-voice summary."
+```

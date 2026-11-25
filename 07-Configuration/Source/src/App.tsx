@@ -1,11 +1,12 @@
 /**
- * FormosaStudio (FORM) — v2.0.0 Application Shell (5-Section Expandable Accordion Menu + iPad mini 6 Ergonomics)
- * Auto-collapses navigation on <= 1180px viewports (including iPad mini 6 1133px landscape & 744px portrait)
- * when entering Calligraphy or Speaking labs, with an ALWAYS-VISIBLE "☰ Menu" toggle whenever collapsed (UX-2).
+ * FormosaStudio (FORM) — v2.1.0 Crisp Neutral Studio Application Shell
+ * Supports prefers-color-scheme live sync + dynamic iPadOS theme-color, 56px slim topbar (h-14),
+ * auto-collapsing iPad mini 6 drawer (<=1180px) with always-visible Menu toggle, and Lucide icons.
  * Traces to: FORM-ECR-001, FORM-DEC-005, FORM-REQ-0018, FORM-REQ-0020, FORM-REQ-0021, FORM-REQ-0022, FORM-REQ-0023
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
+import { Menu, PanelRight, Search } from 'lucide-react';
 import {
   STUDIO_BY_ID,
   StudioBusState,
@@ -17,16 +18,16 @@ import {
   subscribeStudioBus,
 } from './lib/studioContextBus.ts';
 import {
+  ResolvedThemeMode,
+  ThemeMode,
   UserProgressState,
   ZhuyinDisplayMode,
   getDueSrsWords,
   loadProgress,
+  resolveEffectiveTheme,
   saveProgress,
 } from './lib/progressStore.ts';
-import {
-  StageNumber,
-  resolveActiveStageNumber,
-} from './lib/syllabusModel.ts';
+import { StageNumber, resolveActiveStageNumber } from './lib/syllabusModel.ts';
 import { speakTaiwaneseSafe } from './lib/audioSessionManager.ts';
 import { subscribeCurriculumAdminChanges } from './lib/curriculumAdminStore.ts';
 import { ReturnBreadcrumbBar, StylusButton } from './components/uiPrimitives.tsx';
@@ -58,6 +59,9 @@ export const App: React.FC = () => {
   const [selectedStage, setSelectedStage] = useState<StageNumber>(() =>
     resolveActiveStageNumber(loadProgress())
   );
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedThemeMode>(() =>
+    resolveEffectiveTheme(loadProgress().theme)
+  );
   const [isCompactViewport, setIsCompactViewport] = useState<boolean>(() =>
     typeof window !== 'undefined' ? window.innerWidth <= COMPACT_BREAKPOINT_PX : false
   );
@@ -69,7 +73,7 @@ export const App: React.FC = () => {
   const [sideDockOpen, setSideDockOpen] = useState<boolean>(false);
   const [adminRevision, setAdminRevision] = useState<number>(0);
 
-  const theme = progress.theme === 'dark' ? 'dark' : 'light';
+  const themePref: ThemeMode = progress.theme || 'system';
   const isLeftHanded = progress.handedness === 'left';
 
   const handleUpdateProgress = useCallback((next: UserProgressState) => {
@@ -77,20 +81,33 @@ export const App: React.FC = () => {
     saveProgress(next);
   }, []);
 
+  // Resolve ThemeMode ('system' | 'light' | 'dark') live & keep iPadOS theme-color synced (HW-C2, HW-C3)
   useEffect(() => {
-    if (typeof document !== 'undefined') {
-      document.documentElement.setAttribute('data-theme', theme);
-    }
-  }, [theme]);
+    const syncTheme = () => {
+      const next = resolveEffectiveTheme(themePref);
+      setResolvedTheme(next);
+      if (typeof document !== 'undefined') {
+        document.documentElement.setAttribute('data-theme', next);
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', next === 'dark' ? '#0F1115' : '#FAFAFA');
+      }
+    };
+    syncTheme();
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const listener = () => {
+      if (themePref === 'system') syncTheme();
+    };
+    mq.addEventListener?.('change', listener);
+    return () => mq.removeEventListener?.('change', listener);
+  }, [themePref]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const onResize = () => {
       const compact = window.innerWidth <= COMPACT_BREAKPOINT_PX;
       setIsCompactViewport((prev) => {
-        if (prev !== compact) {
-          setNavOpen(!compact);
-        }
+        if (prev !== compact) setNavOpen(!compact);
         return compact;
       });
     };
@@ -101,21 +118,18 @@ export const App: React.FC = () => {
   useEffect(() => subscribeStudioBus(setBusState), []);
   useEffect(() => subscribeCurriculumAdminChanges(() => setAdminRevision((r) => r + 1)), []);
 
-  // Auto-collapse sidebar on iPad mini 6 / compact screens when entering Wacom or Speaking labs (UX-2)
   useEffect(() => {
     if (isCompactViewport && AUTO_COLLAPSE_STUDIOS.has(busState.activeStudio)) {
       setNavOpen(false);
     }
   }, [busState.activeStudio, isCompactViewport]);
 
-  // Support desktop shortcut quick-launch (?studio=...)
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const req = new URLSearchParams(window.location.search).get('studio') as StudioId | null;
     if (req && req in STUDIO_BY_ID) setActiveStudio(req);
   }, []);
 
-  // Global keyboard shortcuts (Alt+1..5 top sections, Ctrl+K Omnibar, ?/F1 Help, Esc Close)
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
@@ -152,6 +166,12 @@ export const App: React.FC = () => {
     handleUpdateProgress({ ...progress, zhuyinDisplayMode: next });
   };
 
+  const cycleTheme = () => {
+    const order: ThemeMode[] = ['system', 'light', 'dark'];
+    const next = order[(order.indexOf(themePref) + 1) % order.length];
+    handleUpdateProgress({ ...progress, theme: next });
+  };
+
   const activeStageNum = resolveActiveStageNumber(progress);
   const dueCount = getDueSrsWords(progress).length;
   const activeStudioMeta = STUDIO_BY_ID[busState.activeStudio] || STUDIO_BY_ID.hub;
@@ -161,7 +181,8 @@ export const App: React.FC = () => {
       activeStudio={busState.activeStudio}
       selectedStage={selectedStage}
       progress={progress}
-      theme={theme}
+      themePref={themePref}
+      resolvedTheme={resolvedTheme}
       isLeftHanded={isLeftHanded}
       isCompactViewport={isCompactViewport}
       onSelectStudio={(st) => setActiveStudio(st)}
@@ -170,7 +191,7 @@ export const App: React.FC = () => {
       onOpenHelp={() => setHelpDrawerOpen(true)}
       onToggleInspector={() => setSideDockOpen((d) => !d)}
       inspectorOpen={sideDockOpen}
-      onToggleTheme={() => handleUpdateProgress({ ...progress, theme: theme === 'light' ? 'dark' : 'light' })}
+      onCycleTheme={cycleTheme}
       onTogglePinyin={() => handleUpdateProgress({ ...progress, showPinyinHint: !progress.showPinyinHint })}
       onCycleZhuyin={cycleZhuyinMode}
       onCloseDrawer={() => setNavOpen(false)}
@@ -182,82 +203,87 @@ export const App: React.FC = () => {
       className={`min-h-screen flex ${isLeftHanded ? 'flex-row-reverse' : 'flex-row'}`}
       style={{ backgroundColor: 'var(--fs-canvas)', color: 'var(--fs-text)' }}
     >
-      {/* Desktop Docked Sidebar (> 1180px when expanded) */}
       {!isCompactViewport && navOpen && (
         <div className="sticky top-0 h-screen shrink-0">{sidebarNode}</div>
       )}
 
-      {/* Compact / iPad mini 6 Overlay Drawer (<= 1180px when open) */}
       {isCompactViewport && navOpen && (
         <div className="fixed inset-0 z-50 flex">
-          <div
-            className="fixed inset-0 fs-modal-backdrop backdrop-blur-xs"
-            onClick={() => setNavOpen(false)}
-          />
+          <div className="fixed inset-0 fs-modal-backdrop backdrop-blur-xs" onClick={() => setNavOpen(false)} />
           <div className={`relative z-10 h-full ${isLeftHanded ? 'ml-auto' : ''}`}>{sidebarNode}</div>
         </div>
       )}
 
-      {/* Main Content Column */}
       <div className="flex-1 min-w-0 flex flex-col">
         <header
-          className="sticky top-0 z-30 h-15 px-4 sm:px-6 border-b flex items-center justify-between gap-3 backdrop-blur-md"
-          style={{
-            backgroundColor: theme === 'light' ? 'rgba(247, 244, 238, 0.94)' : 'rgba(19, 22, 26, 0.94)',
-            borderColor: 'var(--fs-border)',
-          }}
+          className="sticky top-0 z-30 h-14 px-4 sm:px-6 border-b flex items-center justify-between gap-3 backdrop-blur-md"
+          style={{ backgroundColor: 'var(--fs-header-bg)', borderColor: 'var(--fs-border)' }}
         >
           <div className="flex items-center gap-2.5 min-w-0">
-            {/* ALWAYS-VISIBLE Menu button whenever collapsed (UX-2: never hidden by lg:hidden!) */}
             {(!navOpen || isCompactViewport) && (
               <button
                 type="button"
                 onClick={() => setNavOpen((o) => !o)}
                 aria-label="Open navigation menu"
-                className="min-h-[44px] px-3 py-1.5 rounded-xl border text-sm font-bold shrink-0"
+                className="min-h-[44px] min-w-[44px] px-2.5 rounded-lg border text-sm font-medium inline-flex items-center gap-1.5 shrink-0"
                 style={{
                   backgroundColor: 'var(--fs-surface)',
                   borderColor: 'var(--fs-border-strong)',
                   color: 'var(--fs-text)',
                 }}
               >
-                ☰ Menu
+                <Menu className="w-4 h-4" />
+                <span className="hidden xs:inline">Menu</span>
               </button>
             )}
-            <div className="min-w-0">
-              <div className="text-sm sm:text-base font-bold truncate" style={{ color: 'var(--fs-text)' }}>
-                {busState.activeStudio === 'syllabus'
-                  ? `Course Syllabus · Stage ${selectedStage}`
-                  : activeStudioMeta.titleEn}
-                <span className="hidden sm:inline font-medium text-sm opacity-65">
-                  {' '}· {activeStudioMeta.titleZh}
-                </span>
-              </div>
+            <div className="text-sm font-semibold truncate" style={{ color: 'var(--fs-text)' }}>
+              {busState.activeStudio === 'syllabus'
+                ? `Course Syllabus · Stage ${selectedStage}`
+                : activeStudioMeta.titleEn}
+              <span className="hidden sm:inline font-normal opacity-55">
+                {' '}· {activeStudioMeta.titleZh}
+              </span>
             </div>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
             <button
               type="button"
+              onClick={() => setOmnibarOpen(true)}
+              aria-label="Search Lexicon"
+              className="hidden md:inline-flex items-center gap-2 min-h-[36px] px-3 rounded-lg border text-xs font-medium"
+              style={{
+                backgroundColor: 'var(--fs-surface)',
+                borderColor: 'var(--fs-border)',
+                color: 'var(--fs-text-muted)',
+              }}
+            >
+              <Search className="w-3.5 h-3.5" />
+              <span>Search…</span>
+              <kbd className="font-mono text-[11px] opacity-75">Ctrl+K</kbd>
+            </button>
+
+            <button
+              type="button"
               onClick={() => {
                 setSelectedStage(activeStageNum);
                 setActiveStudio('syllabus');
               }}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold"
+              className="hidden sm:inline-flex items-center min-h-[36px] px-2.5 rounded-lg border text-xs font-medium"
               style={{
                 backgroundColor: 'var(--fs-surface)',
                 borderColor: 'var(--fs-border)',
                 color: 'var(--fs-text-secondary)',
               }}
             >
-              <span>Active: Stage {activeStageNum}</span>
+              Stage {activeStageNum}
             </button>
 
             {dueCount > 0 && (
               <button
                 type="button"
                 onClick={() => setActiveStudio('dojo')}
-                className="px-2.5 py-1.5 rounded-full border text-xs font-semibold"
+                className="min-h-[36px] px-2.5 rounded-lg border text-xs font-medium"
                 style={{
                   backgroundColor: 'var(--fs-warm-soft)',
                   borderColor: 'var(--fs-warm-border)',
@@ -269,16 +295,18 @@ export const App: React.FC = () => {
             )}
 
             <StylusButton
-              variant={sideDockOpen ? 'primary' : 'ghost'}
+              variant={sideDockOpen ? 'secondary' : 'ghost'}
+              active={sideDockOpen}
               onClick={() => setSideDockOpen((d) => !d)}
-              title="Toggle Contextual Word & Zhuyin Inspector"
+              title="Toggle Word & Zhuyin Inspector"
             >
-              <span>{sideDockOpen ? 'Hide Dock' : 'Inspector'}</span>
+              <PanelRight className="w-4 h-4" />
+              <span className="hidden sm:inline">Inspector</span>
             </StylusButton>
           </div>
         </header>
 
-        <main className="flex-1 w-full max-w-[1220px] mx-auto px-4 sm:px-6 py-5 space-y-5">
+        <main className="flex-1 w-full max-w-[1160px] mx-auto px-4 sm:px-6 py-5 space-y-5">
           <ReturnBreadcrumbBar
             handoff={busState.activeHandoff}
             onReturn={() => popReturnHandoff()}
@@ -328,6 +356,7 @@ export const App: React.FC = () => {
               {busState.activeStudio === 'calligraphy' && (
                 <WacomCalligraphyStudio
                   progress={progress}
+                  resolvedTheme={resolvedTheme}
                   onUpdateProgress={handleUpdateProgress}
                   onSpeak={speakTaiwanMandarin}
                 />
@@ -370,7 +399,6 @@ export const App: React.FC = () => {
         </main>
       </div>
 
-      {/* Global Modals & Drawers */}
       <GlobalOmnibarModal
         isOpen={omnibarOpen}
         onClose={() => setOmnibarOpen(false)}

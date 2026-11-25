@@ -102,10 +102,10 @@ export const GlobalOmnibarModal: React.FC<GlobalOmnibarModalProps> = ({
 
   return (
     <div role="dialog" aria-modal="true" aria-label="Global Omnibar Search" className="fixed inset-0 z-50 fs-modal-backdrop backdrop-blur-sm flex items-start justify-center p-4 pt-12">
-      <div className="w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl p-5 space-y-4">
+      <div className="w-full max-w-3xl fs-card shadow-2xl p-5 space-y-4">
         <div className="flex items-center justify-between gap-3">
-          <div className="text-sm font-extrabold text-emerald-300 uppercase tracking-wider">
-            🔍 Global Omnibar · Search Studios, TOCFL Word Bank, Polyphones & MOE Characters (Ctrl+K)
+          <div className="text-sm font-semibold fs-text-accent uppercase tracking-wider">
+            Global Omnibar · Search Studios, TOCFL Word Bank, Polyphones & MOE Characters (Ctrl+K)
           </div>
           <StylusButton variant="ghost" onClick={onClose} shortcutHint="Esc">
             <span>✕ Close</span>
@@ -118,12 +118,12 @@ export const GlobalOmnibarModal: React.FC<GlobalOmnibarModalProps> = ({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Type Hanzi (垃圾, 裡, 微糖), Zhuyin (ㄌㄜˋ ㄙㄜˋ), Pinyin, or English..."
-          className="w-full min-h-[48px] px-4 py-2.5 rounded-2xl bg-slate-950 border border-emerald-500/60 text-white text-sm font-semibold"
+          className="w-full min-h-[48px] px-4 py-2.5 rounded-2xl fs-subtle-box border fs-divider fs-text text-sm font-semibold"
         />
 
         {/* Quick Studio Jump Strip (<= 2 clicks / 1 shortcut per Guide 008) */}
         <div className="space-y-1.5">
-          <div className="text-xs font-bold text-slate-400">Direct Studio Jump (Alt+1..6):</div>
+          <div className="text-xs font-bold fs-text-muted">Direct Studio Jump (Alt+1..6):</div>
           <div className="flex flex-wrap gap-2">
             {STUDIO_DEFINITIONS.map((st) => (
               <StylusButton
@@ -143,17 +143,17 @@ export const GlobalOmnibarModal: React.FC<GlobalOmnibarModalProps> = ({
 
         {/* Matching Vocabulary & Polyphones */}
         <div className="space-y-2 max-h-[340px] overflow-y-auto pr-1">
-          <div className="text-xs font-bold text-amber-300">Matching TOCFL Vocabulary ({matchingVocab.length}):</div>
+          <div className="text-xs font-bold fs-text-warm">Matching TOCFL Vocabulary ({matchingVocab.length}):</div>
           {matchingVocab.map((item) => (
             <div
               key={item.id}
-              className="bg-slate-950 border border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2"
+              className="fs-subtle-box p-3 flex flex-wrap items-center justify-between gap-2"
             >
               <div className="flex items-center gap-3">
                 <RubyText text={item.traditional} zhuyin={item.zhuyin} size="md" zhuyinDisplayMode="always" />
                 <div>
-                  <div className="text-sm font-bold text-white">{item.english}</div>
-                  <div className="text-[11px] text-slate-400">{item.tocflBand} · {item.sourceLabel}</div>
+                  <div className="text-sm font-bold fs-text">{item.english}</div>
+                  <div className="text-[11px] fs-text-muted">{item.tocflBand} · {item.sourceLabel}</div>
                 </div>
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -171,7 +171,7 @@ export const GlobalOmnibarModal: React.FC<GlobalOmnibarModalProps> = ({
                     onClose();
                   }}
                 >
-                  <span>✒️ Wacom</span>
+                  <span>Wacom</span>
                 </StylusButton>
                 <StylusButton
                   variant="secondary"
@@ -187,7 +187,7 @@ export const GlobalOmnibarModal: React.FC<GlobalOmnibarModalProps> = ({
                     onClose();
                   }}
                 >
-                  <span>🎤 Pitch</span>
+                  <span>Pitch</span>
                 </StylusButton>
                 <StylusButton
                   variant="primary"
@@ -204,7 +204,7 @@ export const GlobalOmnibarModal: React.FC<GlobalOmnibarModalProps> = ({
                     onClose();
                   }}
                 >
-                  <span>🃏 Word Bank</span>
+                  <span>Word Bank</span>
                 </StylusButton>
               </div>
             </div>
@@ -212,16 +212,16 @@ export const GlobalOmnibarModal: React.FC<GlobalOmnibarModalProps> = ({
 
           {matchingMoeRules.length > 0 && (
             <>
-              <div className="text-xs font-bold text-sky-300 pt-2">
-                🇹🇼 Taiwan MOE Standard Readings (兩岸異讀字 · {matchingMoeRules.length}):
+              <div className="text-xs font-bold fs-text-accent pt-2">
+                Taiwan MOE Standard Readings (兩岸異讀字 · {matchingMoeRules.length}):
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {matchingMoeRules.map((m) => (
-                  <div key={m.word} className="bg-slate-950 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between gap-2 text-xs">
+                  <div key={m.word} className="fs-subtle-box p-2.5 flex items-center justify-between gap-2 text-xs">
                     <RubyText text={m.word} zhuyin={m.taiwanZhuyin} size="sm" zhuyinDisplayMode="always" />
                     <div className="text-right">
-                      <div className="font-bold text-white">{m.english} ({m.taiwanPinyin})</div>
-                      <div className="text-[11px] text-slate-400">{m.moeNote}</div>
+                      <div className="font-bold fs-text">{m.english} ({m.taiwanPinyin})</div>
+                      <div className="text-[11px] fs-text-muted">{m.moeNote}</div>
                     </div>
                   </div>
                 ))}
@@ -231,15 +231,15 @@ export const GlobalOmnibarModal: React.FC<GlobalOmnibarModalProps> = ({
 
           {matchingPolyphones.length > 0 && (
             <>
-              <div className="text-xs font-bold text-amber-300 pt-2">
+              <div className="text-xs font-bold fs-text-warm pt-2">
                 Polyphone Disambiguation Rules (破音字 · {matchingPolyphones.length}):
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {matchingPolyphones.map((p) => (
-                  <div key={p.id} className="bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs">
-                    <span className="font-black text-white mr-2">「{p.char}」</span>
+                  <div key={p.id} className="fs-subtle-box p-2.5 text-xs">
+                    <span className="font-black fs-text mr-2">「{p.char}」</span>
                     {p.readings.map((r, i) => (
-                      <span key={i} className="mr-2 text-emerald-300">
+                      <span key={i} className="mr-2 fs-text-accent">
                         {r.zhuyin} ({r.examples[0]?.word})
                       </span>
                     ))}
@@ -251,7 +251,7 @@ export const GlobalOmnibarModal: React.FC<GlobalOmnibarModalProps> = ({
 
           {matchingMoeChars.length > 0 && (
             <>
-              <div className="text-xs font-bold text-emerald-300 pt-2">
+              <div className="text-xs font-bold fs-text-accent pt-2">
                 Taiwan MOE Standard Stroke Characters ({matchingMoeChars.length}):
               </div>
               <div className="flex flex-wrap gap-2">
@@ -272,8 +272,8 @@ export const GlobalOmnibarModal: React.FC<GlobalOmnibarModalProps> = ({
                     }}
                   >
                     <span className="text-base font-black">{ch.char}</span>
-                    <span className="text-xs text-emerald-300">{ch.zhuyin}</span>
-                    <span className="text-xs text-slate-400">{ch.totalStrokes}畫</span>
+                    <span className="text-xs fs-text-accent">{ch.zhuyin}</span>
+                    <span className="text-xs fs-text-muted">{ch.totalStrokes}畫</span>
                   </StylusButton>
                 ))}
               </div>
@@ -313,54 +313,54 @@ export const SideContextReferenceDock: React.FC<SideContextReferenceDockProps> =
   const sandhiList = item.zhuyin ? detectToneSandhi(item.text, item.zhuyin) : [];
 
   return (
-    <aside className="w-full xl:w-80 shrink-0 bg-slate-900/95 border border-slate-800 rounded-3xl p-4 space-y-4 self-start shadow-xl">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
-        <span className="text-xs font-extrabold text-emerald-300 uppercase tracking-wider">
-          📌 Live Context Dock · 詞字即時解析
+    <aside className="w-full xl:w-80 shrink-0 fs-card p-4 space-y-4 self-start shadow-xl">
+      <div className="flex items-center justify-between border-b fs-divider pb-2.5">
+        <span className="text-xs font-semibold fs-text-accent uppercase tracking-wider">
+          Live Context Dock · 詞字即時解析
         </span>
         <StylusButton variant="ghost" onClick={onToggle}>
           <span>Hide</span>
         </StylusButton>
       </div>
 
-      <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex items-center justify-between gap-2">
+      <div className="fs-subtle-box p-4 flex items-center justify-between gap-2">
         <RubyText text={item.text} zhuyin={item.zhuyin} size="lg" zhuyinDisplayMode="always" />
         {onSpeak && (
           <StylusButton variant="secondary" onClick={() => onSpeak(item.text)}>
-            <span>🔊 Speak</span>
+            <span>Speak</span>
           </StylusButton>
         )}
       </div>
 
-      <div className="space-y-2 text-xs text-slate-300">
+      <div className="space-y-2 text-xs fs-text-secondary">
         {item.english && (
           <div>
-            <span className="text-slate-400">Meaning:</span>{' '}
-            <strong className="text-white font-bold">{item.english}</strong>
+            <span className="fs-text-muted">Meaning:</span>{' '}
+            <strong className="fs-text font-bold">{item.english}</strong>
           </div>
         )}
         {daqianKeys && (
           <div>
-            <span className="text-slate-400">Taiwan DaQian Keys:</span>{' '}
-            <span className="font-mono text-emerald-300 font-bold">
+            <span className="fs-text-muted">Taiwan DaQian Keys:</span>{' '}
+            <span className="font-mono fs-text-accent font-bold">
               {Array.from(daqianKeys).map((k) => (k === ' ' ? '[Space]' : k.toUpperCase())).join(' → ')}
             </span>
           </div>
         )}
         {sandhiList.length > 0 && (
-          <div className="bg-amber-950/40 border border-amber-500/40 rounded-xl p-2.5 text-amber-200">
+          <div className="border fs-surface-warm rounded-xl p-2.5 fs-text-warm">
             <strong>Spoken Sandhi:</strong> {sandhiList.map((s) => `${s.spokenZhuyin} (${s.ruleName})`).join(' · ')}
           </div>
         )}
         {(item.moeNote || moeLexEntry?.moeNote) && (
-          <div className="bg-emerald-950/40 border border-emerald-500/40 rounded-xl p-2.5 text-emerald-200">
-            <strong>🇹🇼 Taiwan MOE Standard:</strong> {item.moeNote || moeLexEntry?.moeNote}
+          <div className="border fs-surface-accent rounded-xl p-2.5 fs-text-accent">
+            <strong>Taiwan MOE Standard:</strong> {item.moeNote || moeLexEntry?.moeNote}
           </div>
         )}
       </div>
 
-      <div className="pt-1 border-t border-slate-800 space-y-2">
-        <div className="text-[11px] font-bold text-slate-400">1-Click Cross-Studio Deep Links:</div>
+      <div className="pt-1 border-t fs-divider space-y-2">
+        <div className="text-[11px] font-bold fs-text-muted">1-Click Cross-Studio Deep Links:</div>
         <CrossStudioActionPills
           targetText={item.text}
           targetZhuyin={item.zhuyin}
@@ -396,13 +396,13 @@ export const InteractiveHelpManualDrawer: React.FC<InteractiveHelpManualDrawerPr
 
   return (
     <div role="dialog" aria-modal="true" aria-label="FormosaStudio User Manual and Reference Guide" className="fixed inset-0 z-50 fs-modal-backdrop backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl max-h-[88vh] overflow-y-auto bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl p-6 space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+      <div className="w-full max-w-4xl max-h-[88vh] overflow-y-auto fs-card shadow-2xl p-6 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b fs-divider pb-3">
           <div>
-            <h2 className="text-lg font-extrabold text-white">
-              📘 FormosaStudio User's Manual & Reference Guide (FORM-MAN-001)
+            <h2 className="text-lg font-semibold fs-text">
+              FormosaStudio User's Manual & Reference Guide (FORM-MAN-001)
             </h2>
-            <p className="text-xs text-slate-300">
+            <p className="text-xs fs-text-secondary">
               Complete operational manual also available at <code>09-Releases/FORM-MAN-001_FormosaStudio_User_Manual.md</code>
             </p>
           </div>
@@ -414,9 +414,9 @@ export const InteractiveHelpManualDrawer: React.FC<InteractiveHelpManualDrawerPr
         <StudioModeSwitcher modes={MANUAL_TABS} activeMode={tab} onSelect={setTab} />
 
         {tab === 'workflow' && (
-          <div className="space-y-3 text-xs sm:text-sm text-slate-200 leading-relaxed">
-            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2">
-              <h3 className="font-extrabold text-emerald-300">1. v2.0 5-Section Menu &amp; Syllabus-Adaptive 10-Min Loop</h3>
+          <div className="space-y-3 text-xs sm:text-sm fs-text leading-relaxed">
+            <div className="fs-subtle-box p-4 space-y-2">
+              <h3 className="font-semibold fs-text-accent">1. v2.0 5-Section Menu &amp; Syllabus-Adaptive 10-Min Loop</h3>
               <p>
                 Navigate from anywhere via the <strong>5-Section Expandable Accordion Menu</strong>:
                 (1) <strong>Today’s Session (Alt+1)</strong> dynamically builds 3 daily steps (~70% current stage + ~30% spiral review, plus contextual Peek Ahead),
@@ -427,11 +427,11 @@ export const InteractiveHelpManualDrawer: React.FC<InteractiveHelpManualDrawerPr
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {STUDIO_DEFINITIONS.map((st) => (
-                <div key={st.id} className="bg-slate-950 border border-slate-800 rounded-2xl p-3.5 space-y-1">
-                  <div className="font-extrabold text-amber-300">
+                <div key={st.id} className="fs-subtle-box p-3.5 space-y-1">
+                  <div className="font-semibold fs-text-warm">
                     {st.shortLabel} · {st.titleZh} ({st.shortcut})
                   </div>
-                  <div className="text-xs text-slate-300">{st.description}</div>
+                  <div className="text-xs fs-text-secondary">{st.description}</div>
                 </div>
               ))}
             </div>
@@ -439,9 +439,9 @@ export const InteractiveHelpManualDrawer: React.FC<InteractiveHelpManualDrawerPr
         )}
 
         {tab === 'hardware_dsp' && (
-          <div className="space-y-3 text-xs sm:text-sm text-slate-200">
-            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2">
-              <h3 className="font-extrabold text-amber-300">Linux Desktop App &amp; iPad Installation (GitHub Pages PWA)</h3>
+          <div className="space-y-3 text-xs sm:text-sm fs-text">
+            <div className="fs-subtle-box p-4 space-y-2">
+              <h3 className="font-semibold fs-text-warm">Linux Desktop App &amp; iPad Installation (GitHub Pages PWA)</h3>
               <p>
                 <strong>Linux Desktop:</strong> Click the <strong>FormosaStudio</strong> Jade <code>臺</code> icon in your Applications menu or Desktop
                 (reinstall/update anytime via <code>python3 07-Configuration/Desktop/install_desktop_app.py</code>). It runs locally on
@@ -454,8 +454,8 @@ export const InteractiveHelpManualDrawer: React.FC<InteractiveHelpManualDrawerPr
                 Run the 1-click <strong>Audio &amp; iPad Self-Test</strong> in <strong>Administration (Alt+5)</strong> to verify native <code>zh-TW</code> voices (install <em>Meijia</em> under Settings → Accessibility → Spoken Content → Voices → Chinese Taiwan) and offline YIN mic timing. Move progress + custom packs between Desktop and iPad with one unified JSON export in <strong>Administration → Backup &amp; Transfer</strong>.
               </p>
             </div>
-            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2">
-              <h3 className="font-extrabold text-emerald-300">Linux X11/Wayland Wacom Stylus Configuration</h3>
+            <div className="fs-subtle-box p-4 space-y-2">
+              <h3 className="font-semibold fs-text-accent">Linux X11/Wayland Wacom Stylus Configuration</h3>
               <p>
                 In <strong>Studio 4 (書法筆順 · Alt+4)</strong>, the calligraphy canvas uses W3C <code>PointerEvent</code> with
                 <code>touch-action: none</code>, sub-frame <code>getCoalescedEvents()</code>, and pressure tapering (<code>2.5–14.0 px</code>).
@@ -463,8 +463,8 @@ export const InteractiveHelpManualDrawer: React.FC<InteractiveHelpManualDrawerPr
                 to immediately pop the last stroke. Toggle <strong>Left-Handed Dock (左手模式)</strong> so your drawing hand never covers toolbar buttons.
               </p>
             </div>
-            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2">
-              <h3 className="font-extrabold text-sky-300">Offline WebAudio YIN F0 Microphone Calibration</h3>
+            <div className="fs-subtle-box p-4 space-y-2">
+              <h3 className="font-semibold fs-text-accent">Offline WebAudio YIN F0 Microphone Calibration</h3>
               <p>
                 In <strong>Studio 5 (發音聲調 · Alt+5)</strong>, pitch extraction runs 100% offline via time-domain YIN autocorrelation
                 (<code>75–450 Hz</code>, <code>&lt; 3 Hz</code> accuracy). Choose <strong>Low Voice (95–220 Hz)</strong> or
@@ -477,29 +477,29 @@ export const InteractiveHelpManualDrawer: React.FC<InteractiveHelpManualDrawerPr
 
         {tab === 'moe_linguistics' && (
           <div className="space-y-3 text-xs">
-            <div className="font-extrabold text-emerald-300">
-              🇹🇼 Taiwan Ministry of Education (教育部國語) Cross-Strait Standard Readings (兩岸異讀字):
+            <div className="font-semibold fs-text-accent">
+              Taiwan Ministry of Education (教育部國語) Cross-Strait Standard Readings (兩岸異讀字):
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {Object.values(TAIWAN_MOE_PRONUNCIATIONS).map((m) => (
-                <div key={m.word} className="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between gap-2">
+                <div key={m.word} className="fs-subtle-box p-3 flex items-center justify-between gap-2">
                   <RubyText text={m.word} zhuyin={m.taiwanZhuyin} size="sm" zhuyinDisplayMode="always" />
                   <div className="text-right">
-                    <div className="font-bold text-white">{m.english} (TW: {m.taiwanPinyin} vs. Mainland: {m.mainlandPinyin})</div>
-                    <div className="text-slate-400">{m.moeNote}</div>
+                    <div className="font-bold fs-text">{m.english} (TW: {m.taiwanPinyin} vs. Mainland: {m.mainlandPinyin})</div>
+                    <div className="fs-text-muted">{m.moeNote}</div>
                   </div>
                 </div>
               ))}
             </div>
-            <div className="font-extrabold text-amber-300 pt-2">
+            <div className="font-semibold fs-text-warm pt-2">
               Sample Taiwanese Mandarin Polyphones (破音字 · {POLYPHONE_PAIRS.length} Total Pairs):
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {POLYPHONE_PAIRS.slice(0, 6).map((p) => (
-                <div key={p.id} className="bg-slate-950 border border-slate-800 rounded-xl p-3">
-                  <span className="text-base font-black text-white mr-2">「{p.char}」</span>
+                <div key={p.id} className="fs-subtle-box p-3">
+                  <span className="text-base font-black fs-text mr-2">「{p.char}」</span>
                   {p.readings.map((r, i) => (
-                    <span key={i} className="mr-3 text-emerald-300">
+                    <span key={i} className="mr-3 fs-text-accent">
                       {r.zhuyin} ({r.examples[0]?.word})
                     </span>
                   ))}
@@ -510,9 +510,9 @@ export const InteractiveHelpManualDrawer: React.FC<InteractiveHelpManualDrawerPr
         )}
 
         {tab === 'daqian_admin' && (
-          <div className="space-y-3 text-xs sm:text-sm text-slate-200">
-            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2">
-              <h3 className="font-extrabold text-emerald-300">
+          <div className="space-y-3 text-xs sm:text-sm fs-text">
+            <div className="fs-subtle-box p-4 space-y-2">
+              <h3 className="font-semibold fs-text-accent">
                 Taiwan Standard DaQian (大千式) Keyboard Map ({DAQIAN_KEYBOARD_ROWS.flat().length} Keys + Spacebar = Tone 1)
               </h3>
               <p>
@@ -520,12 +520,12 @@ export const InteractiveHelpManualDrawer: React.FC<InteractiveHelpManualDrawerPr
                 (<code>Space</code> = Tone 1, <code>6</code> = Tone 2 ˊ, <code>3</code> = Tone 3 ˇ, <code>4</code> = Tone 4 ˋ, <code>7</code> = Neutral ˙).
               </p>
             </div>
-            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2">
-              <h3 className="font-extrabold text-amber-300">
+            <div className="fs-subtle-box p-4 space-y-2">
+              <h3 className="font-semibold fs-text-warm">
                 ➕ Adding New Pimsleur Units & NTNU Contemporary Chinese Materials (Resource Admin)
               </h3>
               <p>
-                Click <strong>⚙️ Resource Admin</strong> in the top header to import <code>.docx</code>, <code>.txt</code>, <code>.csv</code>, or <code>.json</code> files,
+                Click <strong>Resource Admin</strong> in the top header to import <code>.docx</code>, <code>.txt</code>, <code>.csv</code>, or <code>.json</code> files,
                 or paste pipe-delimited lines (<code>Traditional | English | Optional Zhuyin | vocab/dialogue</code>). Any omitted Zhuyin is automatically
                 annotated using the Taiwan MOE Forward Maximum-Matching polyphone tokenizer and propagates live to all 6 studios!
               </p>

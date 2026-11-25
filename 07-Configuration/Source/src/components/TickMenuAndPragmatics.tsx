@@ -88,7 +88,7 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Column: Mission Brief & Verification */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 space-y-3">
+          <div className="rounded-2xl border fs-divider fs-card p-5 space-y-3">
             <div className="text-xs font-bold uppercase tracking-wider text-amber-400">
               Real-World Taiwanese 點菜單 Mission
             </div>
@@ -111,26 +111,26 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
               ))}
             </div>
 
-            <div className="rounded-xl bg-slate-950/80 border border-slate-800 p-4 space-y-2">
-              <div className="font-bold text-white text-base">{activeMission.title}</div>
-              <p className="text-sm text-amber-200 font-medium">
+            <div className="rounded-xl fs-subtle-box border fs-divider p-4 space-y-2">
+              <div className="font-bold fs-text text-base">{activeMission.title}</div>
+              <p className="text-sm fs-text-warm font-medium">
                 {activeMission.customerBriefTraditional}
               </p>
-              <p className="text-xs text-slate-300">{activeMission.customerBriefEnglish}</p>
+              <p className="text-xs fs-text-secondary">{activeMission.customerBriefEnglish}</p>
               {onSpeakText && (
                 <StylusButton
                   variant="secondary"
                   onClick={() => onSpeakText(activeMission.customerBriefTraditional, 0.9)}
                 >
-                  🔊 Hear Customer Order (zh-TW)
+                  Hear Customer Order (zh-TW)
                 </StylusButton>
               )}
             </div>
 
-            <div className="flex items-center justify-between rounded-xl bg-slate-950 border border-slate-800 p-3.5">
+            <div className="flex items-center justify-between rounded-xl fs-subtle-box border fs-divider p-3.5">
               <div>
-                <div className="text-xs text-slate-400">Live Laminated Menu Total</div>
-                <div className="text-2xl font-extrabold text-teal-300">
+                <div className="text-xs fs-text-muted">Live Laminated Menu Total</div>
+                <div className="text-2xl font-semibold fs-text-accent">
                   NT$ {verificationResult.calculatedTotalNtd}
                 </div>
               </div>
@@ -151,11 +151,11 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
               <div
                 className={`rounded-xl border p-4 space-y-2 ${
                   verificationResult.isCompleteMatch
-                    ? 'bg-emerald-950/50 border-emerald-400/70 text-emerald-200'
-                    : 'bg-rose-950/50 border-rose-400/70 text-rose-200'
+                    ? 'fs-surface-accent fs-divider fs-text-accent'
+                    : 'fs-surface-danger fs-divider fs-text-danger'
                 }`}
               >
-                <div className="font-extrabold text-sm">{verificationResult.summaryMessage}</div>
+                <div className="font-semibold text-sm">{verificationResult.summaryMessage}</div>
                 {verificationResult.discrepancies.length > 0 && (
                   <ul className="list-disc list-inside text-xs space-y-1">
                     {verificationResult.discrepancies.map((d, idx) => (
@@ -169,13 +169,13 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
         </div>
 
         {/* Right Column: Interactive Wacom/Stylus Laminated Paper Tick-Menu (點菜單) */}
-        <div className="lg:col-span-7 rounded-2xl border-2 border-amber-500/40 bg-slate-900/95 p-5 space-y-4 shadow-xl">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+        <div className="lg:col-span-7 rounded-2xl border-2 fs-divider fs-card p-5 space-y-4 shadow-xl">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b fs-divider pb-3">
             <div>
-              <h3 className="text-xl font-extrabold text-amber-300">
+              <h3 className="text-xl font-semibold fs-text-warm">
                 老臺北牛肉麵館 · 點菜單 (Laminated Order Slip)
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs fs-text-muted">
                 Use your Wacom stylus or mouse to mark 內用/外帶, table number (桌號), and item quantities.
               </p>
             </div>
@@ -194,13 +194,13 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
                 外帶 (Takeout)
               </StylusButton>
               {diningMode === 'dine_in' && (
-                <div className="flex items-center gap-1.5 bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5">
-                  <span className="text-xs font-bold text-amber-300">桌號 (Table):</span>
+                <div className="flex items-center gap-1.5 fs-subtle-box px-3 py-1.5">
+                  <span className="text-xs font-bold fs-text-warm">桌號 (Table):</span>
                   <input
                     type="text"
                     value={tableNumber}
                     onChange={(e) => setTableNumber(e.target.value)}
-                    className="w-12 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-center font-bold text-white text-sm"
+                    className="w-12 fs-card border fs-divider rounded px-2 py-1 text-center font-bold fs-text text-sm"
                   />
                 </div>
               )}
@@ -216,16 +216,16 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
                   key={item.id}
                   className={`rounded-xl border p-3.5 flex flex-wrap items-center justify-between gap-3 transition-all ${
                     qty > 0
-                      ? 'bg-amber-950/30 border-amber-400/60'
-                      : 'bg-slate-950/60 border-slate-800'
+                      ? 'fs-surface-warm fs-divider'
+                      : 'fs-subtle-box fs-divider'
                   }`}
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded fs-subtle-box fs-text-secondary">
                         {item.categoryLabel}
                       </span>
-                      <span className="text-sm font-extrabold text-amber-300">
+                      <span className="text-sm font-semibold fs-text-warm">
                         NT$ {item.priceNtd}
                       </span>
                     </div>
@@ -236,7 +236,7 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
                       charMastery={progress.charMastery}
                       size="md"
                     />
-                    <div className="text-xs text-slate-400">{item.english}</div>
+                    <div className="text-xs fs-text-muted">{item.english}</div>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2">
@@ -270,7 +270,7 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
                       >
                         −
                       </StylusButton>
-                      <span className="w-9 text-center font-extrabold text-lg text-white">
+                      <span className="w-9 text-center font-semibold text-lg fs-text">
                         {qty}
                       </span>
                       <StylusButton
@@ -300,12 +300,12 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
       {/* 8 Taiwanese Sentence-Final Particles (語助詞) */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 space-y-4">
+      <div className="rounded-2xl border fs-divider fs-card p-5 space-y-4">
         <div>
-          <h3 className="text-lg font-extrabold text-white">
+          <h3 className="text-lg font-semibold fs-text">
             臺灣語助詞 · 8 Sentence-Final Particles ({TAIWAN_PARTICLES.length})
           </h3>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs fs-text-muted">
             Master the warm, non-confrontational pragmatic cadence of everyday Taiwanese Mandarin.
           </p>
         </div>
@@ -323,32 +323,32 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
           ))}
         </div>
 
-        <div className="rounded-xl bg-slate-950/80 border border-teal-500/40 p-4 space-y-3">
+        <div className="rounded-xl fs-subtle-box border fs-divider p-4 space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-3xl font-extrabold text-teal-300">
+              <span className="text-3xl font-semibold fs-text-accent">
                 {activeParticle.particle} ({activeParticle.zhuyin})
               </span>
-              <div className="text-sm font-bold text-white mt-1">{activeParticle.nuance}</div>
+              <div className="text-sm font-bold fs-text mt-1">{activeParticle.nuance}</div>
             </div>
             {onSpeakText && (
               <StylusButton
                 variant="secondary"
                 onClick={() => onSpeakText(activeParticle.exampleTraditional, 0.9)}
               >
-                🔊 Hear Nuance
+                Hear Nuance
               </StylusButton>
             )}
           </div>
-          <p className="text-xs text-slate-300">{activeParticle.taiwanContext}</p>
-          <div className="rounded-lg bg-slate-900 border border-slate-800 p-3 space-y-1.5">
+          <p className="text-xs fs-text-secondary">{activeParticle.taiwanContext}</p>
+          <div className="rounded-lg fs-card border fs-divider p-3 space-y-1.5">
             <RubyText
               text={activeParticle.exampleTraditional}
               zhuyin={activeParticle.exampleZhuyin}
               zhuyinDisplayMode="always"
               size="md"
             />
-            <div className="text-xs text-slate-300">{activeParticle.exampleEnglish}</div>
+            <div className="text-xs fs-text-secondary">{activeParticle.exampleEnglish}</div>
           </div>
           <CrossStudioActionPills
             sourceStudio="survival"
@@ -361,12 +361,12 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
       </div>
 
       {/* 10 Everyday Hokkien-in-Mandarin (臺語) Expressions */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 space-y-4">
+      <div className="rounded-2xl border fs-divider fs-card p-5 space-y-4">
         <div>
-          <h3 className="text-lg font-extrabold text-white">
+          <h3 className="text-lg font-semibold fs-text">
             日常臺語借詞 · 10 Everyday Hokkien Expressions ({HOKKIEN_EXPRESSIONS.length})
           </h3>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs fs-text-muted">
             Essential Taiwanese Hokkien (臺語) expressions woven into daily Taipei & southern conversation.
           </p>
         </div>
@@ -383,35 +383,35 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
           ))}
         </div>
 
-        <div className="rounded-xl bg-slate-950/80 border border-amber-500/40 p-4 space-y-3">
+        <div className="rounded-xl fs-subtle-box border fs-divider p-4 space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-2xl font-extrabold text-amber-300">
+              <span className="text-2xl font-semibold fs-text-warm">
                 {activeHokkien.traditional}
               </span>
-              <span className="ml-2 text-xs font-bold px-2 py-0.5 rounded bg-amber-950 text-amber-200 border border-amber-400/50">
+              <span className="ml-2 text-xs font-bold px-2 py-0.5 rounded fs-surface-warm fs-text-warm border fs-divider">
                 Tâi-lô: {activeHokkien.tailoRomanization} · {activeHokkien.mandarinZhuyin}
               </span>
-              <div className="text-sm font-bold text-white mt-1">{activeHokkien.english}</div>
+              <div className="text-sm font-bold fs-text mt-1">{activeHokkien.english}</div>
             </div>
             {onSpeakText && (
               <StylusButton
                 variant="secondary"
                 onClick={() => onSpeakText(activeHokkien.exampleTraditional, 0.9)}
               >
-                🔊 Speak Example
+                Speak Example
               </StylusButton>
             )}
           </div>
-          <p className="text-xs text-slate-300">{activeHokkien.usageContext}</p>
-          <div className="rounded-lg bg-slate-900 border border-slate-800 p-3 space-y-1.5">
+          <p className="text-xs fs-text-secondary">{activeHokkien.usageContext}</p>
+          <div className="rounded-lg fs-card border fs-divider p-3 space-y-1.5">
             <RubyText
               text={activeHokkien.exampleTraditional}
               zhuyin={activeHokkien.exampleZhuyin}
               zhuyinDisplayMode="always"
               size="md"
             />
-            <div className="text-xs text-slate-300">{activeHokkien.exampleEnglish}</div>
+            <div className="text-xs fs-text-secondary">{activeHokkien.exampleEnglish}</div>
           </div>
           <CrossStudioActionPills
             sourceStudio="survival"
@@ -433,16 +433,16 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
         ];
         const q = quizList[particleQuizIdx % quizList.length];
         return (
-          <div className="lg:col-span-2 rounded-2xl border border-slate-800 bg-slate-900/90 p-5 space-y-3">
+          <div className="lg:col-span-2 rounded-2xl border fs-divider fs-card p-5 space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="text-xs font-bold uppercase tracking-wider text-teal-400">
+              <div className="text-xs font-bold uppercase tracking-wider fs-text-accent">
                 Taiwanese Particle (語助詞) Context Check · Question {(particleQuizIdx % quizList.length) + 1}/{quizList.length} (Score: {particleQuizScore})
               </div>
               <StylusButton variant="ghost" onClick={() => { setParticleQuizIdx((i) => (i + 1) % quizList.length); setParticleQuizPicked(null); }}>
                 <span>Next Scenario →</span>
               </StylusButton>
             </div>
-            <div className="text-sm font-bold text-white">{q.prompt}</div>
+            <div className="text-sm font-bold fs-text">{q.prompt}</div>
             <div className="flex flex-wrap gap-2">
               {q.options.map((opt) => (
                 <StylusButton
@@ -459,7 +459,7 @@ export const TickMenuAndPragmatics: React.FC<TickMenuAndPragmaticsProps> = ({
               ))}
             </div>
             {particleQuizPicked && (
-              <div className={`text-xs font-semibold ${particleQuizPicked === q.answer ? 'text-teal-300' : 'text-amber-300'}`}>
+              <div className={`text-xs font-semibold ${particleQuizPicked === q.answer ? 'fs-text-accent' : 'fs-text-warm'}`}>
                 {particleQuizPicked === q.answer ? `✓ Spot-on! 「${q.answer}」 matches natural Taiwanese tone here.` : `Not quite — natural Taiwanese phrasing uses 「${q.answer}」 here.`}
               </div>
             )}
