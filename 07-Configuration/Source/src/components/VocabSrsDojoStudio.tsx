@@ -15,13 +15,12 @@ import {
 import {
   FsrsRating,
   UserProgressState,
-  exportProgressJson,
   getDueSrsWords,
-  importProgressJson,
   recordWordPractice,
 } from '../lib/progressStore.ts';
 import {
   getStudioBusState,
+  setActiveStudio,
   setFocusedContextItem,
   subscribeStudioBus,
 } from '../lib/studioContextBus.ts';
@@ -35,10 +34,10 @@ import {
 import { RubyText } from './RubyText.tsx';
 type Studio6SubTab = 'dojo' | 'srs' | 'wordbank' | 'skilltree_arena';
 const SUB_TABS: StudioModeOption<Studio6SubTab>[] = [
-  { id: 'dojo', labelZh: '大千八階盲打道場', labelEn: '8-Stage DaQian Dojo', badge: '8 階' },
+  { id: 'dojo', labelZh: '大千八階盲打道場', labelEn: '8-Stage DaQian Dojo', badge: '8 Stages' },
   { id: 'srs', labelZh: 'FSRS 智慧記憶複習', labelEn: 'FSRS-Lite Review Queue', badge: 'S/D/R' },
-  { id: 'wordbank', labelZh: 'TOCFL 詞彙銀行', labelEn: 'Novice 1–B2 Word Bank', badge: '215+ 詞' },
-  { id: 'skilltree_arena', labelZh: '五世界技能樹與配對競技場', labelEn: '5-World Tree & 3-Stage Arena', badge: '20 節點' },
+  { id: 'wordbank', labelZh: 'TOCFL 詞彙銀行', labelEn: 'TOCFL Word Bank', badge: '215+ Words' },
+  { id: 'skilltree_arena', labelZh: '三階段配對競技場', labelEn: '3-Stage Match Arena', badge: 'Shuffled' },
 ];
 export interface VocabSrsDojoStudioProps {
   progress: UserProgressState;
@@ -63,7 +62,6 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
   });
   // SRS state
   const [srsRevealed, setSrsRevealed] = useState<boolean>(false);
-  const [backupMessage, setBackupMessage] = useState<string | null>(null);
   // Word Bank state
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedBand, setSelectedBand] = useState<string>('ALL');
@@ -374,54 +372,16 @@ export const VocabSrsDojoStudio: React.FC<VocabSrsDojoStudioProps> = ({
               </div>
             )}
           </div>
-          <div className="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-3xl p-5 space-y-4">
-            <h3 className="text-sm font-extrabold text-emerald-300 uppercase tracking-wider">
-              Validated JSON Progress Backup & Restore (FORM-REQ-0004)
+          <div className="lg:col-span-5 fs-card p-5 space-y-4">
+            <h3 className="text-sm font-bold uppercase tracking-wider" style={{ color: 'var(--fs-accent-text)' }}>
+              Unified Progress &amp; Curriculum Backups (Desktop ↔ iPad)
             </h3>
-            <p className="text-xs text-slate-300">
-              Export your complete FSRS character, word, and Wacom stroke mastery state to a validated JSON file or restore a backup.
+            <p className="text-xs sm:text-sm" style={{ color: 'var(--fs-text-secondary)' }}>
+              Backup, restore, and custom-pack transfer now live in the standalone <strong>Administration</strong> workspace so your FSRS mastery and custom lessons stay bundled in one single JSON file.
             </p>
-            <div className="flex flex-wrap items-center gap-2">
-              <StylusButton
-                variant="secondary"
-                onClick={() => {
-                  const json = exportProgressJson(progress);
-                  try {
-                    const blob = new Blob([json], { type: 'application/json' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `formosastudio-progress-${new Date().toISOString().slice(0, 10)}.json`;
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    setBackupMessage('✅ Downloaded validated FSRS JSON backup file!');
-                  } catch {
-                    setBackupMessage(`✅ Generated ${json.length} bytes of validated backup JSON.`);
-                  }
-                }}
-              >
-                <span>📤 Export Progress JSON</span>
-              </StylusButton>
-              <label className="inline-flex items-center justify-center min-h-[44px] px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-200 cursor-pointer">
-                <span>📥 Restore JSON File</span>
-                <input
-                  type="file"
-                  accept=".json,application/json"
-                  className="hidden"
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    try {
-                      onUpdateProgress(importProgressJson(await file.text()));
-                      setBackupMessage(`✅ Restored FSRS progress from ${file.name}!`);
-                    } catch (err) {
-                      setBackupMessage(`❌ ${err instanceof Error ? err.message : 'Invalid backup JSON.'}`);
-                    }
-                  }}
-                />
-              </label>
-            </div>
-            {backupMessage && <div className="text-xs font-bold text-emerald-300">{backupMessage}</div>}
+            <StylusButton variant="primary" onClick={() => setActiveStudio('admin')}>
+              <span>Manage Backups in Administration →</span>
+            </StylusButton>
           </div>
         </div>
       )}

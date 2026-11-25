@@ -8,6 +8,7 @@ export type FsrsRating = 1 | 2 | 3 | 4; // 1: Again, 2: Hard, 3: Good, 4: Easy
 export type ZhuyinDisplayMode = 'adaptive' | 'always' | 'hover_only';
 export type StylusHandedness = 'right' | 'left';
 export type ThemeMode = 'light' | 'dark';
+export type VoicePitchPreset = 'low' | 'mid' | 'high';
 
 export interface FsrsMetrics {
   stability: number;     // Days (0.15 .. 365.0)
@@ -67,10 +68,14 @@ export interface UserProgressState {
   handedness: StylusHandedness;
   palmRejectionPenOnly: boolean;
   theme?: ThemeMode;
+  voicePreset?: VoicePitchPreset;
+  quietRoomMode?: boolean;
   dailyGoalMinutes?: number;
   dailyDateIso?: string;
   dailyStepsCompleted?: number[];
   completedStage0Modules?: string[];
+  completedArrivalScenarios?: string[];
+  completedStageCheckpoints?: Record<number, { bestAccuracy: number; completedAt: string }>;
   stage0Skipped?: boolean;
   completedPimsleurUnits?: number[];
   completedNtnuLessons?: string[];
@@ -87,6 +92,7 @@ export interface ProgressBackupEnvelope {
   schemaVersion: 'formosa-progress-v2';
   exportedAt: string;
   state: UserProgressState;
+  customPacks?: unknown[];
 }
 
 const STORAGE_KEY = 'formosa_studio_progress_v2';
@@ -175,10 +181,14 @@ export function createInitialProgressState(): UserProgressState {
     handedness: 'right',
     palmRejectionPenOnly: false,
     theme: 'light',
+    voicePreset: 'mid',
+    quietRoomMode: false,
     dailyGoalMinutes: 10,
     dailyDateIso: today,
     dailyStepsCompleted: [],
     completedStage0Modules: [],
+    completedArrivalScenarios: [],
+    completedStageCheckpoints: {},
     stage0Skipped: false,
     completedPimsleurUnits: [],
     completedNtnuLessons: [],
@@ -380,15 +390,25 @@ export function getDueSrsStrokes(state: UserProgressState, nowMs: number = Date.
 }
 
 /**
- * Exports complete UserProgressState to a timestamped JSON string (FORM-REQ-0004).
+ * Exports complete UserProgressState (plus optional custom Admin packs) to a timestamped JSON string (FORM-REQ-0004).
  */
-export function exportProgressJson(state: UserProgressState): string {
+export function exportProgressJson(state: UserProgressState, customPacks?: unknown[]): string {
   const envelope: ProgressBackupEnvelope = {
     schemaVersion: 'formosa-progress-v2',
     exportedAt: new Date().toISOString(),
     state,
+    ...(Array.isArray(customPacks) ? { customPacks } : {}),
   };
   return JSON.stringify(envelope, null, 2);
+}
+
+export function extractCustomPacksFromBackupJson(rawJson: string): unknown[] | null {
+  try {
+    const parsed = JSON.parse(rawJson) as Partial<ProgressBackupEnvelope>;
+    return Array.isArray(parsed?.customPacks) ? parsed.customPacks : null;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -434,10 +454,22 @@ export function importProgressJson(rawJson: string): UserProgressState {
     handedness,
     zhuyinDisplayMode,
     theme: candidate.theme === 'dark' ? 'dark' : 'light',
+    voicePreset:
+      candidate.voicePreset === 'low' || candidate.voicePreset === 'high'
+        ? candidate.voicePreset
+        : 'mid',
+    quietRoomMode: Boolean(candidate.quietRoomMode),
     dailyGoalMinutes: typeof candidate.dailyGoalMinutes === 'number' ? candidate.dailyGoalMinutes : 10,
     dailyDateIso: typeof candidate.dailyDateIso === 'string' ? candidate.dailyDateIso : defaults.dailyDateIso,
     dailyStepsCompleted: Array.isArray(candidate.dailyStepsCompleted) ? candidate.dailyStepsCompleted : [],
     completedStage0Modules: Array.isArray(candidate.completedStage0Modules) ? candidate.completedStage0Modules : [],
+    completedArrivalScenarios: Array.isArray(candidate.completedArrivalScenarios)
+      ? candidate.completedArrivalScenarios
+      : [],
+    completedStageCheckpoints:
+      candidate.completedStageCheckpoints && typeof candidate.completedStageCheckpoints === 'object'
+        ? candidate.completedStageCheckpoints
+        : {},
     stage0Skipped: Boolean(candidate.stage0Skipped),
     completedPimsleurUnits: Array.isArray(candidate.completedPimsleurUnits) ? candidate.completedPimsleurUnits : [],
     completedNtnuLessons: Array.isArray(candidate.completedNtnuLessons) ? candidate.completedNtnuLessons : [],
@@ -454,8 +486,10 @@ export {
   getOverallPathwaySummary,
   getStage0Summary,
   getTodayProgressSummary,
+  markArrivalScenarioComplete,
   markDailyStepComplete,
   markStage0ModuleComplete,
+  recordStageCheckpointResult,
   setStage0Skipped,
   toggleNtnuLessonComplete,
   togglePimsleurUnitComplete,

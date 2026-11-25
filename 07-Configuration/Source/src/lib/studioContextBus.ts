@@ -5,11 +5,32 @@
 
 export type StudioId =
   | 'hub'
+  | 'syllabus'
   | 'survival'
   | 'reader'
   | 'calligraphy'
   | 'speaking'
-  | 'dojo';
+  | 'dojo'
+  | 'admin';
+
+export interface TopLevelNavSection {
+  id: 'today' | 'syllabus' | 'labs' | 'reference' | 'admin';
+  titleEn: string;
+  titleZh: string;
+  shortcut: string;
+  expandable: boolean;
+}
+
+/**
+ * 5-Section Modern Expandable Accordion Menu (FORM-DEC-005 — strictly <= 8 ceiling).
+ */
+export const TOP_LEVEL_NAV_SECTIONS: TopLevelNavSection[] = [
+  { id: 'today', titleEn: "Today's Session", titleZh: '今日學習', shortcut: 'Alt+1', expandable: false },
+  { id: 'syllabus', titleEn: 'Course Syllabus', titleZh: '課程大綱', shortcut: 'Alt+2', expandable: true },
+  { id: 'labs', titleEn: 'Practice Labs', titleZh: '專項練習室', shortcut: 'Alt+3', expandable: true },
+  { id: 'reference', titleEn: 'Reference & Help', titleZh: '參考與手冊', shortcut: 'Alt+4', expandable: false },
+  { id: 'admin', titleEn: 'Administration', titleZh: '系統與教材管理', shortcut: 'Alt+5', expandable: false },
+];
 
 export interface StudioDefinition {
   id: StudioId;
@@ -74,9 +95,29 @@ export const STUDIO_DEFINITIONS: StudioDefinition[] = [
   },
 ];
 
-export const STUDIO_BY_ID: Record<StudioId, StudioDefinition> = Object.fromEntries(
-  STUDIO_DEFINITIONS.map((s) => [s.id, s])
-) as Record<StudioId, StudioDefinition>;
+export const EXTRA_STUDIO_DEFINITIONS: Record<'syllabus' | 'admin', StudioDefinition> = {
+  syllabus: {
+    id: 'syllabus',
+    titleZh: '課程大綱',
+    titleEn: 'Course Syllabus (Stages 0–5)',
+    shortLabel: 'Course Syllabus',
+    shortcut: 'Alt+2',
+    description: 'Linear Pre-A1 to TOCFL Level 4 (CEFR B2 / HSK 5 Equiv.) progression with Stage Checkpoints.',
+  },
+  admin: {
+    id: 'admin',
+    titleZh: '系統管理',
+    titleEn: 'Administration',
+    shortLabel: 'Administration',
+    shortcut: 'Alt+5',
+    description: 'Standalone Custom Material CRUD, iPad/Desktop Audio Diagnostics, Backups & Preferences.',
+  },
+};
+
+export const STUDIO_BY_ID: Record<StudioId, StudioDefinition> = {
+  ...(Object.fromEntries(STUDIO_DEFINITIONS.map((s) => [s.id, s])) as Record<StudioId, StudioDefinition>),
+  ...EXTRA_STUDIO_DEFINITIONS,
+};
 
 export interface StudioHandoffPayload {
   id: string;
@@ -88,6 +129,8 @@ export interface StudioHandoffPayload {
   targetEnglish?: string;
   targetChar?: string;
   modeHint?: string;
+  stageHint?: number;
+  subTarget?: string;
   timestamp: number;
 }
 

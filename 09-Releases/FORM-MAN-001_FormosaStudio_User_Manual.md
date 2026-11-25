@@ -3,14 +3,14 @@
 ```yaml
 id: FORM-MAN-001
 type: ValidationOutput
-title: FormosaStudio v1.2.0 Comprehensive User's Manual & Taiwan MOE Linguistic Reference Guide
+title: FormosaStudio v2.0.0 Comprehensive User's Manual & Taiwan MOE Linguistic Reference Guide
 status: Approved
-version: 1.2.0
+version: 2.0.0
 project: FORM
 owner: Principal Engineer
 created_date: 2026-11-14
-updated_date: 2026-11-19
-framework_reference: "Volume 4 §11.6, Volume 4 §14, Guide 007 §12, Guide 008 v0.9.1, FORM-REQ-0023"
+updated_date: 2026-11-25
+framework_reference: "Volume 4 §11.6, Volume 4 §14, Guide 007 §12, Guide 008 v0.9.4, FORM-REQ-0023"
 traces_to:
   - FORM-REQ-0023
   - FORM-REQ-0018
@@ -20,22 +20,21 @@ traces_to:
 
 ---
 
-## 1. Quick-Start & Unified 6-Studio Workspace Architecture
+## 1. Quick-Start & v2.0 5-Section Expandable Accordion Navigation
 
-**FormosaStudio (`寶島華語正體與注音全能工坊`)** is an offline-first, Wacom-stylus and acoustic-DSP workstation designed specifically for mastering **Taiwanese Traditional Chinese (`正體字`)** and **Taiwan Ministry of Education (`教育部`) vertical Bopomofo (`注音符號`)**.
+**FormosaStudio (`寶島華語正體與注音全能工坊`)** is an offline-first, Wacom/Apple Pencil and acoustic-DSP workstation designed specifically for mastering **Taiwanese Traditional Chinese (`正體字`)** and **Taiwan Ministry of Education (`教育部`) vertical Bopomofo (`注音符號`)** from **Pre-A1 Foundations through TOCFL Level 4 / CEFR B2 (Classic HSK 5 Equivalent)**.
 
-### 1.1 The 6 Permanent Top-Level Studios (`Alt+1` through `Alt+6`)
+### 1.1 The 5 Top-Level Menu Sections (`Alt+1` through `Alt+5`)
 
-To eliminate nested menu clutter, every tool in FormosaStudio lives inside one of **6 permanent top-level studios**:
+Every tool in FormosaStudio v2.0 is organized inside a modern **5-Section Expandable Accordion Menu** (which auto-collapses on iPad mini 6 `<= 1180 px` when entering calligraphy or tone labs and is always reopenable via `☰ Menu`):
 
-| Shortcut | Studio Name | Core Capabilities |
+| Shortcut | Menu Section | Core Capabilities |
 | :---: | :--- | :--- |
-| **`Alt+1`** | **1. 今日學習 · Today & Daily Flow** | **Stage 0: Start From Zero** (5 interactive beginner modules: Tone Ear Boot Camp, 37-Symbol Zhuyin Sound Map + Family Syllable Blender, Grammar Survival Map, Interactive 8-Stroke Practice Pad + Radical Logic Check, First 10 Taipei Phrases), Today's 10-Min Progress Ring & 6-Stage Pathway, **Interactive Taiwanized Pimsleur Units 1–19+** (4-second Timed Recall Drill), **NTNU *Contemporary Chinese* (`當代中文課程`) Volumes 1–6 (61+ Lessons)**, and **TOCFL Novice 1 – Band B2 Readiness Dashboard**. |
-| **`Alt+2`** | **2. 臺灣生存 · 10-Min Taiwan Survival** | 6 Practical Day-1 Survival Modules (**Bathrooms & Help**, **Prices & Paying**, **Directions/MRT/Taxis**, **Food & Boba**, **7-Eleven & Hotels**, **Allergies & Emergencies**, with **🖨️ Printable Sheet Mode**), 12 "Swiss-Army-Knife" Survival Sentence Frames, Interactive Laminated Paper Tick-Menu (`點菜單`), Taiwanese Sentence-Final Particles (`語助詞`) & Hokkien (`臺語`) Loanwords, and 5-Category Functional Listening Gym. |
-| **`Alt+3`** | **3. 閱讀語法 · Reader & Grammar** | 8 Multi-Paragraph Graded Stories (`Novice 1` to `Band B2`) with live **$i+1$ Comprehensibility Scoring**, `< 50 ms` Custom Traditional Text Importer & Instant 4-Option Cloze Generator, and 16 Spoken (`口語`) vs. Written (`書面語`) Taiwan Register Bridge Drills. |
-| **`Alt+4`** | **4. 書法筆順 · Wacom Calligraphy** | W3C `PointerEvent` Pressure-Tapered (`2.5–14 px`) Calligraphy Canvas on `九宮格` / `田字格` grids, **20-Character Taiwan MOE Standard Vector Stroke-Order Grader** (`描紅` Guided Trace, `臨摹` Freehand Overlay, `聽寫默寫` Dictation Recall), Left/Right-Handed Docking Swap, and **10-Series Semantic-Phonetic (`形聲字`) Workbench**. |
-| **`Alt+5`** | **5. 發音聲調 · Speaking & Pitch Lab** | **100% Offline WebAudio YIN $F_0$ Pitch-Contour Extractor** (`75–450 Hz`, `< 3 Hz` error), Speaker-Normalized Chao `1–5` Dual-Curve Visualizer, 1-click **"🔁 Replay My Voice vs. Native Speaker"**, 8 Spoken Taiwanese Tone Sandhi Drills, and 10 Retroflex (`ㄓㄔㄕㄖ`) vs. Flat Sibilant (`ㄗㄘㄙ`) Minimal Pairs. |
-| **`Alt+6`** | **6. 詞彙與大千 · Vocab, SRS & Dojo** | **8-Stage Taiwan DaQian (`大千式`) Touch-Typing Dojo** (41-key interactive keyboard, per-key error heatmap, blind-keycap mode), **FSRS-Lite Spaced Repetition Review Queue**, **TOCFL Novice 1 – Band B2 Word Bank**, **5-World Skill Tree (`20` nodes)**, and **3-Stage Match Arena**. |
+| **`Alt+1`** | **1. Today’s Session (`今日學習`)** | **Syllabus-Adaptive 10-Minute Daily Session** dynamically tuned to your active stage (`~70%` current stage + `~30%` spiral review), contextual **Peek Ahead**, and genuine Step 2 audio/recall + Step 3 DaQian/Wacom verification before FSRS credit. |
+| **`Alt+2`** | **2. Course Syllabus (`課程大綱`)** | Expandable linear progression across **Stages 0–5 (`Pre-A1 → TOCFL Level 4 / Band B2 / Classic HSK 5 Equiv.`)**. **Stage 0** delivers Tone Lab, 37 Zhuyin, Grammar, 8 Basic Strokes, and **5 Real-Life Taiwan Arrival Scenarios** (*Taipei Café, 7-Eleven, MRT, Night Market, Restroom/Help*). **Stages 1–5** use a single **`Continue Recommended Next`** CTA, expandable Pimsleur/NTNU/Survival/Custom tracks, and an integrated 5-question **Stage Checkpoint (`>= 80%`)**. |
+| **`Alt+3`** | **3. Practice Labs (`專項練習室`)** | Expandable quick access to all 5 specialized labs: **Taiwan Survival** (Tick-Menu `點菜單`, Particles/Hokkien, Listening Gym), **Reader & Grammar** (Adaptive `i+1` Stories & Register Bridge), **Wacom Strokes** (MOE Calligraphy & `形聲字`), **Speaking & Pitch** (Offline YIN F0 & Sandhi), and **Vocab & DaQian** (8-Stage Typing Dojo, FSRS Queue, Word Bank, Shuffled Match Arena). |
+| **`Alt+4`** | **4. Reference & Help (`參考與手冊`)** | **Global Omnibar (`Ctrl+K`)**, live **Word Inspector Dock**, and this **User's Manual (`?`)**. |
+| **`Alt+5`** | **5. Administration (`系統與教材管理`)** | Standalone workspace for **Create/Edit/Delete Custom Lesson Packs** (Pimsleur, NTNU, or Custom Scenarios bound to Stages 0–5), **1-Click Audio, Voice & iPad Self-Test**, **Unified Desktop ↔ iPad JSON Backup & Transfer** (bundling progress + custom packs), and **Preferences & Hardware**. |
 
 ### 1.2 Global Keyboard Shortcuts & Cross-Studio Navigation
 

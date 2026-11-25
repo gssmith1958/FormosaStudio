@@ -54,6 +54,45 @@ export function markStage0ModuleComplete(state: UserProgressState, moduleId: Sta
   return { ...state, completedStage0Modules: next, xp: already ? state.xp : state.xp + 30 };
 }
 
+/**
+ * Records completion of a Stage 0.5 Taiwan Arrival Scenario; >= 3 scenarios unlocks Stage 0.5 (PED-3).
+ */
+export function markArrivalScenarioComplete(state: UserProgressState, scenarioId: string): UserProgressState {
+  const prev = Array.isArray(state.completedArrivalScenarios) ? state.completedArrivalScenarios : [];
+  const already = prev.includes(scenarioId);
+  const next = already ? prev : [...prev, scenarioId];
+  let updated: UserProgressState = {
+    ...state,
+    completedArrivalScenarios: next,
+    xp: already ? state.xp : state.xp + 20,
+  };
+  if (next.length >= 3) {
+    updated = markStage0ModuleComplete(updated, '0.5');
+  }
+  return updated;
+}
+
+export function recordStageCheckpointResult(
+  state: UserProgressState,
+  stageNumber: number,
+  accuracy: number
+): UserProgressState {
+  const prevMap = state.completedStageCheckpoints || {};
+  const prevBest = prevMap[stageNumber]?.bestAccuracy ?? 0;
+  const passedNow = accuracy >= 80 && prevBest < 80;
+  return {
+    ...state,
+    completedStageCheckpoints: {
+      ...prevMap,
+      [stageNumber]: {
+        bestAccuracy: Math.max(prevBest, accuracy),
+        completedAt: new Date().toISOString(),
+      },
+    },
+    xp: state.xp + (passedNow ? 60 : 15),
+  };
+}
+
 export function setStage0Skipped(state: UserProgressState, skipped: boolean): UserProgressState {
   return { ...state, stage0Skipped: skipped };
 }
@@ -126,21 +165,39 @@ export function getOverallPathwaySummary(state: UserProgressState): {
   const stage0 = getStage0Summary(state);
   const donePim = new Set(state.completedPimsleurUnits || []);
   const doneNtnu = new Set(state.completedNtnuLessons || []);
+  const hasHigherProgress = donePim.size > 0 || doneNtnu.size > 0;
   const defs = [
-    { id: 'stage-1', titleEn: 'Foundations & Daily Survival', titleZh: '基礎生存入門', tocflTarget: 'Novice 1', desc: 'Pimsleur Units 1–4 · NTNU Vol. 1 (L1–8)', pim: [1, 2, 3, 4], vol: 1, lStart: 1, lEnd: 8 },
-    { id: 'stage-2', titleEn: 'Everyday Taiwan Conversations', titleZh: '臺灣日常會話', tocflTarget: 'Novice 2', desc: 'Pimsleur Units 5–9 · NTNU Vol. 1 (L9–15)', pim: [5, 6, 7, 8, 9], vol: 1, lStart: 9, lEnd: 15 },
-    { id: 'stage-3', titleEn: 'Independent Living & Dining', titleZh: '獨立生活溝通', tocflTarget: 'Band A1', desc: 'Pimsleur Units 10–14 · NTNU Vol. 2 (L1–12)', pim: [10, 11, 12, 13, 14], vol: 2, lStart: 1, lEnd: 12 },
-    { id: 'stage-4', titleEn: 'Connected Speech & Reading', titleZh: '連貫表達閱讀', tocflTarget: 'Band A2', desc: 'Pimsleur Units 15–19 · NTNU Vol. 3 (L1–10)', pim: [15, 16, 17, 18, 19], vol: 3, lStart: 1, lEnd: 10 },
-    { id: 'stage-5', titleEn: 'Formal Register & Media Bridge', titleZh: '進階書面語篇', tocflTarget: 'Band B1', desc: 'NTNU Vol. 4 (L1–8) & Vol. 5 (L1–8)', pim: [], vol: 4, lStart: 1, lEnd: 8 },
-    { id: 'stage-6', titleEn: 'Fluent Taiwan Discourse', titleZh: '高階文化流利', tocflTarget: 'Band B2', desc: 'NTNU Vol. 5–6 Advanced Readings (L1–8)', pim: [], vol: 6, lStart: 1, lEnd: 8 },
+    { num: 0, id: 'stage-0', titleEn: 'Start From Zero (Taiwan Foundations)', titleZh: '零基礎臺灣起步', tocflTarget: 'Pre-A1 · Foundations', desc: '4 Tones, 37 Zhuyin, 8 Strokes, 16 Radicals & 5 Arrival Scenarios', pim: [] as number[], ntnu: [] as string[], vol: 1, lStart: 1 },
+    { num: 1, id: 'stage-1', titleEn: 'Everyday Taiwan Survival', titleZh: '臺灣生存入門', tocflTarget: 'TOCFL Level 1 · Band A1', desc: 'Pimsleur Units 1–4 · NTNU Vol. 1 (L1–8)', pim: [1, 2, 3, 4], ntnu: ['1-1', '1-2', '1-3', '1-4', '1-5', '1-6', '1-7', '1-8'], vol: 1, lStart: 1 },
+    { num: 2, id: 'stage-2', titleEn: 'Daily Life, MRT & Dining', titleZh: '日常交通與點餐', tocflTarget: 'TOCFL Level 2 · Band A2', desc: 'Pimsleur Units 5–10 · NTNU Vol. 1 (L9–15) & Vol. 2 (L1–6)', pim: [5, 6, 7, 8, 9, 10], ntnu: ['1-9', '1-10', '1-11', '1-12', '1-13', '1-14', '1-15', '2-1', '2-2', '2-3', '2-4', '2-5', '2-6'], vol: 1, lStart: 9 },
+    { num: 3, id: 'stage-3', titleEn: 'Independent Living & Stories', titleZh: '獨立生活與閱讀', tocflTarget: 'TOCFL Level 3 · Band B1', desc: 'Pimsleur Units 11–19 · NTNU Vol. 2 (L7–12) & Vol. 3 (L1–6)', pim: [11, 12, 13, 14, 15, 16, 17, 18, 19], ntnu: ['2-7', '2-8', '2-9', '2-10', '2-11', '2-12', '3-1', '3-2', '3-3', '3-4', '3-5', '3-6'], vol: 2, lStart: 7 },
+    { num: 4, id: 'stage-4', titleEn: 'Connected Speech & Formal Bridge', titleZh: '連貫表達與書面語橋樑', tocflTarget: 'Lower TOCFL Level 4 · Band B2-', desc: 'NTNU Vol. 3 (L7–10) & Vol. 4 (L1–8) + Register Bridge', pim: [] as number[], ntnu: ['3-7', '3-8', '3-9', '3-10', '4-1', '4-2', '4-3', '4-4', '4-5', '4-6', '4-7', '4-8'], vol: 3, lStart: 7 },
+    { num: 5, id: 'stage-5', titleEn: 'Fluent Taiwan Discourse (HSK 5 Equiv.)', titleZh: '高階流利與文化語篇', tocflTarget: 'TOCFL Level 4 · Band B2 / HSK 5', desc: 'NTNU Vol. 5 (L1–8) & Vol. 6 (L1–8) Advanced Readings', pim: [] as number[], ntnu: ['5-1', '5-2', '5-3', '5-4', '5-5', '5-6', '5-7', '5-8', '6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-8'], vol: 5, lStart: 1 },
   ];
 
   let foundCurrent = false;
-  const stages: PathwayStageProgress[] = defs.map((d, idx) => {
-    const ntnuKeys: string[] = [];
-    for (let l = d.lStart; l <= d.lEnd; l++) ntnuKeys.push(`${d.vol}-${l}`);
-    const doneCount = d.pim.filter((u) => donePim.has(u)).length + ntnuKeys.filter((k) => doneNtnu.has(k)).length;
-    const totalCount = d.pim.length + ntnuKeys.length;
+  const stages: PathwayStageProgress[] = defs.map((d) => {
+    if (d.num === 0) {
+      const done = stage0.isCompleteOrSkipped || hasHigherProgress;
+      const status: 'completed' | 'current' | 'upcoming' = done ? 'completed' : 'current';
+      if (status === 'current') foundCurrent = true;
+      return {
+        id: d.id,
+        stageNumber: 0,
+        titleEn: d.titleEn,
+        titleZh: d.titleZh,
+        tocflTarget: d.tocflTarget,
+        description: d.desc,
+        completedUnits: stage0.completedCount,
+        totalUnits: stage0.totalCount,
+        percent: stage0.percent,
+        status,
+        nextNtnuVolume: 1,
+        nextNtnuLesson: 1,
+      };
+    }
+    const doneCount = d.pim.filter((u) => donePim.has(u)).length + d.ntnu.filter((k) => doneNtnu.has(k)).length;
+    const totalCount = d.pim.length + d.ntnu.length;
     const pct = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
     let status: 'completed' | 'current' | 'upcoming' = 'upcoming';
     if (pct >= 100) {
@@ -150,11 +207,11 @@ export function getOverallPathwaySummary(state: UserProgressState): {
       foundCurrent = true;
     }
     const nextPim = d.pim.find((u) => !donePim.has(u));
-    const nextNtnuKey = ntnuKeys.find((k) => !doneNtnu.has(k)) || `${d.vol}-${d.lStart}`;
+    const nextNtnuKey = d.ntnu.find((k) => !doneNtnu.has(k)) || `${d.vol}-${d.lStart}`;
     const [nv, nl] = nextNtnuKey.split('-').map(Number);
     return {
       id: d.id,
-      stageNumber: idx + 1,
+      stageNumber: d.num,
       titleEn: d.titleEn,
       titleZh: d.titleZh,
       tocflTarget: d.tocflTarget,

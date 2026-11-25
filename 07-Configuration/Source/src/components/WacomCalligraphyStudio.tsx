@@ -320,10 +320,10 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
         <div className={`flex flex-col lg:flex-row gap-6 items-start ${
             progress.handedness === 'left' ? 'lg:flex-row-reverse' : 'lg:flex-row' }`}
         >
-          {/* Wacom Calligraphy Canvas Column */}
-          <div className="w-full lg:w-[440px] shrink-0 bg-slate-900/90 border border-slate-800 rounded-3xl p-5 space-y-4 shadow-xl">
+          {/* Wacom Calligraphy Canvas Column (Compact for iPad mini 6 landscape 1133x744) */}
+          <div className="w-full lg:w-[400px] shrink-0 fs-card p-4 space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 {PRACTICE_MODES.map((m) => (
                   <StylusButton key={m.id} variant={practiceMode === m.id ? 'primary' : 'secondary'} onClick={() => setPracticeMode(m.id)} >
                     <span>{m.labelZh}</span>
@@ -331,19 +331,19 @@ export const WacomCalligraphyStudio: React.FC<WacomCalligraphyStudioProps> = ({
                 ))}
               </div>
               <StylusButton variant="ghost" onClick={() => setGridStyle((g) => (g === 'jiugongge' ? 'tianzige' : 'jiugongge'))} >
-                <span>🏁 {gridStyle === 'jiugongge' ? '九宮格' : '田字格'}</span>
+                <span>{gridStyle === 'jiugongge' ? '九宮格' : '田字格'}</span>
               </StylusButton>
             </div>
             <div className="relative flex justify-center">
               <canvas ref={canvasRef}
-                width={380}
-                height={380}
+                width={340}
+                height={340}
                 style={{ touchAction: 'none' }}
                 onPointerDown={handlePointerDown}
                 onPointerMove={handlePointerMove}
                 onPointerUp={finalizeStroke}
                 onPointerCancel={finalizeStroke}
-                className="w-full max-w-[380px] aspect-square rounded-2xl border-2 border-emerald-500/40 shadow-inner cursor-crosshair select-none"
+                className="w-full max-w-[340px] aspect-square rounded-2xl border-2 border-emerald-600/40 shadow-inner cursor-crosshair select-none"
               />
             </div>
             {/* Live Wacom Telemetry & Action Bar */}

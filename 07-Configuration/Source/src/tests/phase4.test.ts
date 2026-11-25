@@ -3,7 +3,7 @@
  * Verifies FORM-REQ-0018, FORM-REQ-0019, FORM-REQ-0020, FORM-REQ-0023 and Golden Scenarios FORM-VAL-001..005
  */
 
-import { tokenizeAndAnnotate, detectToneSandhi } from '../lib/zhuyinTokenizer.ts';
+import { tokenizeAndAnnotate, detectToneSandhi, lookupLexiconWord } from '../lib/zhuyinTokenizer.ts';
 import { parseZhuyinSyllable } from '../lib/zhuyinTypes.ts';
 import { analyzePassageComprehensibility, generatePassageClozes } from '../lib/readingEngine.ts';
 import { REGISTER_BRIDGE_PAIRS } from '../data/gradedStoriesData.ts';
@@ -12,10 +12,17 @@ import {
   parseRawResourceMaterial,
   getCustomPimsleurUnits,
   mergeCustomContemporaryVolumes,
+  updateCustomCurriculumPack,
+  removeCustomCurriculumPack,
+  exportCustomPacksData,
 } from '../lib/curriculumAdminStore.ts';
 import { CONTEMPORARY_VOLUMES } from '../data/contemporaryVols3to6.ts';
 import { App } from '../App.tsx';
 import { TodayAndCurriculumHub } from '../components/TodayAndCurriculumHub.tsx';
+import { AccordionNavSidebar } from '../components/AccordionNavSidebar.tsx';
+import { SyllabusStageView } from '../components/SyllabusStageView.tsx';
+import { AdministrationStudio } from '../components/AdministrationStudio.tsx';
+import { Stage0ArrivalScenarios } from '../components/Stage0ArrivalScenarios.tsx';
 import {
   GlobalOmnibarModal,
   InteractiveHelpManualDrawer,
@@ -43,25 +50,39 @@ import {
 import { getMoeCharacterEntry, PHONETIC_SERIES_BANK } from '../data/moeStrokeAndPhoneticData.ts';
 import {
   computeToneContourMatchScore,
+  detectPitchYinDownsampled2x,
   detectPitchYinOffline,
   generateReferenceToneWaveform,
   getReferenceChaoContour,
 } from '../lib/pitchContourEngine.ts';
+import { selectSupportedRecorderMimeType } from '../lib/audioSessionManager.ts';
+import {
+  SYLLABUS_STAGES,
+  buildAdaptiveDailySession,
+  getRecommendedDisplayPreset,
+  getStageProgressDetail,
+  resolveActiveStageNumber,
+} from '../lib/syllabusModel.ts';
 import {
   createInitialProgressState,
   exportProgressJson,
+  extractCustomPacksFromBackupJson,
   getOverallPathwaySummary,
   getStage0Summary,
   getTodayProgressSummary,
   importProgressJson,
+  markArrivalScenarioComplete,
   markDailyStepComplete,
   markStage0ModuleComplete,
+  recordStageCheckpointResult,
   recordStrokePractice,
   recordWordPractice,
+  setStage0Skipped,
   toggleNtnuLessonComplete,
   togglePimsleurUnitComplete,
 } from '../lib/progressStore.ts';
 import {
+  STAGE0_ARRIVAL_SCENARIOS,
   STAGE0_BLIND_TONE_POOL,
   STAGE0_CAFE_ROLEPLAY,
   STAGE0_MODULES,
@@ -73,6 +94,7 @@ import {
 import { PIMSLEUR_UNITS } from '../data/pimsleurUnitsB.ts';
 import {
   STUDIO_DEFINITIONS,
+  TOP_LEVEL_NAV_SECTIONS,
   clearStudioHandoff,
   dismissStudioHandoff,
   dispatchStudioHandoff,
@@ -381,6 +403,109 @@ describe('Phase 4 Suite 7: Unified Shell, In-App Manual (FORM-REQ-0023) & Cross-
     expect(parseZhuyinSyllable('ㄌㄩˋ').pinyin).toBe('lǜ');
     expect(parseZhuyinSyllable('ㄓ').pinyin).toBe('zhī');
     expect(parseZhuyinSyllable('˙ㄇㄚ').pinyin).toBe('ma');
+  });
+});
+
+describe('Phase 4 Suite 8: FORM-ECR-001 (v2.0.0 Milestone A) — 5-Section Menu, Syllabus 0–5, 5 Arrival Scenarios, iPad 48 kHz YIN & Admin CRUD', () => {
+  it('enforces 5-section accordion navigation ceiling and exports v2.0 UI components cleanly', () => {
+    expect(TOP_LEVEL_NAV_SECTIONS.length).toBe(5);
+    expect(TOP_LEVEL_NAV_SECTIONS.length).toBeLessThanOrEqual(8);
+    expect(typeof AccordionNavSidebar).toBe('function');
+    expect(typeof SyllabusStageView).toBe('function');
+    expect(typeof AdministrationStudio).toBe('function');
+    expect(typeof Stage0ArrivalScenarios).toBe('function');
+  });
+
+  it('extracts anti-aliased 2x downsampled YIN F0 within < 3 Hz at BOTH iPad 48 kHz and Desktop 44.1 kHz (DSP-1)', () => {
+    const wave48k = generateReferenceToneWaveform({ constantF0Hz: 220, durationSec: 0.12, sampleRate: 48000 });
+    const pitch48k = detectPitchYinDownsampled2x(wave48k.subarray(0, 2048), 48000, 100, 300);
+    expect(Math.abs((pitch48k.f0Hz || 0) - 220)).toBeLessThan(3.0);
+
+    const wave44k = generateReferenceToneWaveform({ constantF0Hz: 180, durationSec: 0.12, sampleRate: 44100 });
+    const pitch44k = detectPitchYinDownsampled2x(wave44k.subarray(0, 2048), 44100, 100, 300);
+    expect(Math.abs((pitch44k.f0Hz || 0) - 180)).toBeLessThan(3.0);
+
+    expect(typeof selectSupportedRecorderMimeType()).toBe('string');
+  });
+
+  it('delivers 5 authentic Taiwan Stage 0.5 arrival scenarios with zero Mainland leakage and >= 3/5 unlock gate (PED-3)', () => {
+    expect(STAGE0_ARRIVAL_SCENARIOS.length).toBe(5);
+    const forbidden = ['地鐵', '一點兒', '普通話', '服務員'];
+    for (const sc of STAGE0_ARRIVAL_SCENARIOS) {
+      expect(sc.turns.length).toBe(3);
+      expect(sc.culturalCue.length).toBeGreaterThan(20);
+      const joined = sc.turns.map((t) => `${t.clerkZh} ${t.options.map((o) => o.text).join(' ')}`).join(' ');
+      for (const bad of forbidden) {
+        expect(joined.includes(bad)).toBe(false);
+      }
+    }
+
+    let state = createInitialProgressState();
+    state = markArrivalScenarioComplete(state, STAGE0_ARRIVAL_SCENARIOS[0].id);
+    state = markArrivalScenarioComplete(state, STAGE0_ARRIVAL_SCENARIOS[1].id);
+    expect((state.completedStage0Modules || []).includes('0.5')).toBe(false);
+    state = markArrivalScenarioComplete(state, STAGE0_ARRIVAL_SCENARIOS[2].id);
+    expect((state.completedStage0Modules || []).includes('0.5')).toBe(true);
+  });
+
+  it('aligns Syllabus Stages 0–5 to TOCFL Level 4 / HSK 5, drives Adaptive Daily Sessions, and certifies checkpoints (PED-1, PED-2)', () => {
+    expect(SYLLABUS_STAGES.length).toBe(6);
+    expect(SYLLABUS_STAGES[5].tocflDualLabel.includes('HSK 5')).toBe(true);
+    expect(getRecommendedDisplayPreset(0).showPinyinHint).toBe(true);
+    expect(getRecommendedDisplayPreset(4).showPinyinHint).toBe(false);
+
+    let state = createInitialProgressState();
+    expect(resolveActiveStageNumber(state)).toBe(0);
+
+    state = setStage0Skipped(state, true);
+    expect(resolveActiveStageNumber(state)).toBe(1);
+
+    const catalog = getFullVocabularyCatalog();
+    const sessionS1 = buildAdaptiveDailySession(state, catalog);
+    expect(sessionS1.sessionStageNumber).toBe(1);
+    expect(sessionS1.isPeekAhead).toBe(false);
+    expect(sessionS1.queueItems.length).toBeGreaterThanOrEqual(4);
+
+    const peekS2 = buildAdaptiveDailySession(state, catalog, 2);
+    expect(peekS2.sessionStageNumber).toBe(2);
+    expect(peekS2.isPeekAhead).toBe(true);
+    expect(peekS2.spiralReviewCount).toBeGreaterThanOrEqual(1);
+
+    state = recordStageCheckpointResult(state, 1, 60);
+    expect(getStageProgressDetail(1, state).checkpointPassed).toBe(false);
+    state = recordStageCheckpointResult(state, 1, 80);
+    expect(getStageProgressDetail(1, state).checkpointPassed).toBe(true);
+  });
+
+  it('supports Admin Create/Edit/Delete for custom scenarios, cleans DYNAMIC_LEXICON on delete, and bundles packs in unified JSON backup (ARCH-3)', () => {
+    const rows = parseRawResourceMaterial('蚵仔煎 | Taiwan oyster omelette | ㄜˊ ㄚˇ ㄐㄧㄢ | vocab');
+    const created = publishCustomCurriculumPack({
+      packType: 'custom_scenario',
+      unitOrVolume: 1,
+      targetStage: 2,
+      titleTraditional: '夜市小吃',
+      titleEnglish: 'Night Market Classics',
+      subtitleOrTopic: 'Custom Stage 2 Scenario',
+      cefrRange: 'A2',
+      tocflBand: 'Stage 2',
+      rows,
+    });
+    expect(lookupLexiconWord('蚵仔煎')).toBe('ㄜˊ ㄚˇ ㄐㄧㄢ');
+    expect(tokenizeAndAnnotate('我要吃蚵仔煎').words.some((w) => w.text === '蚵仔煎')).toBe(true);
+    expect(Boolean(findVocabEntryByText('蚵仔煎'))).toBe(true);
+
+    const updated = updateCustomCurriculumPack(created.id, { titleEnglish: 'Taipei Night Market Classics' });
+    expect(updated?.titleEnglish).toBe('Taipei Night Market Classics');
+
+    // Unified JSON backup bundles progress + custom packs
+    const baseState = createInitialProgressState();
+    const unifiedJson = exportProgressJson(baseState, exportCustomPacksData());
+    const restoredPacks = extractCustomPacksFromBackupJson(unifiedJson);
+    expect(Array.isArray(restoredPacks) && restoredPacks.length >= 1).toBe(true);
+
+    // Deleting pack cleans DYNAMIC_LEXICON so deleted custom words do not linger
+    removeCustomCurriculumPack(created.id);
+    expect(lookupLexiconWord('蚵仔煎')).toBe(undefined);
   });
 });
 

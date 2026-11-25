@@ -1,9 +1,6 @@
 /**
  * FormosaStudio (FORM) — Stage 0 Module 0.1: Unified Tone Hearing, Speaking & Blind Differentiation Lab
- * Resolves the perception-vs-production split (DEP-01 / DEP-03):
- *   1. Hear -> Imitate -> See Your Voice (per-tone voice + pure-pitch hum + live mic ribbon + Hear Myself vs Native)
- *   2. True Blind Tone Differentiation Check (zero leaked hints, shuffled diverse syllables + confusable minimal pairs)
- *   3. Verified Mastery Gate (Ear Check >= 80% across all 4 tones + 4/4 Voice Check >= 65%, with Quiet-Room No-Mic mode)
+ * Uses shared audioSessionManager.ts (DSP-1 & DSP-2: 2x anti-aliased YIN, iPad mini 6 Safari audio/mp4 & safe teardown).
  */
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -14,10 +11,15 @@ import {
 } from '../data/stage0BeginnerData.ts';
 import {
   computeToneContourMatchScore,
-  detectPitchYinOffline,
-  generateReferenceToneWaveform,
   getReferenceChaoContour,
 } from '../lib/pitchContourEngine.ts';
+import {
+  ActiveMicHandle,
+  MicCaptureResult,
+  playRecordedThenNative,
+  playToneReferenceHum,
+  startMicToneSession,
+} from '../lib/audioSessionManager.ts';
 import { RubyText } from './RubyText.tsx';
 import { StylusButton } from './uiPrimitives.tsx';
 
@@ -47,11 +49,7 @@ function buildBlindRound(quietMode: boolean, focusTones?: (1 | 2 | 3 | 4)[]): To
     return shuffleArray(filtered).slice(0, quietMode ? 10 : 8);
   }
 
-  // Guarantee at least 1 single-syllable item from each of Tones 1..4
-  const guaranteed = ([1, 2, 3, 4] as const).map((t) => {
-    const pool = shuffleArray(singles.filter((s) => s.answerTone === t));
-    return pool[0];
-  });
+  const guaranteed = ([1, 2, 3, 4] as const).map((t) => shuffleArray(singles.filter((s) => s.answerTone === t))[0]);
   const usedIds = new Set(guaranteed.map((g) => g.id));
   const extraSingles = shuffleArray(singles.filter((s) => !usedIds.has(s.id))).slice(0, 2);
   const pickedPairs = shuffleArray(pairs).slice(0, 4);
@@ -71,30 +69,32 @@ function contourToSvgPath(points: number[], w: number, h: number): string {
 }
 
 export interface Stage0ToneLabProps {
+  initialVoicePreset?: VoicePresetKey;
+  initialQuietMode?: boolean;
   onSpeak?: (text: string, rate?: number) => void;
   onComplete: () => void;
 }
 
-export const Stage0ToneLab: React.FC<Stage0ToneLabProps> = ({ onSpeak, onComplete }) => {
-  const [voicePreset, setVoicePreset] = useState<VoicePresetKey>('mid');
-  const [quietMode, setQuietMode] = useState<boolean>(false);
+export const Stage0ToneLab: React.FC<Stage0ToneLabProps> = ({
+  initialVoicePreset = 'mid',
+  initialQuietMode = false,
+  onSpeak,
+  onComplete,
+}) => {
+  const [voicePreset, setVoicePreset] = useState<VoicePresetKey>(initialVoicePreset);
+  const [quietMode, setQuietMode] = useState<boolean>(initialQuietMode);
 
-  // Step 1: Per-tone voice practice state
   const [activePracticeTone, setActivePracticeTone] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [recordingTone, setRecordingTone] = useState<number | null>(null);
   const [micLevel, setMicLevel] = useState<number>(0);
   const [micError, setMicError] = useState<string | null>(null);
-  const [voiceScores, setVoiceScores] = useState<Record<number, { score: number; curve: number[]; passed: boolean; tip: string; audioUrl?: string }>>({});
+  const [voiceScores, setVoiceScores] = useState<
+    Record<number, { score: number; curve: number[]; passed: boolean; tip: string; audioBlob: Blob | null; audioUrl: string | null }>
+  >({});
 
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const intervalRef = useRef<number | null>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
-  const framesRef = useRef<number[]>([]);
+  const micHandleRef = useRef<ActiveMicHandle | null>(null);
 
-  // Step 2: True blind tone differentiation state
-  const [roundItems, setRoundItems] = useState<ToneQuizItem[]>(() => buildBlindRound(false));
+  const [roundItems, setRoundItems] = useState<ToneQuizItem[]>(() => buildBlindRound(initialQuietMode));
   const [qIdx, setQIdx] = useState<number>(0);
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
   const [hasPlayedClip, setHasPlayedClip] = useState<boolean>(false);
@@ -105,132 +105,80 @@ export const Stage0ToneLab: React.FC<Stage0ToneLabProps> = ({ onSpeak, onComplet
 
   useEffect(() => {
     return () => {
-      if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
-      streamRef.current?.getTracks().forEach((t) => t.stop());
-      Object.values(voiceScores).forEach((v) => {
-        if (v.audioUrl) URL.revokeObjectURL(v.audioUrl);
-      });
+      void micHandleRef.current?.stop();
+      micHandleRef.current = null;
     };
   }, []);
 
   const playPitchHum = (tone: 1 | 2 | 3 | 4 | 5) => {
-    try {
-      const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (!audioCtxRef.current) audioCtxRef.current = new Ctx();
-      const ctx = audioCtxRef.current;
-      if (ctx.state === 'suspended') void ctx.resume();
-      const preset = VOICE_PRESETS[voicePreset];
-      const samples = generateReferenceToneWaveform({
-        chaoContour: getReferenceChaoContour(tone === 3 ? '3_taiwan_half' : tone),
-        durationSec: 0.52,
-        sampleRate: ctx.sampleRate,
-        speakerFloorHz: preset.floor,
-        speakerCeilingHz: preset.ceiling,
-      });
-      const buf = ctx.createBuffer(1, samples.length, ctx.sampleRate);
-      buf.getChannelData(0).set(samples);
-      const src = ctx.createBufferSource();
-      src.buffer = buf;
-      src.connect(ctx.destination);
-      src.start();
-    } catch {
-      // Ignore WebAudio failures in headless browsers
-    }
+    const preset = VOICE_PRESETS[voicePreset];
+    playToneReferenceHum(tone, preset.floor, preset.ceiling);
   };
 
-  const stopMicCapture = (tone: 1 | 2 | 3 | 4 | 5) => {
-    if (intervalRef.current !== null) {
-      window.clearInterval(intervalRef.current);
-      intervalRef.current = null;
+  const applyToneResult = (tone: 1 | 2 | 3 | 4 | 5, result: MicCaptureResult) => {
+    setRecordingTone(null);
+    setMicLevel(0);
+
+    if (result.chaoFrames.length < 2) {
+      setMicError('No clear voice detected — speak steadily for ~0.5–1 second closer to the mic, or switch to Quiet Room mode.');
+      return;
     }
-    const captured = [...framesRef.current];
-    const finishScore = (audioUrl?: string) => {
-      streamRef.current?.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
+
+    let best = computeToneContourMatchScore(getReferenceChaoContour(tone), result.chaoFrames);
+    if (tone === 3) {
+      const half3 = computeToneContourMatchScore(getReferenceChaoContour('3_taiwan_half'), result.chaoFrames);
+      if (half3.matchScore > best.matchScore) best = half3;
+    }
+    const passed = best.matchScore >= 65;
+    const tip = passed
+      ? `✓ Great match (${best.matchScore}%)! Your pitch followed Tone ${tone} cleanly.`
+      : tone === 1
+      ? `Got ${best.matchScore}% — keep your voice high and steady without dropping at the end.`
+      : tone === 2
+      ? `Got ${best.matchScore}% — start mid-voice and glide clearly upward like asking "Huh?".`
+      : tone === 3
+      ? `Got ${best.matchScore}% — drop low and relaxed into the bottom of your voice.`
+      : `Got ${best.matchScore}% — start high and drop sharply like a firm "No!".`;
+
+    setVoiceScores((prev) => ({
+      ...prev,
+      [tone]: { score: best.matchScore, curve: best.resampledUser, passed, tip, audioBlob: result.audioBlob, audioUrl: result.audioUrl },
+    }));
+  };
+
+  const finishMicSession = async (tone: 1 | 2 | 3 | 4 | 5) => {
+    const handle = micHandleRef.current;
+    micHandleRef.current = null;
+    if (!handle) {
       setRecordingTone(null);
       setMicLevel(0);
-
-      if (captured.length < 2) {
-        setMicError('No clear voice detected — speak steadily for ~0.5–1 second closer to the mic, or switch to Quiet Room mode below.');
-        return;
-      }
-
-      let best = computeToneContourMatchScore(getReferenceChaoContour(tone), captured);
-      // DEP-01 Taiwan Rule: Accept BOTH natural Taiwanese Half-3 [21] and citation Full-3 [214]
-      if (tone === 3) {
-        const half3 = computeToneContourMatchScore(getReferenceChaoContour('3_taiwan_half'), captured);
-        if (half3.matchScore > best.matchScore) best = half3;
-      }
-      const curve = best.resampledUser;
-      const passed = best.matchScore >= 65;
-      const tip = passed
-        ? `✓ Great match (${best.matchScore}%)! Your pitch followed Tone ${tone} cleanly.`
-        : tone === 1
-        ? `Got ${best.matchScore}% — keep your voice high and steady without dropping at the end.`
-        : tone === 2
-        ? `Got ${best.matchScore}% — start mid-voice and glide clearly upward like asking "Huh?".`
-        : tone === 3
-        ? `Got ${best.matchScore}% — drop low and relaxed into the bottom of your voice.`
-        : `Got ${best.matchScore}% — start high and drop sharply like a firm "No!".`;
-
-      setVoiceScores((prev) => {
-        if (prev[tone]?.audioUrl) URL.revokeObjectURL(prev[tone].audioUrl!);
-        return { ...prev, [tone]: { score: best.matchScore, curve, passed, tip, audioUrl } };
-      });
-    };
-
-    const rec = mediaRecorderRef.current;
-    if (rec && rec.state !== 'inactive') {
-      rec.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: rec.mimeType || 'audio/webm' });
-        finishScore(blob.size > 0 ? URL.createObjectURL(blob) : undefined);
-      };
-      rec.stop();
-    } else {
-      finishScore(undefined);
+      return;
     }
+    const result = await handle.stop();
+    applyToneResult(tone, result);
   };
 
   const startMicCapture = async (tone: 1 | 2 | 3 | 4 | 5) => {
     setMicError(null);
     setActivePracticeTone(tone);
     if (recordingTone !== null) {
-      stopMicCapture(recordingTone as 1 | 2 | 3 | 4 | 5);
+      await finishMicSession(recordingTone as 1 | 2 | 3 | 4 | 5);
       return;
     }
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
-      streamRef.current = stream;
-      const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (!audioCtxRef.current) audioCtxRef.current = new Ctx();
-      const ctx = audioCtxRef.current;
-      if (ctx.state === 'suspended') await ctx.resume();
-
-      const source = ctx.createMediaStreamSource(stream);
-      const analyser = ctx.createAnalyser();
-      analyser.fftSize = 2048;
-      source.connect(analyser);
-
-      framesRef.current = [];
-      chunksRef.current = [];
-      if (typeof MediaRecorder !== 'undefined') {
-        const rec = new MediaRecorder(stream);
-        rec.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
-        mediaRecorderRef.current = rec;
-        rec.start();
-      }
-
-      const buf = new Float32Array(analyser.fftSize);
       const preset = VOICE_PRESETS[voicePreset];
+      const handle = await startMicToneSession({
+        floorHz: preset.floor,
+        ceilingHz: preset.ceiling,
+        maxDurationMs: 2400,
+        onFrame: (_f, _voiced, levelPct) => setMicLevel(levelPct),
+        onAutoStop: (res) => {
+          micHandleRef.current = null;
+          applyToneResult(tone, res);
+        },
+      });
+      micHandleRef.current = handle;
       setRecordingTone(tone);
-      const startedAt = Date.now();
-      intervalRef.current = window.setInterval(() => {
-        analyser.getFloatTimeDomainData(buf);
-        const res = detectPitchYinOffline(buf, ctx.sampleRate, preset.floor, preset.ceiling, 0.004, 0.25);
-        setMicLevel(Math.min(100, Math.round(res.rms * 700)));
-        if (res.chaoLevel !== null) framesRef.current.push(res.chaoLevel);
-        if (Date.now() - startedAt > 2400) stopMicCapture(tone);
-      }, 45);
     } catch {
       setMicError('Microphone unavailable or permission denied. Switch to "Quiet Room / No-Mic Mode" below to verify by ear.');
     }
@@ -254,7 +202,6 @@ export const Stage0ToneLab: React.FC<Stage0ToneLabProps> = ({ onSpeak, onComplet
     setRoundResults((prev) => [...prev, { item: activeItem, correct: isCorrect }]);
   };
 
-  // Compute Ear Check & Voice Check verification gates
   const earStats = useMemo(() => {
     const total = roundResults.length;
     const correct = roundResults.filter((r) => r.correct).length;
@@ -286,14 +233,14 @@ export const Stage0ToneLab: React.FC<Stage0ToneLabProps> = ({ onSpeak, onComplet
   const targetRibbonCurve = getReferenceChaoContour(activePracticeTone === 3 ? '3_taiwan_half' : activePracticeTone);
 
   return (
-    <section className="fs-card p-6 space-y-6">
+    <section className="fs-card p-5 sm:p-6 space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-1">
           <h2 className="text-xl font-bold" style={{ color: 'var(--fs-text)' }}>
             0.1 Tone Ear &amp; Voice Boot Camp · Hear, Imitate &amp; Prove You Can Tell Them Apart
           </h2>
           <p className="text-sm" style={{ color: 'var(--fs-text-secondary)' }}>
-            Mandarin tones live in both your ear and your voice. Practice saying each tone aloud with live visual feedback, then pass the blind ear test.
+            Mandarin tones live in both your ear and your voice. Practice saying each tone aloud with live visual feedback (iPad Safari &amp; Desktop optimized), then pass the blind ear test.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
@@ -323,7 +270,7 @@ export const Stage0ToneLab: React.FC<Stage0ToneLabProps> = ({ onSpeak, onComplet
           </StylusButton>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {STAGE0_TONE_CARDS.map((card) => {
             const vr = voiceScores[card.tone];
             const isRec = recordingTone === card.tone;
@@ -399,15 +346,11 @@ export const Stage0ToneLab: React.FC<Stage0ToneLabProps> = ({ onSpeak, onComplet
                 ? activeVoiceResult.tip
                 : 'Dashed green line = target pitch shape. Solid amber line = your voice after clicking "Say It (Mic)".'}
             </p>
-            {activeVoiceResult?.audioUrl && (
+            {activeVoiceResult && (activeVoiceResult.audioBlob || activeVoiceResult.audioUrl) && (
               <div className="flex flex-wrap gap-2">
                 <StylusButton
                   variant="secondary"
-                  onClick={() => {
-                    const a = new Audio(activeVoiceResult.audioUrl);
-                    a.onended = () => onSpeak?.(activeCard.exampleChar, 0.82);
-                    void a.play();
-                  }}
+                  onClick={() => void playRecordedThenNative(activeVoiceResult.audioBlob, activeVoiceResult.audioUrl, activeCard.exampleChar, 0.82)}
                 >
                   <span>Hear Myself vs. Native</span>
                 </StylusButton>
@@ -426,7 +369,7 @@ export const Stage0ToneLab: React.FC<Stage0ToneLabProps> = ({ onSpeak, onComplet
         </p>
       </div>
 
-      {/* STEP 2: TRUE BLIND TONE DIFFERENTIATION CHECK (ZERO LEAKED HINTS) */}
+      {/* STEP 2: TRUE BLIND TONE DIFFERENTIATION CHECK */}
       <div className="fs-subtle-box p-5 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>

@@ -10,7 +10,7 @@
 
 import React, { useMemo, useState } from 'react';
 import {
-  STAGE0_CAFE_ROLEPLAY, STAGE0_FIRST_10_PHRASES, STAGE0_GRAMMAR_RULES, STAGE0_MODULES,
+  STAGE0_GRAMMAR_RULES, STAGE0_MODULES,
   STAGE0_RADICAL_LEGEND, STAGE0_RADICAL_QUIZ, STAGE0_SENTENCE_PUZZLES, STAGE0_STROKE_RULES,
   STAGE0_ZHUYIN_FAMILIES, STAGE0_ZHUYIN_QUIZ_POOL, ZhuyinBlindQuizItem,
 } from '../data/stage0BeginnerData.ts';
@@ -20,6 +20,7 @@ import { StylusButton } from './uiPrimitives.tsx';
 import { RubyText } from './RubyText.tsx';
 import { BasicStrokePracticePad } from './BasicStrokePracticePad.tsx';
 import { Stage0ToneLab } from './Stage0ToneLab.tsx';
+import { Stage0ArrivalScenarios } from './Stage0ArrivalScenarios.tsx';
 
 function shuffleList<T>(arr: T[]): T[] {
   const copy = [...arr];
@@ -59,6 +60,7 @@ export interface Stage0BeginnerLaunchpadProps {
   onUpdateProgress: (next: UserProgressState) => void;
   onSpeak?: (text: string, rate?: number) => void;
   onFinishedStage0?: () => void;
+  initialModuleId?: Stage0ModuleId;
 }
 
 export const Stage0BeginnerLaunchpad: React.FC<Stage0BeginnerLaunchpadProps> = ({
@@ -66,9 +68,10 @@ export const Stage0BeginnerLaunchpad: React.FC<Stage0BeginnerLaunchpadProps> = (
   onUpdateProgress,
   onSpeak,
   onFinishedStage0,
+  initialModuleId,
 }) => {
   const summary = getStage0Summary(progress);
-  const [activeMod, setActiveMod] = useState<Stage0ModuleId>(summary.nextModuleId || '0.1');
+  const [activeMod, setActiveMod] = useState<Stage0ModuleId>(initialModuleId || summary.nextModuleId || '0.1');
 
   // 0.2 Zhuyin family, blender & blind audio->Zhuyin check state
   const [familyIdx, setFamilyIdx] = useState<number>(0);
@@ -90,10 +93,6 @@ export const Stage0BeginnerLaunchpad: React.FC<Stage0BeginnerLaunchpadProps> = (
   // 0.4 Strokes practiced + Unseen-character Radical quiz state
   const [strokesPracticedCount, setStrokesPracticedCount] = useState<number>(0);
   const [radicalAnswers, setRadicalAnswers] = useState<Record<string, number>>({});
-
-  // 0.5 Audio-first Café roleplay state
-  const [roleplayShowEnglish, setRoleplayShowEnglish] = useState<boolean>(false);
-  const [roleplayAnswers, setRoleplayAnswers] = useState<Record<number, number>>({});
 
   const completeModule = (id: Stage0ModuleId) => {
     const next = markStage0ModuleComplete(progress, id);
@@ -119,11 +118,6 @@ export const Stage0BeginnerLaunchpad: React.FC<Stage0BeginnerLaunchpadProps> = (
     [radicalAnswers]
   );
   const mod04Verified = strokesPracticedCount >= 6 && radicalCorrectCount >= 3;
-  const roleplayCorrectCount = useMemo(
-    () => STAGE0_CAFE_ROLEPLAY.filter((t, i) => roleplayAnswers[i] === t.correctIdx).length,
-    [roleplayAnswers]
-  );
-  const mod05Verified = roleplayCorrectCount >= STAGE0_CAFE_ROLEPLAY.length;
 
   const resetZhuyinQuiz = () => {
     setZhuyinQuiz(shuffleList(STAGE0_ZHUYIN_QUIZ_POOL).slice(0, 8).map((q) => ({ ...q, options: shuffleList(q.options) })));
@@ -194,7 +188,14 @@ export const Stage0BeginnerLaunchpad: React.FC<Stage0BeginnerLaunchpadProps> = (
       </section>
 
       {/* MODULE 0.1: UNIFIED TONE EAR & VOICE BOOT CAMP */}
-      {activeMod === '0.1' && <Stage0ToneLab onSpeak={onSpeak} onComplete={() => completeModule('0.1')} />}
+      {activeMod === '0.1' && (
+        <Stage0ToneLab
+          initialVoicePreset={progress.voicePreset}
+          initialQuietMode={progress.quietRoomMode}
+          onSpeak={onSpeak}
+          onComplete={() => completeModule('0.1')}
+        />
+      )}
 
       {/* MODULE 0.2: ZHUYIN SOUND MAP, FAMILY SYLLABLE BLENDER & BLIND AUDIO->ZHUYIN CHECK */}
       {activeMod === '0.2' && (
@@ -528,63 +529,14 @@ export const Stage0BeginnerLaunchpad: React.FC<Stage0BeginnerLaunchpadProps> = (
         </section>
       )}
 
-      {/* MODULE 0.5: FIRST 10 TAIPEI PHRASES & AUDIO-FIRST CAFÉ ROLEPLAY */}
+      {/* MODULE 0.5: 5 REAL-LIFE TAIWAN ARRIVAL SCENARIOS */}
       {activeMod === '0.5' && (
-        <section className="fs-card p-6 space-y-6">
-          <div className="space-y-1">
-            <h2 className="text-xl font-bold" style={{ color: 'var(--fs-text)' }}>0.5 Your First 10 Taipei Survival Phrases &amp; Audio-First Café Roleplay</h2>
-            <p className="text-sm" style={{ color: 'var(--fs-text-secondary)' }}>Listen and shadow these 10 authentic Taiwan phrases, then complete the 3-turn Taipei café conversation by ear.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {STAGE0_FIRST_10_PHRASES.map((p) => (
-              <div key={p.trad} className="fs-subtle-box p-4 flex items-center justify-between gap-3">
-                <div className="space-y-1">
-                  <RubyText text={p.trad} zhuyin={p.zhuyin} pinyin={p.pinyin} showPinyinHint size="md" zhuyinDisplayMode="always" />
-                  <div className="text-sm font-bold" style={{ color: 'var(--fs-text)' }}>{p.english}</div>
-                  <div className="text-xs" style={{ color: 'var(--fs-text-muted)' }}>Literal: {p.gloss}</div>
-                </div>
-                <div className="flex flex-col gap-1.5 shrink-0">
-                  <StylusButton variant="secondary" onClick={() => onSpeak?.(p.trad, 0.92)}><span>Normal</span></StylusButton>
-                  <StylusButton variant="ghost" onClick={() => onSpeak?.(p.trad, 0.65)}><span>Slow</span></StylusButton>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="fs-subtle-box p-5 space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="text-sm font-bold" style={{ color: 'var(--fs-text)' }}>Mini Taipei Café Roleplay ({roleplayCorrectCount}/{STAGE0_CAFE_ROLEPLAY.length} correct) · Hear the Clerk &amp; Pick Your Reply:</div>
-              <StylusButton variant="ghost" onClick={() => setRoleplayShowEnglish((v) => !v)}><span>{roleplayShowEnglish ? 'Hide English Hints' : 'Show English Hints'}</span></StylusButton>
-            </div>
-            <div className="space-y-3">
-              {STAGE0_CAFE_ROLEPLAY.map((turn, idx) => {
-                const picked = roleplayAnswers[idx];
-                const answered = picked !== undefined;
-                return (
-                  <div key={idx} className="fs-card p-4 space-y-2.5">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div>
-                        <div className="text-base font-bold" style={{ color: 'var(--fs-text)' }}>Turn {idx + 1} · Clerk: {roleplayShowEnglish || answered ? turn.clerkZh : '(Listen to the clerk first!)'}</div>
-                        {(roleplayShowEnglish || answered) && <div className="text-xs" style={{ color: 'var(--fs-text-secondary)' }}>{turn.clerkPinyin} — "{turn.clerkEn}"</div>}
-                      </div>
-                      <div className="flex gap-1.5">
-                        <StylusButton variant="primary" onClick={() => onSpeak?.(turn.clerkZh, 0.85)}><span>Hear Clerk</span></StylusButton>
-                        <StylusButton variant="ghost" onClick={() => onSpeak?.(turn.clerkZh, 0.65)}><span>Slow</span></StylusButton>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {turn.options.map((opt, oIdx) => (
-                        <StylusButton key={opt.text} variant={picked === oIdx ? (oIdx === turn.correctIdx ? 'primary' : 'danger') : 'secondary'} onClick={() => { setRoleplayAnswers((prev) => ({ ...prev, [idx]: oIdx })); onSpeak?.(opt.text, 0.88); }}>
-                          <span>{opt.text}{roleplayShowEnglish || answered ? ` (${opt.en})` : ''}</span>
-                        </StylusButton>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <ModuleGateBar verified={mod05Verified} statusText={mod05Verified ? '✓ Café Roleplay Passed (3/3)' : `○ Complete All 3 Café Turns (${roleplayCorrectCount}/3)`} unlockLabel="Finish Stage 0 & Begin Stage 1 →" lockedLabel="Pass Café Roleplay to Finish" onComplete={() => completeModule('0.5')} />
-        </section>
+        <Stage0ArrivalScenarios
+          progress={progress}
+          onUpdateProgress={onUpdateProgress}
+          onSpeak={onSpeak}
+          onCompleteModule={() => completeModule('0.5')}
+        />
       )}
     </div>
   );

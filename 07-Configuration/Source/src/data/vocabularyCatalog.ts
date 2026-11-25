@@ -16,6 +16,7 @@ import {
 } from '../lib/zhuyinTokenizer.ts';
 import {
   getCustomPimsleurUnits,
+  getCustomScenarioPacks,
   mergeCustomContemporaryVolumes,
   subscribeCurriculumAdminChanges,
 } from '../lib/curriculumAdminStore.ts';
@@ -69,9 +70,10 @@ export interface VocabularyEntry {
   english: string;
   category: VocabCategory;
   categoryLabel: string;
-  sourceType: 'pimsleur' | 'contemporary';
+  sourceType: 'pimsleur' | 'contemporary' | 'custom_scenario';
   sourceUnit: number;
   sourceLabel: string;
+  targetStage?: 0 | 1 | 2 | 3 | 4 | 5;
   cefr: 'A1' | 'A2' | 'B1' | 'B2' | 'C1';
   tocflBand: TocflBand;
   taiwanUsage?: TaiwanNaturalEquivalent;
@@ -194,9 +196,10 @@ function buildEntryFromSource(params: {
   zhuyin: string;
   pinyin: string;
   english: string;
-  sourceType: 'pimsleur' | 'contemporary';
+  sourceType: 'pimsleur' | 'contemporary' | 'custom_scenario';
   sourceUnit: number;
   sourceLabel: string;
+  targetStage?: 0 | 1 | 2 | 3 | 4 | 5;
   cefr: 'A1' | 'A2' | 'B1' | 'B2' | 'C1';
   tocflBand: TocflBand;
   exampleSentence?: { traditional: string; zhuyin: string; english: string };
@@ -217,6 +220,7 @@ function buildEntryFromSource(params: {
     sourceType: params.sourceType,
     sourceUnit: params.sourceUnit,
     sourceLabel: params.sourceLabel,
+    targetStage: params.targetStage,
     cefr: params.cefr,
     tocflBand: params.tocflBand,
     taiwanUsage: TAIWAN_EQUIVALENTS[params.traditional],
@@ -387,6 +391,49 @@ export function getFullVocabularyCatalog(): VocabularyEntry[] {
         exampleSentence: lesObj?.sampleSentence,
       })
     );
+  }
+
+  for (const pack of getCustomScenarioPacks()) {
+    const stage = pack.targetStage ?? 1;
+    const cefr: 'A1' | 'A2' | 'B1' | 'B2' =
+      stage <= 1 ? 'A1' : stage === 2 ? 'A2' : stage === 3 ? 'B1' : 'B2';
+    const band: TocflBand =
+      stage <= 1
+        ? 'Novice 1 (準備一級)'
+        : stage === 2
+        ? 'Novice 2 (準備二級)'
+        : stage === 3
+        ? 'Band A · Level 2 (基礎級)'
+        : stage === 4
+        ? 'Band B · Level 1 (進階級)'
+        : 'Band B · Level 2 (高階級)';
+    const firstDiag = pack.rows.find((r) => r.rowType === 'dialogue');
+    for (const row of pack.rows) {
+      if (row.rowType === 'grammar' || map.has(row.traditional)) continue;
+      map.set(
+        row.traditional,
+        buildEntryFromSource({
+          id: `custom-${pack.id}-${row.traditional}`,
+          traditional: row.traditional,
+          zhuyin: row.zhuyin,
+          pinyin: row.pinyin,
+          english: row.english,
+          sourceType: 'custom_scenario',
+          sourceUnit: stage,
+          sourceLabel: `Custom: ${pack.titleEnglish || pack.titleTraditional}`,
+          targetStage: stage,
+          cefr,
+          tocflBand: band,
+          exampleSentence: firstDiag
+            ? {
+                traditional: firstDiag.traditional,
+                zhuyin: firstDiag.zhuyin,
+                english: firstDiag.english,
+              }
+            : undefined,
+        })
+      );
+    }
   }
 
   cachedCatalog = Array.from(map.values());

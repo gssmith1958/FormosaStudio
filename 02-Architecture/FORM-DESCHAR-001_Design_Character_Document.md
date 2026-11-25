@@ -3,14 +3,14 @@
 ```yaml
 id: FORM-DESCHAR-001
 type: DesignCharacterDocument
-title: FormosaStudio Design Character Document — Warm Paper Light & Calm Dark Studio HMI (v2.0.0)
+title: FormosaStudio Design Character Document — Syllabus-First Warm Paper & Calm Dark HMI for Linux Desktop & iPad mini 6 (v2.1.0)
 status: Approved
-version: 2.0.0
+version: 2.1.0
 project: FORM
 owner: Principal Engineer
 created_date: 2026-11-13
-updated_date: 2026-11-19
-framework_reference: "ASEF Guide 008 v0.9.1 Part 2, Guide 007 §1, FORM-LL-008, FORM-LL-009"
+updated_date: 2026-11-25
+framework_reference: "ASEF Guide 008 v0.9.4, Guide 007 §1, FORM-LL-008, FORM-LL-009"
 traces_to:
   - FORM-TAILOR-001
   - FORM-REQ-0018
@@ -18,47 +18,34 @@ traces_to:
 
 ---
 
-## 1. Design Character Elicitation Summary (`Guide 008 Part 2` — Updated `v2.0.0`)
+## 1. Design Character Summary (`Guide 008 Part 2` — Updated `v2.1.0` per `FORM-ECR-001`)
 
 * **Positive References (Emulate):**
-  1. **Warm Paper Stationery & Modern Desktop Studios (Apple Books / Linear / Taiwanese Print Textbooks):** Calm rice-paper off-white canvas (`#F7F4EE`), crisp elevated paper cards (`#FFFFFF`), deep sumi-ink text (`#1C1917`), a single disciplined **Taiwanese Jade (`#0F766E`)** primary accent, and an optional **Calm Studio Dark (`#13161A`)** toggle—eliminating loud neon dark-slate slabs.
-  2. **Clean Left Sidebar Rail + Slim Progress Header:** Frees full vertical height for active lessons, embeds live **Today's 10-Min Goal** progress telemetry right in the rail, swaps cleanly to the right edge in Left-Handed Wacom mode, and keeps the Context Inspector on-demand.
-  3. **True Day-1 Beginner Ergonomics (`Stage 0: Start From Zero` + Pinyin/Zhuyin Training Wheels):** Default Pinyin+Zhuyin bridge for novice native English speakers, plain-English tone/stroke/grammar onboarding, easy-first SVG-aligned calligraphy (`人/大/水/木/日/中` before complex characters), and authentic live `MediaRecorder` + YIN $F_0$ playback.
+  1. **Warm Paper Stationery & Modern Desktop/iPad Studios:** Calm rice-paper off-white canvas (`#F7F4EE`), crisp elevated paper cards (`#FFFFFF`), deep sumi-ink text (`#1C1917`), disciplined **Taiwanese Jade (`#0F766E`)** primary accent, and an optional **Calm Studio Dark (`#13161A`)** toggle—using semantic CSS tokens (`fs-card`, `fs-subtle-box`, `var(--fs-*)`) across every surface so no dark-slate slabs appear in Light Paper mode.
+  2. **5-Section Expandable Accordion Navigation:** One unified, syllabus-first menu (*Today's Adaptive Session · Course Syllabus Stages 0–5 · Practice Labs · Reference & Help · Standalone Administration*) that expands where the learner is working, collapses distractions, and keeps daily study completely separate from administration.
+  3. **True Desktop + iPad mini 6 Dual-Device Ergonomics:** Tuned both for Linux Desktop + Wacom (`>= 1280 px`) and **iPad mini 6** (`744 × 1133` CSS px portrait / `1133 × 744` CSS px landscape + Apple Pencil 2)—with automatic drawer collapse at `<= 1180 px`, an always-reachable `☰ Menu` toggle whenever collapsed, compact landscape canvas heights (`<= 420 px`) so drawing + action buttons fit without scrolling, and `sm:` (`640 px`) 2-column portrait card grids.
 * **Negative References (Avoid):**
-  1. **Loud Developer Debug Dashboards & Cramped 10–12px Text:** Body copy must sit at `15–16px`, headings at `22–28px`, with generous whitespace and zero competing neon accent slabs.
-  2. **Static-Only UI Audits & Hand-Estimated Stroke Coordinates:** Every GUI change must be visually inspected via rendered browser screenshots (`FORM-LL-008`), and every calligraphy guide must derive from exact offline SVG vector geometry (`moeStrokeVectorData.json`).
+  1. **Competing Progress Maps & Duplicate Chrome:** Never show duplicate Skill Trees, duplicate JSON Backup panels, or nested 4-layer tab strips.
+  2. **Static-Only UI Audits & Unverified Fake Credit:** Every GUI change must be verified via live rendered screenshots (`Guide 008 v0.9.4`), and demo/simulate/hint buttons never write real mastery credit.
 
 ---
 
 ## 2. Five Core Design Principles (`30-Second Reference`)
 
-1. **Authentic Taiwan Orthography First:** Every Chinese sentence renders with genuine Taiwanese vertical Zhuyin (`RubyText`) that fades adaptively (`100% -> 45% -> Hover-Peeking`) as character mastery rises from `Lv.0` to `Lv.3`.
-2. **Pen-in-Hand Ergonomics (Wacom First):** In the Wacom Calligraphy Studio and Paper Tick-Menu (`點菜單`) simulator, every control is operable with a single stylus tap (`>= 44×44 px`), the toolbar flips between left and right edges in 1 click, and flipping the Wacom pen to the eraser nib undoes the last stroke without reaching for the mouse.
-3. **Guided 10-Minute Daily Flow, Deep On-Demand Workbenches:** *Today's Study Hub* presents a zero-decision 3-card daily routine (*10-Min Taiwan Survival -> Adaptive Reading -> Wacom/Pitch Practice*), while the top menu and `Ctrl+K` Omnibar provide instant access to deep workbenches.
-4. **Visual & Acoustic Truth Over Black-Box Scores:** Instead of a vague "72% pronunciation" number, show the learner's **actual spoken $F_0$ pitch curve** overlaid on the target Chao tone contour, and show their **actual Wacom ink strokes** overlaid on the Taiwan MOE standard glyph.
-5. **Verified WCAG 2.1 AA Night-Slate Palette:** Deep slate surfaces (`#020617` / `#0F172A`) paired with high-luminance semantic tokens:
-   * Tone 1 (`55`): `#38BDF8` (`8.5:1` on `#0F172A`)
-   * Tone 2 (`35`): `#34D399` (`8.9:1` on `#0F172A`)
-   * Tone 3 (`214`): `#FBBF24` (`10.4:1` on `#0F172A`)
-   * Tone 4 (`51`): `#FCA5A5` / `#F87171` (`6.8:1` on `#0F172A` — avoiding pure `#EF4444` which fails AA at `4.43:1`)
-   * Tone 5 (`Neutral`): `#C084FC` (`7.4:1` on `#0F172A`)
+1. **Authentic Taiwan Orthography & Non-Destructive Adaptive Fading:** Vertical Zhuyin (`RubyText`) pairs with tone-marked Hanyu Pinyin training wheels in Stages 0–1, transitions to Zhuyin-primary in Stages 2–3, and uses per-character **Adaptive Fading** in Stages 4–5 (fading mastered `Lv.2/3` characters to bare Traditional Hanzi while keeping Zhuyin visible on brand-new `Lv.0/1` words).
+2. **Pen-in-Hand Ergonomics (Wacom + Apple Pencil 2):** Every interactive control is `>= 44 × 44 px`; Left/Right-Handed docking swaps both desktop sidebar and iPad drawer side cleanly; eraser nib undoes strokes; drawing canvases auto-collapse the sidebar on iPad (`<= 1180 px`).
+3. **Syllabus-First Daily Focus:** *Today's Adaptive Session* presents one calm daily workspace dynamically pulling ~70% current-stage drills + ~30% spiral review (with contextual Peek-Ahead), while *Course Syllabus* owns the full **Stages 0–5 (`Pre-A1 → TOCFL Level 4 / CEFR B2 / Classic HSK 5 Equiv.`)** map.
+4. **Visual & Acoustic Truth Across Linux & iPadOS:** Show live spoken pitch curves (using iPad-safe 2× anti-aliased YIN `< 5 ms/frame` and Safari `audio/mp4` replay) and exact offline Taiwan MOE SVG brushstroke silhouettes (`moeStrokeVectorData.json`).
+5. **Verified WCAG 2.1 AA Semantic Token System (Light Paper & Calm Dark):** All 5 tone colors (`--fs-tone-1`..`5`) and surfaces (`--fs-bg`, `--fs-surface`, `--fs-subtle`, `--fs-text`, `--fs-accent`) maintain `>= 4.5:1` contrast in both Warm Paper Light (`#F7F4EE`) and Calm Studio Dark (`#13161A`).
 
 ---
 
-## 3. End-to-End Cohesive Studio Architecture & Anti-Silo Contract (`FORM-DEP-UX-001` & `FORM-REQ-0021`)
+## 3. Cohesive 5-Section Shell & Anti-Silo Contract (`FORM-DEC-005` & `FORM-REQ-0021`)
 
-To remediate the "piece-part and glued-together" feel of `Chinese2` (`FORM-LL-007`), `FormosaStudio` enforces three structural UI/UX invariants from **Phase 1 through Phase 4**:
-
-1. **Single-Row Fixed 6-Studio Shell (Zero Double-Chrome, Zero Disappearing Tabs):**
-   * Eliminates `Chinese2`'s competing 4-dropdown `AppMenuBar` + 12-closable-tab `WorkspaceTabBar` + nested sub-tab bars.
-   * Replaces them with **6 permanent, predictable Top-Level Studios**:
-     1. `Today & Daily Flow` (`今日學習` — featuring the **Inline 10-Minute Daily Flow Runner** that steps through *Survival → Reading/Vocab → Wacom/Pitch* without tab-jumping)
-     2. `10-Min Taiwan` (`臺灣生存` — Sticky Labels, Wacom/Mouse `點菜單` Simulator, `語助詞`/`臺語`, Functional Listening Gym)
-     3. `Reader & Grammar` (`閱讀語法` — TOCFL A1–B2 Adaptive `i+1` Reader, Custom Text Importer & Cloze, `口語/書面語` Bridge)
-     4. `Wacom Calligraphy` (`書法筆順` — `PointerEvent` Pressure/Eraser `九宮格` Canvas, Taiwan MOE Stroke Order, `形聲字` Builder)
-     5. `Speaking & Pitch` (`發音聲調` — Offline WebAudio $F_0$ Pitch-Contour Visualizer, Tone Sandhi & `ㄓㄔㄕㄖ vs ㄗㄘㄙ` Coach)
-     6. `Vocab, SRS & Dojo` (`詞彙與大千` — TOCFL Word Bank, FSRS-Lite Queue, 8-Stage DaQian Typing Dojo & 3-Stage Match Arena)
-2. **Phase 1 Shared UI Primitive Kit (`src/components/uiPrimitives.tsx`):**
-   * Built in **Phase 1** before any feature studios in Phases 2–3 so every studio uses identical `<StudioHeaderBanner>`, `<StudioModeSwitcher>`, `<StylusButton>` (`>= 44×44 px`), `<HandednessToggle>`, `<ToneBadge>` (`WCAG_TONE_PALETTE`), `<ReturnBreadcrumbBar>`, and `<CrossStudioActionPills>`.
-3. **Cross-Studio Context Handoff Bus (`src/lib/studioContextBus.ts`):**
-   * Clicking any word, character, or sentence in *any* studio populates the persistent **Right Context & Quick-Practice Dock** and exposes 1-click **`[✒️ Write on Wacom]`**, **`[🎤 Coach Pitch ($F_0$)]`**, **`[📖 Open in Reader]`**, and **`[🧠 Boost in SRS]`** actions that deep-link into the target studio pre-loaded with that item and a 1-click **`← Return to [Source Studio]`** breadcrumb banner.
+1. **5 Permanent Top-Level Expandable Menu Sections (`<= 8` Ceiling):**
+   1. **Today's Adaptive Session** — Dynamic 3-step 10-minute loop tailored to active Syllabus Stage + contextual Peek-Ahead.
+   2. **Course Syllabus (`Stages 0–5`)** — Expandable tree (`Stage 0 Foundations` + `Stages 1–5` mapped to `TOCFL Level 1 A1 → Level 4 B2 / HSK 5 Equiv.`), each using Option A layout (*1 Recommended Next CTA + expandable Pimsleur, NTNU, Survival, Strokes/Stories & 5-question Stage Checkpoint*).
+   3. **Practice Labs** — On-demand focused labs (*Speaking & Pitch · Wacom/Pencil Writing · Reading & Register · Survival & Listening · Vocab, FSRS, DaQian & Match Arena*).
+   4. **Reference & Help** — Global `Ctrl+K` Omnibar, Taiwan MOE Pronunciation/Sandhi Guide, and In-App User's Manual.
+   5. **Administration** *(Standalone)* — Lesson Material CRUD (*Create/Edit/Delete* Pimsleur units, NTNU lessons, and Custom Taiwan Scenarios/Flashcards with `targetStage`), Progress Backup & Desktop↔iPad Transfer (including custom packs), Hardware/UI Preferences, and 1-click **iPad/Desktop Audio, Voice & Mic Self-Test**.
+2. **Shared UI Primitive Kit (`src/components/uiPrimitives.tsx`)** and **Cross-Studio Context Bus (`src/lib/studioContextBus.ts`)** preserve 1-click cross-lab deep links and contextual return breadcrumbs across all views.

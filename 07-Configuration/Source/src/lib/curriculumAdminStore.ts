@@ -9,6 +9,7 @@ import {
   POLYPHONE_PAIRS,
   SandhiExplanation,
   registerDynamicLexiconWord,
+  resetDynamicLexicon,
   tokenizeAndAnnotate,
 } from './zhuyinTokenizer.ts';
 import { PimsleurDialogueItem, PimsleurUnitData, PimsleurVocabItem } from '../data/pimsleurUnitsA.ts';
@@ -17,7 +18,7 @@ import {
   ContemporaryVolumeOverview,
 } from '../data/contemporaryVols1to2.ts';
 
-export type ResourcePackType = 'pimsleur_unit' | 'ntnu_lesson';
+export type ResourcePackType = 'pimsleur_unit' | 'ntnu_lesson' | 'custom_scenario';
 
 export interface ParsedResourceRow {
   id: string;
@@ -37,6 +38,7 @@ export interface CustomCurriculumPack {
   packType: ResourcePackType;
   unitOrVolume: number;
   lessonNumber?: number;
+  targetStage?: 0 | 1 | 2 | 3 | 4 | 5;
   titleTraditional: string;
   titleEnglish: string;
   subtitleOrTopic: string;
@@ -45,6 +47,7 @@ export interface CustomCurriculumPack {
   culturalNote?: string;
   rows: ParsedResourceRow[];
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface ResourceAdminState {
@@ -244,6 +247,17 @@ export function parseRawResourceMaterial(
   return rows;
 }
 
+function rebuildDynamicLexicon(packs: CustomCurriculumPack[]): void {
+  resetDynamicLexicon();
+  for (const pack of packs) {
+    for (const row of pack.rows) {
+      if (row.rowType === 'vocab' && row.traditional.length >= 2 && row.zhuyin) {
+        registerDynamicLexiconWord(row.traditional, row.zhuyin);
+      }
+    }
+  }
+}
+
 export function loadCustomCurriculumPacks(): CustomCurriculumPack[] {
   if (typeof window !== 'undefined' && window.localStorage) {
     try {
@@ -252,6 +266,7 @@ export function loadCustomCurriculumPacks(): CustomCurriculumPack[] {
         const parsed = JSON.parse(raw) as ResourceAdminState;
         if (Array.isArray(parsed.packs)) {
           memoryPacks = parsed.packs;
+          rebuildDynamicLexicon(memoryPacks);
         }
       }
     } catch {
@@ -263,13 +278,7 @@ export function loadCustomCurriculumPacks(): CustomCurriculumPack[] {
 
 function persistCustomPacks(packs: CustomCurriculumPack[]): void {
   memoryPacks = [...packs];
-  for (const pack of memoryPacks) {
-    for (const row of pack.rows) {
-      if (row.rowType === 'vocab' && row.traditional.length >= 2 && row.zhuyin) {
-        registerDynamicLexiconWord(row.traditional, row.zhuyin);
-      }
-    }
-  }
+  rebuildDynamicLexicon(memoryPacks);
   if (typeof window !== 'undefined' && window.localStorage) {
     try {
       const payload: ResourceAdminState = {
@@ -288,15 +297,36 @@ export function publishCustomCurriculumPack(
   input: Omit<CustomCurriculumPack, 'id' | 'createdAt'> & { id?: string }
 ): CustomCurriculumPack {
   const existing = loadCustomCurriculumPacks();
+  const prev = input.id ? existing.find((p) => p.id === input.id) : undefined;
+  const nowIso = new Date().toISOString();
   const pack: CustomCurriculumPack = {
     ...input,
     id: input.id || `pack-${input.packType}-${Date.now()}`,
-    createdAt: new Date().toISOString(),
+    createdAt: prev?.createdAt || nowIso,
+    updatedAt: prev ? nowIso : undefined,
   };
 
   const filtered = existing.filter((p) => p.id !== pack.id);
   persistCustomPacks([...filtered, pack]);
   return pack;
+}
+
+export function updateCustomCurriculumPack(
+  packId: string,
+  updates: Partial<Omit<CustomCurriculumPack, 'id' | 'createdAt'>>
+): CustomCurriculumPack | null {
+  const existing = loadCustomCurriculumPacks();
+  const target = existing.find((p) => p.id === packId);
+  if (!target) return null;
+  const updated: CustomCurriculumPack = {
+    ...target,
+    ...updates,
+    id: target.id,
+    createdAt: target.createdAt,
+    updatedAt: new Date().toISOString(),
+  };
+  persistCustomPacks(existing.map((p) => (p.id === packId ? updated : p)));
+  return updated;
 }
 
 export function removeCustomCurriculumPack(packId: string): CustomCurriculumPack[] {
@@ -307,6 +337,26 @@ export function removeCustomCurriculumPack(packId: string): CustomCurriculumPack
 
 export function clearCustomCurriculumPacks(): void {
   persistCustomPacks([]);
+}
+
+export function getCustomScenarioPacks(stageNumber?: number): CustomCurriculumPack[] {
+  const all = loadCustomCurriculumPacks().filter((p) => p.packType === 'custom_scenario');
+  if (typeof stageNumber === 'number') {
+    return all.filter((p) => (p.targetStage ?? 1) === stageNumber);
+  }
+  return all;
+}
+
+export function exportCustomPacksData(): CustomCurriculumPack[] {
+  return loadCustomCurriculumPacks();
+}
+
+export function importCustomPacksData(packs: CustomCurriculumPack[]): CustomCurriculumPack[] {
+  if (!Array.isArray(packs)) {
+    throw new Error('Custom packs payload must be an array.');
+  }
+  persistCustomPacks(packs);
+  return loadCustomCurriculumPacks();
 }
 
 /**

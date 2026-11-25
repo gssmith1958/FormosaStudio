@@ -52,15 +52,30 @@ const MAX_COMPOUND_LEN = 6;
 const ORDINAL_PREFIXES = new Set(['第', '初', '十']);
 const SERIAL_DIGITS = new Set(['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '月', '樓', '號', '路']);
 
+const DYNAMIC_LEXICON: Record<string, string> = {};
+
 /**
- * Registers custom dynamically added vocabulary words into the FMM runtime lexicon (Pattern 21).
+ * Registers custom dynamically added vocabulary words into a rebuildable overlay lexicon (ARCH-3 / Pattern 21).
  */
 export function registerDynamicLexiconWord(traditional: string, zhuyin: string): void {
   const cleanWord = traditional.trim();
   const cleanZh = normalizeZhuyinString(zhuyin);
   if (cleanWord.length >= 2 && cleanZh) {
-    WORD_ZHUYIN_LEXICON[cleanWord] = cleanZh;
+    DYNAMIC_LEXICON[cleanWord] = cleanZh;
   }
+}
+
+/**
+ * Clears all custom dynamic lexicon entries prior to rebuilding from active Admin packs (prevents stale words after delete).
+ */
+export function resetDynamicLexicon(): void {
+  for (const key of Object.keys(DYNAMIC_LEXICON)) {
+    delete DYNAMIC_LEXICON[key];
+  }
+}
+
+export function lookupLexiconWord(word: string): string | undefined {
+  return DYNAMIC_LEXICON[word] ?? WORD_ZHUYIN_LEXICON[word];
 }
 
 /**
@@ -84,7 +99,7 @@ export function segmentTextFMM(text: string): { word: string; isChinese: boolean
 
     for (let len = Math.min(MAX_COMPOUND_LEN, chars.length - i); len >= 2; len--) {
       const candidate = chars.slice(i, i + len).join('');
-      const lexEntry = WORD_ZHUYIN_LEXICON[candidate];
+      const lexEntry = lookupLexiconWord(candidate);
       if (lexEntry) {
         matchedLen = len;
         matchedSyllables = normalizeZhuyinString(lexEntry).split(/\s+/).filter(Boolean);

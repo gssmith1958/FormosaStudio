@@ -9,6 +9,7 @@
  */
 
 import type { Stage0ModuleId } from '../lib/pathwayEngine.ts';
+import { STAGE0_ARRIVAL_SCENARIOS } from './stage0ArrivalScenariosData.ts';
 
 export interface Stage0ModuleMeta {
   id: Stage0ModuleId;
@@ -24,7 +25,7 @@ export const STAGE0_MODULES: Stage0ModuleMeta[] = [
   { id: '0.2', numberLabel: '0.2', titleEn: 'Zhuyin Sound Map', titleZh: '注音符號入門', estMinutes: 10, summary: 'Decode all 37 ㄅㄆㄇㄈ symbols using plain English sound cues.' },
   { id: '0.3', numberLabel: '0.3', titleEn: 'Grammar Survival Map', titleZh: '中英語序對照', estMinutes: 8, summary: '5 liberating Mandarin sentence rules + interactive tile builder.' },
   { id: '0.4', numberLabel: '0.4', titleEn: 'Strokes & Characters 101', titleZh: '基本筆畫邏輯', estMinutes: 8, summary: 'Practice all 8 basic strokes interactively and decode character radicals.' },
-  { id: '0.5', numberLabel: '0.5', titleEn: 'First 10 Taipei Phrases', titleZh: '臺北生存十句', estMinutes: 10, summary: 'Essential polite phrases and a Taipei café roleplay.' },
+  { id: '0.5', numberLabel: '0.5', titleEn: '5 Real-Life Taiwan Scenarios', titleZh: '臺灣生活五情境', estMinutes: 12, summary: 'First 10 phrases + 5 arrival roleplays (Café, 7-Eleven, MRT, Night Market, Help).' },
 ];
 
 export interface ToneAnalogyCard {
@@ -434,8 +435,6 @@ export const STAGE0_FIRST_10_PHRASES = [
   { trad: '再見', zhuyin: 'ㄗㄞˋ ㄐㄧㄢˋ', pinyin: 'zàijiàn', english: 'Goodbye', gloss: 'again + see' },
 ];
 
-export const STAGE0_CAFE_ROLEPLAY = [
-  { clerkZh: '你好！請問要點什麼？', clerkPinyin: 'Nǐ hǎo! Qǐngwèn yào diǎn shénme?', clerkEn: 'Hello! What would you like to order?', options: [{ text: '再見！', pinyin: 'Zàijiàn!', en: 'Goodbye!' }, { text: '我要一杯茶，謝謝。', pinyin: 'Wǒ yào yì bēi chá, xièxie.', en: 'I want a cup of tea, thanks.' }, { text: '聽不懂。', pinyin: 'Tīng bù dǒng.', en: 'I don’t understand.' }], correctIdx: 1 },
-  { clerkZh: '好，一共五十塊。', clerkPinyin: 'Hǎo, yígòng wǔshí kuài.', clerkEn: 'Okay, that’s NT$50 total.', options: [{ text: '謝謝！', pinyin: 'Xièxie!', en: 'Thank you!' }, { text: '請問洗手間在哪裡？', pinyin: 'Qǐngwèn xǐshǒujiān zài nǎlǐ?', en: 'Where is the bathroom?' }, { text: '不要辣。', pinyin: 'Búyào là.', en: 'Not spicy.' }], correctIdx: 0 },
-  { clerkZh: '需要袋子嗎？', clerkPinyin: 'Xūyào dàizi ma?', clerkEn: 'Do you need a bag?', options: [{ text: '請問？', pinyin: 'Qǐngwèn?', en: 'May I ask?' }, { text: '多少錢？', pinyin: 'Duōshǎo qián?', en: 'How much?' }, { text: '不用，謝謝！', pinyin: 'Búyòng, xièxie!', en: 'No need, thanks!' }], correctIdx: 2 },
-];
+// Back-compatible export aliasing Scenario 1 (Taipei Café) from the 5-scenario arrival suite
+export const STAGE0_CAFE_ROLEPLAY = STAGE0_ARRIVAL_SCENARIOS[0].turns;
+export { STAGE0_ARRIVAL_SCENARIOS } from './stage0ArrivalScenariosData.ts';

@@ -416,11 +416,13 @@ export const InteractiveHelpManualDrawer: React.FC<InteractiveHelpManualDrawerPr
         {tab === 'workflow' && (
           <div className="space-y-3 text-xs sm:text-sm text-slate-200 leading-relaxed">
             <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2">
-              <h3 className="font-extrabold text-emerald-300">1. Daily 10-Minute Recommended Study Loop</h3>
+              <h3 className="font-extrabold text-emerald-300">1. v2.0 5-Section Menu &amp; Syllabus-Adaptive 10-Min Loop</h3>
               <p>
-                Open <strong>Studio 1 (今日學習 · Alt+1)</strong> and run the <strong>Inline 10-Minute Daily Flow Runner</strong>:
-                (1) 3 minutes of FSRS-Lite due vocabulary warmup, (2) 4 minutes of Pimsleur / Taiwan Survival dialogue shadowing,
-                and (3) 3 minutes of Taiwan MOE character stroke & DaQian keystroke reflex.
+                Navigate from anywhere via the <strong>5-Section Expandable Accordion Menu</strong>:
+                (1) <strong>Today’s Session (Alt+1)</strong> dynamically builds 3 daily steps (~70% current stage + ~30% spiral review, plus contextual Peek Ahead),
+                (2) <strong>Course Syllabus (Alt+2)</strong> maps a clear linear path across <strong>Stages 0–5</strong> (Pre-A1 → TOCFL Level 4 / CEFR B2 / Classic HSK 5 Equivalent),
+                (3) <strong>Practice Labs (Alt+3)</strong> groups all 5 focused drill studios, (4) <strong>Reference &amp; Help (Alt+4)</strong>, and
+                (5) standalone <strong>Administration (Alt+5)</strong> for custom lesson CRUD, iPad/Desktop Audio Self-Test, and unified JSON backups.
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -446,10 +448,10 @@ export const InteractiveHelpManualDrawer: React.FC<InteractiveHelpManualDrawerPr
                 <code>127.0.0.1:41755</code> with zero terminal windows and shuts down automatically when closed.
               </p>
               <p>
-                <strong>iPad / iPhone (Anywhere Access):</strong> Open{' '}
+                <strong>iPad mini 6 / iPadOS (Anywhere Access):</strong> Open{' '}
                 <code>https://gssmith1958.github.io/FormosaStudio/</code> in Safari → tap <strong>Share → Add to Home Screen</strong>.
-                Trusted HTTPS unlocks <strong>Apple Pencil</strong>, <strong>iPad Microphone</strong>, native <code>zh-TW</code> voices, and offline PWA caching.
-                Move progress between Desktop and iPad via <strong>Export / Import JSON</strong> in Studio 6.
+                On iPad mini 6 (<code>744×1133</code> / <code>1133×744</code>), the menu auto-collapses during calligraphy and tone drills (always reopenable via <strong>☰ Menu</strong>).
+                Run the 1-click <strong>Audio &amp; iPad Self-Test</strong> in <strong>Administration (Alt+5)</strong> to verify native <code>zh-TW</code> voices (install <em>Meijia</em> under Settings → Accessibility → Spoken Content → Voices → Chinese Taiwan) and offline YIN mic timing. Move progress + custom packs between Desktop and iPad with one unified JSON export in <strong>Administration → Backup &amp; Transfer</strong>.
               </p>
             </div>
             <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2">

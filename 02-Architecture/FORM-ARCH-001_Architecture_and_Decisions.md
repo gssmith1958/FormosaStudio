@@ -147,3 +147,43 @@ traces_to:
   - FORM-REQ-0020
   - FORM-REQ-0021
 ```
+
+```yaml
+id: FORM-ECR-001
+type: EngineeringChangeRequest
+title: Milestone A Overhaul — 5-Section Collapsible Syllabus Menu, Stage 0 Five-Scenario Onboarding, Standalone Admin CRUD & iPad mini 6 Safari Audio Engine
+status: Approved
+version: 2.0.0
+project: FORM
+owner: Principal Engineer
+created_date: 2026-11-25
+updated_date: 2026-11-25
+framework_reference: "Volume 8 §6, Volume 8 §6.6, Volume 4 §12.7, Guide 008 v0.9.4"
+description: "Principal Engineer approved Milestone A (Option 1) with all 12 Touchpoint A Domain Expert Panel conditions (UX-1..4, ARCH-1..3, DSP-1..2, PED-1..4) plus iPad mini 6 (744x1133 / 1133x744, Apple Pencil 2) ergonomics. Milestone B (2,500-word TOCFL Band A/B lexicon, B2 essays, TOCFL L1-L4 Mock Assessment) is explicitly deferred to v2.1 after live evaluation."
+traces_to:
+  - FORM-CONOPS-001
+  - FORM-DESCHAR-001
+  - FORM-REQ-0017
+  - FORM-REQ-0018
+  - FORM-REQ-0021
+  - FORM-REQ-0022
+```
+
+```yaml
+id: FORM-DEC-005
+type: ArchitectureDecision
+title: Consolidate 5-World Skill Tree into Unified Stages 0–5 Course Syllabus, Adopt 5-Section Collapsible Menu & Unify iPad-Safe Audio Session Manager
+status: Approved
+version: 1.0.0
+problem_statement: "Live Ubuntu Desktop and iPad mini 6 usage revealed (1) redundant navigation across Studio 1 tabs, Studio 6 FSRS, and the duplicate 5-World Skill Tree, (2) lack of a single syllabus driving daily drills, (3) buried administrative actions, and (4) iPadOS Safari speech/tone lag caused by 45 ms/2048-sample main-thread YIN loops, audio/webm mismatch, and unserialized TTS/mic audio sessions."
+alternatives_considered:
+  - "Option A: Retain 6 flat studio tabs and patch iPad audio inside each component separately (retains navigation redundancy and duplicates Safari bugs)."
+  - "Option B (Selected): Adopt a 5-section collapsible accordion menu (Today's Adaptive Session, Course Syllabus Stages 0–5 mapped to TOCFL L1–L4 / HSK 5 equiv., Practice Labs, Reference & Help, Standalone Administration), fold 5-World Skill Tree checkpoints into Stages 1–5 (retaining FIVE_WORLD_SKILL_TREE data & Match Arena), centralize syllabus/daily drill generation in src/lib/syllabusModel.ts, centralize iPad-safe 2x anti-aliased YIN + audio/mp4 + serialized TTS/mic in src/lib/audioSessionManager.ts, and isolate custom tokenizer words in a rebuildable DYNAMIC_LEXICON overlay."
+rationale: "Preserves <= 8 top-level nav ceiling (5 sections), eliminates competing progress maps with zero silent scope drops, fixes iPad mini 6 Safari audio/viewport ergonomics in one testable module, and enables clean Admin Create/Edit/Delete."
+traces_to:
+  - FORM-REQ-0015
+  - FORM-REQ-0017
+  - FORM-REQ-0018
+  - FORM-REQ-0021
+  - FORM-REQ-0022
+```
