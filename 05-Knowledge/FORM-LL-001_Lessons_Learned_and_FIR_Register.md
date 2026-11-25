@@ -223,15 +223,17 @@ preventive_action: "Codified in FormosaStudio GEMINI.md Rule 3: every substantiv
 id: FORM-FIR-004
 type: FrameworkImprovementRequest
 project_qualified_citation: "FORM FIR-004"
-title: Mandate Pre-Decision Multi-Specialist Review and Explicit Dissent Preservation in Decision-Bearing AI Proposals (Volume 6 §14.3 & Guide 006)
-status: Proposed
-version: 1.0.0
+title: Scope Pre-Decision Specialist Review to Trigger-Table Matches and Mandate Explicit Dissent-Preserving Specialist Team View (Volume 6 §14.3 & Guide 006)
+status: Approved with Modification
+version: 1.1.0
 originating_lesson: FORM-LL-010
 target_documents:
   - Volume 6 — AI Collaboration Architecture.md
-  - ASEF Guide 006 AI Collaboration Patterns.md
+  - ASEF Guide 006 Engineering Patterns.md
 created_date: 2026-11-25
 updated_date: 2026-11-25
-problem_statement: "Volume 6 §14.3.2 (Touchpoint A) and §14.3.4 (Trigger-Table Coverage) bind Domain Expert consultation to 'before Application Construction' and 'before BOE approval', leaving substantive mid-project proposals (ECRs, architecture trade-offs, UI/UX redesigns, pedagogical pivots) presented as unreviewed single-author AI recommendations. Furthermore, §14.3.3 defines subagent authority positioning without prohibiting AI synthesis from averaging away or omitting specialist dissents before human decision-making."
-proposed_change: "Add a zero-ceremony clause to Volume 6 §14.3.2 (and cross-reference in Guide 006 Pattern 15/17): (1) Any substantive technical, domain, hardware, or UI/UX recommendation requiring Principal Engineer / decision-maker approval MUST be pre-reviewed by the relevant triggered Domain Expert Panel roles prior to presentation; and (2) the decision brief MUST include a structured Specialist Team View displaying each role's verdict (Approve / Approve with Conditions / Object) and explicitly preserving any dissenting opinions and unresolved trade-offs rather than flattening them into a single-voice summary."
+problem_statement: "Volume 6 §14.3.2 (Touchpoint A) and §14.3.4 (Trigger-Table Coverage) bind Domain Expert consultation to 'before Application Construction' and 'before BOE approval', leaving mid-project decision proposals (ECRs, architecture pivots, UI/UX redesign directions) that match chartered trigger-table rows presented as unreviewed single-author AI recommendations. Furthermore, §14.3.3 defines subagent authority positioning without prohibiting AI synthesis from averaging away or omitting specialist dissents before human decision-making."
+proposed_change: "Add a zero-ceremony clarification to Volume 6 §14.3.2 (cross-referenced from §14.3.3 and ASEF Guide 006 Engineering Patterns.md Pattern 15/17): (1) Scoped strictly to decision-bearing proposals whose content matches one or more rows of the project's existing chartered Domain Expert Panel Trigger Table (§14.3.4 / Pattern 17 — no new parallel universal trigger), the AI shall convene those triggered roles prior to presenting the recommendation for Principal Engineer approval; (2) the decision brief shall include a structured 'Specialist Team View' displaying each triggered role's verdict (Approve / Approve with Conditions / Object) and explicitly preserving dissenting opinions and unresolved trade-offs verbatim rather than flattening them into a single-voice summary; and (3) PE override of a surfaced dissent is final immediately under §14.3.3 without re-litigation, with re-review triggered only if a PE-directed modification introduces unreviewed scope hitting a trigger-table row."
+adversarial_counter_review: "Cold-context ASEF FIR Counter-Review (2026-11-25, evaluated against Volume 6 §14.3.2-§14.3.4 and Guide 006)"
+counter_review_disposition: "Approved with Modification — fixed wrong target filename ('ASEF Guide 006 Engineering Patterns.md'), scoped pre-decision review strictly to existing Trigger-Table rows (§14.3.4 / Pattern 17) instead of a parallel universal mandate, retained the dissent-preserving 'Specialist Team View' brief cross-referenced from §14.3.3, and added explicit counter-review metadata fields (Principal Engineer approved 2026-11-25)."
 ```
