@@ -9,7 +9,7 @@ version: 1.0.0
 project: FORM
 owner: Principal Engineer
 created_date: 2026-11-13
-updated_date: 2026-11-13
+updated_date: 2026-11-25
 framework_reference: "Volume 4 §17, Volume 4 §18, Guide 001 §38 (§38.1 Project-Qualified FIRs) & §39A, Guide 006 Patterns 9 & 10"
 traces_to:
   - FORM-TAILOR-001
@@ -126,15 +126,17 @@ id: FORM-FIR-001
 type: FrameworkImprovementRequest
 project_qualified_citation: "FORM FIR-001"
 title: Add Explicit R1 (Prototype-to-Baseline Graduation) and R2 (Consolidated 4-Gate Personal Tool) Starter Profiles to ASEF Guide 002
-status: Proposed
-version: 1.0.0
+status: Rejected
+version: 1.1.0
 originating_lesson: FORM-LL-006
 target_documents:
   - ASEF Guide 002 Tailoring.md
 created_date: 2026-11-13
-updated_date: 2026-11-13
+updated_date: 2026-11-25
 problem_statement: "`ASEF Guide 002` defines `R1` and `R2` in the summary table, but its template (§3–§6) only illustrates `R3` mandatory artifacts, leaving a developer starting an `R1` or `R2` project without a concrete low-ceremony consolidation pattern or an `R1 -> R2` prototype graduation checklist."
 proposed_change: "Add a 'Canonical R1 & R2 Tailoring Profiles (Consolidated Artifacts & 4-Gate Folding)' subsection and an 'R1 Prototype-to-R2 Graduation Pattern' to `ASEF Guide 002`, grounded in `FormosaStudio` (`n = 3`)."
+adversarial_counter_review: "ASEF Framework Repository FIR_Counter_Review_Log.md (2026-11-25, cold-context Reviewer 1, subagent c6d8004d)"
+counter_review_disposition: "Rejected (Superseded by ASEF Roadmap P0.3 — Guide 002 v0.9.8-0.9.9 already incorporates R1/R2 low-ceremony consolidation and R1->R2 graduation; residual 4-gate/6-8-register canon rejected as n=1 project-local and contradictory to low-ceremony R2 norm; Principal Engineer approved 2026-11-25)."
 ```
 
 ```yaml
@@ -156,15 +158,17 @@ id: FORM-FIR-002
 type: FrameworkImprovementRequest
 project_qualified_citation: "FORM FIR-002"
 title: Mandate Live Rendered Visual & HMI Screenshot Verification in ASEF Guide 008 Touchpoint B Reviews
-status: Proposed
-version: 1.0.0
+status: Approved with Modification
+version: 1.1.0
 originating_lesson: FORM-LL-008
 target_documents:
-  - ASEF Guide 008 User-Centered Design.md
+  - ASEF Guide 008 Usability and Design Quality.md
 created_date: 2026-11-19
-updated_date: 2026-11-19
+updated_date: 2026-11-25
 problem_statement: "`ASEF Guide 008` defines usability and accessibility thresholds, but does not mechanically require inspecting live rendered screenshots of interactive GUI/web applications during `DEP-04` Touchpoint B sign-off, allowing visually unpleasant palettes, cramped typography, and missing user-journey progress cues to pass static code inspection."
 proposed_change: "Add a mandatory 'Live Rendered Visual & HMI Inspection Gate' checklist to `ASEF Guide 008` requiring live browser/GUI screenshot review of primary user workflows, visual hierarchy, typography readability, color restraint, and explicit daily/overall progress feedback before any GUI Touchpoint B or Gate 6/7 sign-off."
+adversarial_counter_review: "ASEF Framework Repository FIR_Counter_Review_Log.md (2026-11-25, cold-context Reviewer 1, subagent c6d8004d)"
+counter_review_disposition: "Approved with Modification -> Incorporated in ASEF Guide 008 v0.9.4 (fixed target filename, removed project-local DEP-04/daily-progress/Gate 6-7 phrasing, added rigor-scaled static-inspection non-sufficiency rule for visual/GUI Touchpoint B with CLI/non-visual exemptions and headless PE handoff; Principal Engineer approved 2026-11-25)."
 ```
 
 ```yaml
@@ -186,15 +190,17 @@ id: FORM-FIR-003
 type: FrameworkImprovementRequest
 project_qualified_citation: "FORM FIR-003"
 title: Add Touchpoint 0 Pre-Baseline Domain Challenge, Cold-Start Persona Journey & Anti-Tautology Verification Rules to Volume 4, Guide 002 & Guide 006
-status: Proposed
-version: 1.0.0
+status: Approved with Modification
+version: 1.1.0
 originating_lesson: FORM-LL-009
 target_documents:
-  - ASEF Volume 4 Lifecycle Processes.md
+  - Volume 4 — Engineering Process.md
+  - Volume 6 — AI Collaboration Architecture.md
   - ASEF Guide 002 Tailoring.md
-  - ASEF Guide 006 AI Patterns.md
 created_date: 2026-11-19
-updated_date: 2026-11-19
+updated_date: 2026-11-25
 problem_statement: "Commissioning Domain Expert Panels only at Implementation Touchpoint A/B checks compliance against already-frozen requirements, allowing R1->R2 prototype anchoring bias to omit Day-0/Day-1 user prerequisites and allowing tautological synthetic tests to pass broken real-hardware/UI workflows."
 proposed_change: "Introduce 'Touchpoint 0 (Pre-Baseline Domain & Cold-Start Challenge)' at Gate 1/2 before freezing requirements, require a 5-minute Stakeholder Visual & User-Journey Alignment Checkpoint before Phase 1 even in folded R2 gates, and prohibit tautological test fixtures where tests validate geometry/signals against the same hand-authored constants used by the renderer."
+adversarial_counter_review: "ASEF Framework Repository FIR_Counter_Review_Log.md (2026-11-25, cold-context Reviewer 2, subagent fa189cd9)"
+counter_review_disposition: "Approved with Modification -> Incorporated in ASEF Guide 002 v0.9.11, Volume 4 v0.9.18, and Volume 6 v0.9.19 (rejected Touchpoint 0, mandatory R2 5-min checkpoint, and new Guide 006 pattern; kept 3 zero-ceremony clarifications: Prototype Anchoring Bias warning in Guide 002, pre-baseline Touchpoint A timing clarification in Volume 6 §14.3.2 & Volume 4 §7.8, and shared-constant/hardware-validation clarification in Volume 4 §12.7; Principal Engineer approved 2026-11-25)."
 ```
